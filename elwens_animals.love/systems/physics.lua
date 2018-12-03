@@ -68,6 +68,8 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
     end
   end
 
+  stuff.collisionBuffer = {}
+
   --
   -- Iterate the physics world
   --

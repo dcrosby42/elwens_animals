@@ -5,6 +5,22 @@ local Entities = require 'modules.animalscreen.entities'
 local FlingFactorX=10
 local FlingFactorY=10
 
+-- Helper
+function addSound(e, name, res)
+  local cfg = res.sounds[name]
+  if cfg then
+    return e:newComp('sound', {
+      sound=name,
+      state='playing',
+      duration=cfg.duration,
+      volume=cfg.volume or 1,
+    })
+  else
+    Debug.println("(No sound for "..tostring(name)..")")
+    return nil
+  end
+end
+
 return function(estore, input, res)
   EventHelpers.handle(input.events, 'touch', {
 
@@ -20,31 +36,21 @@ return function(estore, input, res)
         end
       )
       local e = hit
-      local name
+      local animalName
       if not e then
-        name = pickRandom(res.animalNames)
-        e = Entities.animal(estore, res, name)
+        animalName = pickRandom(res.animalNames)
+        e = Entities.animal(estore, res, animalName)
 			else
-        name = e.img.imgId
+        animalName = e.img.imgId
       end
       e.img.sx = 0.7
       e.img.sy = 0.7
       e.pos.x = touch.x
       e.pos.y = touch.y
-      e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE
+      e:newComp('manipulator', {id=touch.id, mode='drag',dx=0,dy=0}) -- TODO MORE INFO HERE
 
-      -- Add a sound
-      local cfg = res.sounds[name]
-      if cfg then
-        local s = e:newComp('sound', {
-          sound=name,
-          -- state='playing', -- default
-          duration=cfg.duration,
-					volume=cfg.volume or 1,
-        })
-      else
-				Debug.println("(No sound for "..tostring(name)..")")
-      end
+      -- Try to add a sound for this animal
+      addSound(e, animalName, res)
 
     end,
 
@@ -81,14 +87,4 @@ return function(estore, input, res)
     end,
 
   })
-end
-
--- function defineUpdateSystem(matchSpec,fn)
---   local matchFn = matchSpecToFn(matchSpec)
---   return function(estore, input, res)
---     estore:walkEntities(
---       matchFn,
---       function(e) fn(e, estore, input, res) end
---     )
---   end
--- end
+end 
