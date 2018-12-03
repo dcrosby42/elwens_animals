@@ -16,6 +16,13 @@ return function(estore,res)
     if e.img then
       local img = e.img
       local x,y = getPos(e)
+      local r = 0
+      if img.r then 
+        r = r + img.r
+      end
+      if e.pos.r then 
+        r = r + e.pos.r
+      end
       local imgRes = res.images[img.imgId]
       if not imgRes then
         error("No image resource '"..img.imgId.."'")
@@ -41,7 +48,7 @@ return function(estore,res)
       love.graphics.draw(
         imgRes,
         x,y,
-        img.r,     -- radians
+        r,     
         img.sx, img.sy,
         offx, offy)
 

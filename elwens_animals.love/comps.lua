@@ -1,7 +1,7 @@
 local Comp = require 'ecs/component'
 
 Comp.define("bounds", {'offx',0,'offy',0,'w',0,'h',0})
-Comp.define("pos", {'x',0,'y',0})
+Comp.define("pos", {'x',0,'y',0,'r',0})
 Comp.define("vel", {'dx',0,'dy',0})
 
 Comp.define("tag", {})
@@ -28,3 +28,8 @@ Comp.define("debug", {'value',''})
 Comp.define("manipulator", {'id','','mode',''})
 
 Comp.define("sound", {'sound','','loop',false,'state','playing','volume',1,'pitch',1,'playtime',0,'duration',''})
+
+Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
+Comp.define('body', {'kind','', 'group',0,'debugDraw',false})
+Comp.define("force", {'fx',0,'fy',0})
+

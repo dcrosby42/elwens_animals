@@ -7,14 +7,19 @@ local Debug = require 'mydebug'
 
 local UPDATE = composeSystems(requireModules({
   'systems.timer',
+  'systems.physics',
   'systems.sound',
   -- 'modules.animalscreen.zookeeper',
   'modules.animalscreen.manipsystem',
+  'modules.animalscreen.boundarysystem',
 }))
 
 local DRAW = composeDrawSystems(requireModules({
   'systems.drawstuff',
+  'systems.physicsdraw',
 }))
+
+-- love.physics.setMeter() --the height of a meter our worlds will be 64px
 
 local M = {}
 

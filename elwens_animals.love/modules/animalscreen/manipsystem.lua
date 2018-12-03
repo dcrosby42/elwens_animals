@@ -2,8 +2,8 @@ local Debug = require 'mydebug'
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.animalscreen.entities'
 
-local function addSound(e, sname, res)
-end
+local FlingFactorX=10
+local FlingFactorY=10
 
 return function(estore, input, res)
   EventHelpers.handle(input.events, 'touch', {
@@ -55,6 +55,10 @@ return function(estore, input, res)
           if e.manipulator.id == touch.id then
             e.pos.x = touch.x
             e.pos.y = touch.y
+            e.vel.dx = 0
+            e.vel.dy = 0
+            e.manipulator.dx = touch.dx or 0
+            e.manipulator.dy = touch.dy or 0
           end
       end)
     end,
@@ -69,6 +73,8 @@ return function(estore, input, res)
             e.img.drawBounds = false
             e.img.sx = 0.5
             e.img.sy = 0.5
+            e.vel.dx = (e.manipulator.dx or 0) * FlingFactorX
+            e.vel.dy = (e.manipulator.dy or 0) * FlingFactorY
             e:removeComp(e.manipulator)
           end
       end)
