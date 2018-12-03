@@ -1,3 +1,4 @@
+local Debug = require 'mydebug'
 local R = require 'resourceloader'
 local A = require 'animalpics'
 local M={}
@@ -40,7 +41,13 @@ function M.newWorld()
   return {}
 end
 
-function M.updateWorld(world)
+function M.updateWorld(world,action,res)
+  if action.type == "touch" or action.type=="mouse" and action.state == "pressed" then
+    Debug.println("TOUCH")
+    local src = love.audio.newSource("data/sounds/fx/tng_viewscreen_on.mp3", "static")
+    src:setVolume(1)
+    src:play()
+  end
   return world
 end
 
