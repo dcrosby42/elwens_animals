@@ -12,6 +12,7 @@ end
 
 local function newAnimal(w,e)
   local b = P.newBody(w,0,0,"dynamic")
+  b:setMass(0.1)
   local s = P.newCircleShape(50)
   local f = P.newFixture(b,s)
   f:setUserData(e.body.cid)

@@ -19,7 +19,7 @@ local DRAW = composeDrawSystems(requireModules({
   'systems.physicsdraw',
 }))
 
--- love.physics.setMeter() --the height of a meter our worlds will be 64px
+love.physics.setMeter(64) --the height of a meter our worlds will be 64px
 
 local M = {}
 

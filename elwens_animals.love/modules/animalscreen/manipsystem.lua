@@ -23,8 +23,9 @@ end
 
 return function(estore, input, res)
   EventHelpers.handle(input.events, 'touch', {
-
+    -- Touch pressed
     pressed =function(touch)
+      -- First, see if we touched an animal
       local hit
       estore:seekEntity(
         hasTag('animal'),
@@ -38,37 +39,44 @@ return function(estore, input, res)
       local e = hit
       local animalName
       if not e then
+        -- Nothing.  Let's generate a random animal
         animalName = pickRandom(res.animalNames)
         e = Entities.animal(estore, res, animalName)
 			else
         animalName = e.img.imgId
       end
+      -- slightly enlarge the animal image (normally it's 0.5)
       e.img.sx = 0.7
       e.img.sy = 0.7
       e.pos.x = touch.x
       e.pos.y = touch.y
-      e:newComp('manipulator', {id=touch.id, mode='drag',dx=0,dy=0}) -- TODO MORE INFO HERE
+      e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE?
 
       -- Try to add a sound for this animal
       addSound(e, animalName, res)
 
     end,
 
+    -- Touch dragged
     moved =function(touch)
+      -- Find the entity having a manipulator that matches the id of this touch event
       estore:walkEntities(
         hasComps('manipulator','pos'),
         function(e)
           if e.manipulator.id == touch.id then
+            -- Move the entity where the touch is moving
             e.pos.x = touch.x
             e.pos.y = touch.y
             e.vel.dx = 0
             e.vel.dy = 0
+            -- track some deltas
             e.manipulator.dx = touch.dx or 0
             e.manipulator.dy = touch.dy or 0
           end
       end)
     end,
 
+    -- End of touch
     released =function(touch)
       estore:walkEntities(
         hasComps('manipulator','pos'),

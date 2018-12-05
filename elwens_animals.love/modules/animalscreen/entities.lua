@@ -22,7 +22,7 @@ function Entities.zooKeeper(estore,res)
     {'pos', {}},
     {'debug', {name='nextAnimal',value=1}},
     {'sound', {sound='bgmusic',loop=true,duration=res.sounds.bgmusic.duration}},
-    {'physicsWorld', {gy=250,allowSleep=false}},
+    {'physicsWorld', {gy=9.8*64,allowSleep=false}},
   })
 end
 
