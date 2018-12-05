@@ -1,5 +1,6 @@
 
 local BOUNDS=false
+local TwoPi = 2*math.pi
 
 return function(estore,res)
   local drawBounds = false
@@ -10,6 +11,25 @@ return function(estore,res)
   end)
 
   estore:walkEntities(hasComps('pos'), function(e)
+    --
+    -- BUTTON (hold-button)
+    --
+    if e.button and e.timers and e.timers.holdbutton then
+      local elapsed = e.button.holdtime - e.timers.holdbutton.t
+      if elapsed > 0 then
+        -- local lw = love.graphics.getLineWidth()
+        -- love.graphics.setLineWidth(1)
+
+        local x,y = getPos(e)
+        local a1=-math.pi/2
+        local a2 = a1 + (elapsed / e.button.holdtime) * TwoPi
+        love.graphics.setColor(1,1,1,0.5)
+        love.graphics.arc("fill",x,y,e.button.radius,a1,a2,30)
+        -- Debug.println("arc: "..x..", "..y.." "..a1.." _ "..a2)
+        -- love.graphics.setLineWidth(lw)
+      end
+
+    end
     --
     -- IMG
     --
@@ -59,11 +79,12 @@ return function(estore,res)
           imgRes:getWidth() * img.sx, imgRes:getHeight() * img.sy)
       end
       -- love.graphics.circle("line",x,y,70)
+    end
 
     --
     -- LABEL
     --
-    elseif e.label then
+    if e.label then
       local label = e.label
       if label.font then
         local font = res.fonts[label.font]
@@ -87,28 +108,33 @@ return function(estore,res)
       else
         love.graphics.print(label.text, x, y)
       end
+    end
 
     --
     -- CIRCLE
     --
-    elseif e.circle then
+    if e.circle then
+      -- print("circle")
       local circle = e.circle
       local x,y = getPos(e)
       x = x + circle.offx
       y = y + circle.offy
       love.graphics.setColor(unpack(circle.color))
       love.graphics.circle("line", x, y, circle.radius)
-      love.graphics.circle("fill", x, y, circle.radius)
+      -- love.graphics.circle("fill", x, y, circle.radius)
+    end
 
     --
     -- RECTANGLE
     --
-    elseif e.rect then
+    if e.rect then
       local x,y = getPos(e)
       local rect = e.rect
       love.graphics.setColor(unpack(rect.color))
       love.graphics.rectangle(rect.style, x-rect.offx, y-rect.offy, rect.w, rect.h)
     end
+    
+
 
     if BOUNDS or drawBounds then
       if e.pos then

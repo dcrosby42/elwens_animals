@@ -82,7 +82,10 @@ function Res.load()
   if not cached then
     local r = {}
     r.animalNames = animalNames
+
     r.images = loadAnimalImages()
+    r.images["power-button-outline"] = R.getImage("data/images/power-button-outline.png")
+
     r.sounds = loadAnimalSounds()
     r.physics = {
       newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}

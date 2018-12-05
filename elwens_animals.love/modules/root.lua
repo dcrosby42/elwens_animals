@@ -4,6 +4,7 @@ local ImgScratch = require 'modules/imgscratch'
 
 local M = {}
 
+local handleSidefx
 
 M.newWorld = function()
   Debug.setup()
@@ -16,7 +17,7 @@ M.newWorld = function()
   if w.ios then
     w.showLog = false
   else
-    w.showLog = true
+    -- w.showLog = true
   end
 
   return w
@@ -71,10 +72,23 @@ M.updateWorld = function(w,action)
 
   -- Update current submodule
   withCurrentMode(w, function(mode) 
-    mode.module.updateWorld(mode.state, action)
+    mode.state, sidefx = mode.module.updateWorld(mode.state, action)
+    handleSidefx(w,sidefx)
   end)
 
   return w
+end
+
+function handleSidefx(world,sidefx)
+  if sidefx and #sidefx > 0 then
+    for _,sf in ipairs(sidefx) do
+      if sf.type == 'QUIT' then
+        print("Exit game.")
+        Debug.println("Exit game.")
+        love.event.quit()
+      end
+    end
+  end
 end
 
 M.drawWorld = function(w)

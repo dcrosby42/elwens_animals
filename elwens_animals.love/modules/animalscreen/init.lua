@@ -9,7 +9,7 @@ local UPDATE = composeSystems(requireModules({
   'systems.timer',
   'systems.physics',
   'systems.sound',
-  -- 'modules.animalscreen.zookeeper',
+  'systems.touchbutton',
   'modules.animalscreen.manipsystem',
   'modules.animalscreen.boundarysystem',
 }))
@@ -44,9 +44,11 @@ end
 local function resetInput(i) i.dt=0 i.events={} end
 
 function M.updateWorld(w,action)
+  local sidefx = nil
   if action.type == 'tick' then
     w.input.dt = action.dt
     UPDATE(w.estore, w.input, w.resources)
+    sidefx = w.input.events -- return events as potential sidefx
     resetInput(w.input)
 
   elseif action.type == 'touch' then
@@ -57,8 +59,9 @@ function M.updateWorld(w,action)
     evt.type = "touch"
     evt.id = 1
     table.insert(w.input.events, evt)
+
   end
-  return w
+  return w, sidefx
 end
 
 function M.drawWorld(w)

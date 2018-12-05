@@ -14,14 +14,12 @@ Comp.define("img", {'imgId','','centerx','','centery','','offx',0,'offy',0,'sx',
 
 Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil})
 
-Comp.define("iconAdder", {'imgId', '', 'tagName', ''})
-
 Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'color',{0,0,0}})
 Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{0,0,0}, 'style','fill'})
 
-Comp.define("event", {'data',''})
+-- Comp.define("event", {'data',''})
 
-Comp.define("output", {'kind',''})
+-- Comp.define("output", {'kind',''})
 
 Comp.define("debug", {'value',''})
 
@@ -32,4 +30,6 @@ Comp.define("sound", {'sound','','loop',false,'state','playing','volume',1,'pitc
 Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
 Comp.define('body', {'kind','', 'group',0,'debugDraw',false})
 Comp.define("force", {'fx',0,'fy',0})
+
+Comp.define("button", {'touchid','','holdtime',1,'eventtype','','radius',40})
 

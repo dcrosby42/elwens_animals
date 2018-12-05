@@ -6,8 +6,11 @@ local Entities={}
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
-  local sp = Entities.zooKeeper(estore,res)
+  Entities.zooKeeper(estore,res)
+
   Entities.floor(estore,res)
+
+  Entities.quitButton(estore,res)
   -- local lion = Entities.animal(sp,"lion")
   -- lion.pos.x = 100
   -- lion.pos.y = 200
@@ -41,6 +44,14 @@ function Entities.floor(estore, res)
     {'body', {kind="floor", group=0, debugDraw=false}},
     {'pos', {x=512,y=798}},
     {'vel', {}},
+  })
+end
+
+function Entities.quitButton(estore, res)
+  return estore:newEntity({
+    {'img', {imgId='power-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+    {'pos', {x=980,y=720}},
+    {'button', {eventtype='QUIT', holdTime=1, radius=40}},
   })
 end
 
