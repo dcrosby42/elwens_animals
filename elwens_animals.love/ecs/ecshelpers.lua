@@ -1,3 +1,5 @@
+-- local debug = print
+local debug = function(...) end
 
 function requireModules(reqs)
   local modules = {}
@@ -6,7 +8,7 @@ function requireModules(reqs)
     assert(module, "Cannot require '"..req.."'")
     table.insert(modules,module)
   end
-  print("requireModules returning "..#modules.." modules")
+  debug("requireModules returning "..#modules.." modules")
   return modules
 end
 
@@ -19,7 +21,7 @@ function composeSystems(systems)
 end
 
 function composeDrawSystems(systems)
-  print("composeDrawSystems composing "..#systems.." modules")
+  debug("composeDrawSystems composing "..#systems.." modules")
   return function(estore,res)
     for _,system in ipairs(systems) do
       system(estore,res)
