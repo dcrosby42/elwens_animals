@@ -10,6 +10,7 @@ function Entities.initialEntities(res)
 
   Entities.floor(estore,res)
 
+  Entities.nextModeButton(estore,res)
   Entities.quitButton(estore,res)
   -- local lion = Entities.animal(sp,"lion")
   -- lion.pos.x = 100
@@ -50,8 +51,16 @@ end
 function Entities.quitButton(estore, res)
   return estore:newEntity({
     {'img', {imgId='power-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
-    {'pos', {x=980,y=720}},
+    {'pos', {x=980,y=50}},
     {'button', {eventtype='QUIT', holdTime=1, radius=40}},
+  })
+end
+
+function Entities.nextModeButton(estore, res)
+  return estore:newEntity({
+    {'img', {imgId='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+    {'pos', {x=900,y=50}},
+    {'button', {eventtype='NEXT', holdTime=0.75, radius=40}},
   })
 end
 

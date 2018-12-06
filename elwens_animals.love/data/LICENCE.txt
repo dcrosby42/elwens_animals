@@ -4,4 +4,6 @@ fx/underwater.mp3 - http://soundbible.com/1660-Underwater-Pool.html
 
 power-button-outline.png: <div>Icons made by <a href="https://www.flaticon.com/authors/bogdan-rosu" title="Bogdan Rosu">Bogdan Rosu</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 
+skip-button-outline.png: <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 aquarium.jpg: https://www.google.com/search?q=cartoon+fish+tank+background&tbm=isch&source=lnt&tbs=isz:lt,islt:xga&sa=X&ved=0ahUKEwj9p6nrtIrfAhVOd6wKHZAfCrwQpwUIHw&biw=1440&bih=664&dpr=2#imgrc=uGbjF_jQrtMMcM:

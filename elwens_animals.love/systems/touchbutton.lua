@@ -39,7 +39,7 @@ return function(estore, input, res)
       local hit
       estore:seekEntity(hasComps("button"),
         function(e)
-          if dist(touch.x,touch.y, e.pos.x,e.pos.y) <= 70 then
+          if dist(touch.x,touch.y, e.pos.x,e.pos.y) <= 40 then
             hit = e
             Debug.println("Touch button "..e.eid)
             return true -- short circuit seekEntity

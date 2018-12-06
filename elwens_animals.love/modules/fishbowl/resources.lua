@@ -1,5 +1,6 @@
 local R = require 'resourceloader'
 local Phys = require 'modules.fishbowl.resources_physics'
+local AnimalRes = require 'modules.animalscreen.resources'
 
 local Res = {}
 
@@ -13,13 +14,12 @@ local animalsWithSounds = {
   -- "fish",
 }
 
-local function loadAnimalImages()
-  local images = {}
+local function loadAnimalImages(images)
   images["aquarium"] = R.getImage("data/images/aquarium.jpg")
+
   for _,name in ipairs(animalNames) do
     images[name] = R.getImage("data/images/"..name..".png")
   end
-  return images
 end
 
 local function loadAnimalSounds()
@@ -54,8 +54,10 @@ function Res.load()
     local r = {}
     r.animalNames = animalNames
 
-    r.images = loadAnimalImages()
-    r.images["power-button-outline"] = R.getImage("data/images/power-button-outline.png")
+    r.images = {}
+    loadAnimalImages(r.images)
+    AnimalRes.loadButtonImages(r.images)
+
 
     r.sounds = loadAnimalSounds()
     r.physics = {

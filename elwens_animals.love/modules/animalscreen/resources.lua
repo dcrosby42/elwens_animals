@@ -44,13 +44,11 @@ local animalsWithSounds = {
   "pig",
 }
 
-local function loadAnimalImages()
-  local images = {}
+local function loadAnimalImages(images)
   images["background1"] = R.getImage("data/images/zoo_keeper.png")
   for _,name in ipairs(animalNames) do
     images[name] = R.getImage("data/images/"..name..".png")
   end
-  return images
 end
 
 local function loadAnimalSounds()
@@ -83,8 +81,9 @@ function Res.load()
     local r = {}
     r.animalNames = animalNames
 
-    r.images = loadAnimalImages()
-    r.images["power-button-outline"] = R.getImage("data/images/power-button-outline.png")
+    r.images = {}
+    loadAnimalImages(r.images)
+    Res.loadButtonImages(r.images)
 
     r.sounds = loadAnimalSounds()
     r.physics = {
@@ -94,6 +93,11 @@ function Res.load()
     cached = r
   end
   return cached
+end
+
+function Res.loadButtonImages(images)
+  images["power-button-outline"] = R.getImage("data/images/power-button-outline.png")
+  images["skip-button-outline"] = R.getImage("data/images/skip-button-outline.png")
 end
 
 return Res

@@ -11,6 +11,7 @@ function Entities.initialEntities(res)
 
   AnimalEnts.floor(estore,res)
 
+  AnimalEnts.nextModeButton(estore,res)
   AnimalEnts.quitButton(estore,res)
   
   -- local lion = Entities.animal(sp,"fish")

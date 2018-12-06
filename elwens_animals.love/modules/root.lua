@@ -14,6 +14,7 @@ M.newWorld = function()
   w.modes["f2"] = { module=AnimalScreen, state=AnimalScreen.newWorld() }
   w.modes["f3"] = { module=FishBowl, state=FishBowl.newWorld() }
   w.modes["f4"] = { module=ImgScratch, state=ImgScratch.newWorld() }
+  w.cycle = {"f2","f3"}
   w.current = "f3"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
@@ -30,15 +31,19 @@ local function withCurrentMode(w,func)
   if mode then func(mode) end
 end
 
+local function stopCurrentMode(w)
+  withCurrentMode(w, function(mode) 
+    if mode.module.stopWorld then
+      mode.module.stopWorld(mode.state)
+    end
+  end)
+end
+
 M.updateWorld = function(w,action)
   if action.type == "keyboard" and action.state == "pressed" then
     -- Reload game?
     if action.key == 'r' then
-      withCurrentMode(w, function(mode) 
-        if mode.module.stopWorld then
-          mode.module.stopWorld(mode.state)
-        end
-      end)
+      stopCurrentMode(w)
       return w, {{type="crozeng.reloadRootModule"}}
     end
 
@@ -51,11 +56,7 @@ M.updateWorld = function(w,action)
     local mode = w.modes[action.key]
     if mode then
       if w.current ~= action.key then
-        withCurrentMode(w, function(mode) 
-          if mode.module.stopWorld then
-            mode.module.stopWorld(mode.state)
-          end
-        end)
+        stopCurrentMode(w)
         w.current = action.key
       end
     end
@@ -88,6 +89,20 @@ function handleSidefx(world,sidefx)
         print("Exit game.")
         Debug.println("Exit game.")
         love.event.quit()
+
+      elseif sf.type == 'NEXT' then
+        local nextI = 1
+        for i=1,#world.cycle do
+          if world.cycle[i] == world.current then
+            nextI = i+1
+            if nextI > #world.cycle then
+              nextI = 1
+            end
+          end
+        end
+        stopCurrentMode(world)
+        world.current = world.cycle[nextI]
+        print("Next mode.")
       end
     end
   end
