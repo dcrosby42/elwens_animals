@@ -2,14 +2,6 @@ local P = love.physics
 
 local M = {}
 
-local function stubObj()
-  return {
-    body={},
-    shapes={},
-    fixtures={},
-  }
-end
-
 local function newAnimal(w,e)
   local b = P.newBody(w,0,0,"dynamic")
   b:setMass(0.1)

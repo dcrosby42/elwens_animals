@@ -1,52 +1,21 @@
 local R = require 'resourceloader'
-local Phys = require 'modules.animalscreen.resources_physics'
+local Phys = require 'modules.fishbowl.resources_physics'
 
 local Res = {}
 
 local animalNames = {
-  "bear",
-  "bee",
-  "bunny",
-  "cat",
-  "chicken",
-  "cow",
-  "dog",
-  "elephant",
   "fish",
-  "giraffe",
-  "goat",
-  "hippo",
-  "horse",
-  "kangaroo",
-  "lemur",
-  "leopard",
-  "lion",
-  "monkey",
-  "mouse",
-  "owl",
-  "penguin",
-  "pig",
-  "sheep",
-  "squirrel",
+  -- "penguin",
   "turtle",
-  "zebra",
 }
 
 local animalsWithSounds = {
-  "cat",
-  "cow",
-  "elepant",
-  "elephant",
-  "fish",
-  "horse",
-  "lion",
-  "monkey",
-  "pig",
+  -- "fish",
 }
 
 local function loadAnimalImages()
   local images = {}
-  images["background1"] = R.getImage("data/images/zoo_keeper.png")
+  images["aquarium"] = R.getImage("data/images/aquarium.jpg")
   for _,name in ipairs(animalNames) do
     images[name] = R.getImage("data/images/"..name..".png")
   end
@@ -62,10 +31,12 @@ local function loadAnimalSounds()
       volume=0.5,
     }
   end
-  sounds["bgmusic"] = {
-    file="data/sounds/music/music.wav",
+
+  sounds["underwater"] = {
+    file="data/sounds/fx/underwater.mp3",
     mode="stream",
   }
+
   for name,cfg in pairs(sounds) do
     if not cfg.data then
       cfg.data = love.sound.newSoundData(cfg.file)

@@ -58,6 +58,7 @@ function loadItUp(opts)
 end
 
 local function reloadRootModule(newWorldOpts)
+  love.audio.stop()
   if Hooks.module_name then
     local names = ModuleLoader.list_deps_of(Hooks.module_name)
     for i=1,#names do
