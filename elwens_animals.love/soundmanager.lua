@@ -62,6 +62,7 @@ function SoundManager:update(estore, _, res)
       else
         if snd.state == 'playing' then
           -- Sound component is new, we need to act.
+          print("Playing sound "..snd.sound)
           local soundCfg = res.sounds[snd.sound]
           if soundCfg then
             local src = love.audio.newSource(soundCfg.data, soundCfg.mode or "static")
@@ -75,8 +76,12 @@ function SoundManager:update(estore, _, res)
               src:seek(snd.playtime % snd.duration)
             end
             -- end
-            src:setVolume(snd.volume)
-            -- print("snd.volume "..snd.volume)
+            local vol = snd.volume
+            if soundCfg.volume then
+              vol = vol * soundCfg.volume
+            end
+            src:setVolume(vol)
+            print("snd.volume "..vol)
 
             self.sources[snd.cid] = src
             src:play()

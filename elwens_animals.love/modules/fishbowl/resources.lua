@@ -34,7 +34,13 @@ local function loadAnimalSounds()
 
   sounds["underwater"] = {
     file="data/sounds/fx/underwater.mp3",
+    mode="static",
+  }
+
+  sounds["fishmusic"] = {
+    file="data/sounds/music/Chamber-of-Jewels.mp3",
     mode="stream",
+    volume=0.1,
   }
 
   for name,cfg in pairs(sounds) do

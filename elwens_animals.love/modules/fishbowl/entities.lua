@@ -23,12 +23,27 @@ function Entities.initialEntities(res)
 end
 
 function Entities.fishBowl(estore,res)
+  local spawnInterval = 5
   return estore:newEntity({
     {'tag',{name="fishbowl"}},
     {'img', {imgId='aquarium', sx=1, sy=1}}, 
     {'pos', {}},
-    {'sound', {sound='underwater', loop=true, duration=res.sounds.underwater.duration}},
-    {'physicsWorld', {gy=9.8*64,allowSleep=false}},
+    {'sound', {name="bubbles",sound='underwater', loop=true, duration=res.sounds.underwater.duration}},
+    {'sound', {name="bgm", sound='fishmusic', loop=true, duration=res.sounds.fishmusic.duration}},
+    {'physicsWorld', {gy=0,allowSleep=false}},
+    {'fishspawner', {}},
+    {'timer',{name='fishspawner',reset=spawnInterval,t=spawnInterval,loop=true,countdown=true}},
+  })
+end
+
+function Entities.fish(estore, res)
+  return estore:newEntity({
+    {'tag',{name="animal"}},
+    {'tag',{name="fish"}},
+    {'img', {imgId="fish", sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
+    {'pos', {}},
+    {'vel', {}},
+    {'body', {kind="animal", group=0, debugDraw=false}},
   })
 end
 --

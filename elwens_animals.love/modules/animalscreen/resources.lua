@@ -63,6 +63,7 @@ local function loadAnimalSounds()
   sounds["bgmusic"] = {
     file="data/sounds/music/music.wav",
     mode="stream",
+    volume=0.5,
   }
   for name,cfg in pairs(sounds) do
     if not cfg.data then

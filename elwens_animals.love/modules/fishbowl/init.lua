@@ -12,6 +12,7 @@ local UPDATE = composeSystems(requireModules({
   'systems.touchbutton',
   'modules.animalscreen.manipsystem',
   'modules.animalscreen.boundarysystem',
+  'modules.fishbowl.fishspawnersystem',
 }))
 
 local DRAW = composeDrawSystems(requireModules({
