@@ -49,6 +49,7 @@ return function(estore, input, res)
       if hit then
         hit.button.touchid = touch.id
         hit:newComp('timer', {name="holdbutton",t=hit.button.holdtime})
+        Debug.println("...holdtime="..hit.button.holdtime)
         return true -- absorb event
       end
     end,

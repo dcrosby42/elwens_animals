@@ -85,12 +85,16 @@ end
 function handleSidefx(world,sidefx)
   if sidefx and #sidefx > 0 then
     for _,sf in ipairs(sidefx) do
-      if sf.type == 'QUIT' then
-        print("Exit game.")
-        Debug.println("Exit game.")
-        love.event.quit()
+      if sf.type == 'POWER' then
+        print("Reset game.")
+        stopCurrentMode(world)
+        withCurrentMode(world, function(mode) 
+          mode.state = mode.module.newWorld()
+        end)
+        -- Debug.println("Exit game.")
+        -- love.event.quit()
 
-      elseif sf.type == 'NEXT' then
+      elseif sf.type == 'SKIP' then
         local nextI = 1
         for i=1,#world.cycle do
           if world.cycle[i] == world.current then
