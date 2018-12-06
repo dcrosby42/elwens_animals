@@ -42,7 +42,7 @@ return function(estore, input, res)
           if dist(touch.x,touch.y, e.pos.x,e.pos.y) <= 70 then
             hit = e
             Debug.println("Touch button "..e.eid)
-            return true
+            return true -- short circuit seekEntity
           end
         end
       )
@@ -51,8 +51,6 @@ return function(estore, input, res)
         hit:newComp('timer', {name="holdbutton",t=hit.button.holdtime})
         return true -- absorb event
       end
-
-      return true -- remove event
     end,
 
     -- Touch dragged
