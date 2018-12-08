@@ -30,55 +30,56 @@ return function(estore,res)
       end
 
     end
+
     --
-    -- IMG
+    -- PIC
     --
-    if e.img then
-      local img = e.img
+    if e.pic then
+      local pic = e.pic
       local x,y = getPos(e)
       local r = 0
-      if img.r then 
-        r = r + img.r
+      if pic.r then 
+        r = r + pic.r
       end
       if e.pos.r then 
         r = r + e.pos.r
       end
-      local imgRes = res.images[img.imgId]
-      if not imgRes then
-        error("No image resource '"..img.imgId.."'")
+      local picRes = res.pics[pic.id]
+      if not picRes then
+        error("No pic resource '".. pic.id .."'")
       end
 
       local offy = 0
       local offy = 0
-      if img.centerx ~= '' then
-        -- offx = img.centerx * imgRes:getWidth() * img.sx
-        offx = img.centerx * imgRes:getWidth()
+      if pic.centerx ~= '' then
+        -- offx = pic.centerx * picRes:getWidth() * pic.sx
+        offx = pic.centerx * picRes.rect.w
       else
-        offx = img.offx
+        offx = pic.offx
       end
-      if img.centery ~= '' then
-        -- offy = img.centery * imgRes:getHeight() * img.sy
-        offy = img.centery * imgRes:getHeight()
+      if pic.centery ~= '' then
+        -- offy = pic.centery * picRes:getHeight() * pic.sy
+        offy = pic.centery * picRes.rect.h
       else
-        offy = img.offy
+        offy = pic.offy
       end
 
-      love.graphics.setColor(unpack(img.color))
+      love.graphics.setColor(unpack(pic.color))
 
       love.graphics.draw(
-        imgRes,
+        picRes.image,
+        picRes.quad,
         x,y,
         r,     
-        img.sx, img.sy,
+        pic.sx, pic.sy,
         offx, offy)
 
-      if img.drawBounds then
+      if pic.drawBounds then
         love.graphics.rectangle(
           "line",
-          x-(img.sx*offx), y-(img.sy*offy),
-          imgRes:getWidth() * img.sx, imgRes:getHeight() * img.sy)
+          x-(pic.sx*offx), y-(pic.sy*offy),
+          picRes.rect.w * pic.sx, picRes.rect.h * pic.sy)
       end
-      -- love.graphics.circle("line",x,y,70)
     end
 
     --

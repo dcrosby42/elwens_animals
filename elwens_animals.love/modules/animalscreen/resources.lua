@@ -51,6 +51,14 @@ local function loadAnimalImages(images)
   end
 end
 
+local function loadAnimalPics()
+  local pics = {}
+  for _,name in ipairs(animalNames) do
+    pics[name] = R.makePic("data/images/"..name..".png")
+  end
+  return pics
+end
+
 local function loadAnimalSounds()
   local sounds = {}
   for _,name in ipairs(animalsWithSounds) do
@@ -82,9 +90,9 @@ function Res.load()
     local r = {}
     r.animalNames = animalNames
 
-    r.images = {}
-    loadAnimalImages(r.images)
-    Res.loadButtonImages(r.images)
+    r.pics = loadAnimalPics()
+    r.pics.background1 = R.makePic("data/images/zoo_keeper.png")
+    tmerge(r.pics, Res.loadButtonPics())
 
     r.sounds = loadAnimalSounds()
     r.physics = {
@@ -96,9 +104,11 @@ function Res.load()
   return cached
 end
 
-function Res.loadButtonImages(images)
-  images["power-button-outline"] = R.getImage("data/images/power-button-outline.png")
-  images["skip-button-outline"] = R.getImage("data/images/skip-button-outline.png")
+function Res.loadButtonPics()
+  local pics = {}
+  pics["power-button-outline"] = R.makePic("data/images/power-button-outline.png")
+  pics["skip-button-outline"] = R.makePic("data/images/skip-button-outline.png")
+  return pics
 end
 
 return Res

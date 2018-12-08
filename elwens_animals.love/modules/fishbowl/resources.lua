@@ -14,12 +14,15 @@ local animalsWithSounds = {
   -- "fish",
 }
 
-local function loadAnimalImages(images)
-  images["aquarium"] = R.getImage("data/images/aquarium.jpg")
+local function loadAnimalPics()
+  local pics = {}
+  pics["aquarium"] = R.makePic("data/images/aquarium.jpg")
+  pics["aquarium"] = R.makePic("data/images/aquarium.jpg")
 
   for _,name in ipairs(animalNames) do
-    images[name] = R.getImage("data/images/"..name..".png")
+    pics[name] = R.makePic("data/images/"..name..".png")
   end
+  return pics
 end
 
 local function loadAnimalSounds()
@@ -60,10 +63,8 @@ function Res.load()
     local r = {}
     r.animalNames = animalNames
 
-    r.images = {}
-    loadAnimalImages(r.images)
-    AnimalRes.loadButtonImages(r.images)
-
+    r.pics = loadAnimalPics()
+    tmerge(r.pics, AnimalRes.loadButtonPics())
 
     r.sounds = loadAnimalSounds()
     r.physics = {

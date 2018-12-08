@@ -19,11 +19,7 @@ return defineUpdateSystem({'fishspawner','timer'}, function(e, estore,input,res)
     else
       -- start at left, go right
       f.pos.x = 0
-      f.img.sx = -f.img.sx
+      f.pic.sx = -f.pic.sx
     end
   end
-  -- if e.pos.y > MaxY then
-  --   estore:destroyEntity(e)
-  --   Debug.println("BoundarySystem: "..e.eid.." fell off the world.")
-  -- end
 end)

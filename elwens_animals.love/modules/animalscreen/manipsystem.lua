@@ -43,11 +43,11 @@ return function(estore, input, res)
         animalName = pickRandom(res.animalNames)
         e = Entities.animal(estore, res, animalName)
 			else
-        animalName = e.img.imgId
+        animalName = e.pic.id
       end
       -- slightly enlarge the animal image (normally it's 0.5)
-      e.img.sx = 0.7
-      e.img.sy = 0.7
+      e.pic.sx = 0.7
+      e.pic.sy = 0.7
       e.pos.x = touch.x
       e.pos.y = touch.y
       e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE?
@@ -84,9 +84,9 @@ return function(estore, input, res)
           if e.manipulator.id == touch.id then
             e.pos.x = touch.x
             e.pos.y = touch.y
-            e.img.drawBounds = false
-            e.img.sx = 0.5
-            e.img.sy = 0.5
+            e.pic.drawBounds = false
+            e.pic.sx = 0.5
+            e.pic.sy = 0.5
             e.vel.dx = (e.manipulator.dx or 0) * FlingFactorX
             e.vel.dy = (e.manipulator.dy or 0) * FlingFactorY
             e:removeComp(e.manipulator)

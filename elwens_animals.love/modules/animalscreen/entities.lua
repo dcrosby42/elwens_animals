@@ -22,7 +22,7 @@ end
 function Entities.zooKeeper(estore,res)
   return estore:newEntity({
     {'tag',{name="zookeeper"}},
-    {'img', {imgId='background1', sx=1, sy=1.05}}, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
+    {'pic', {id='background1', sx=1, sy=1.05}}, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
     {'pos', {}},
     {'debug', {name='nextAnimal',value=1}},
     {'sound', {sound='bgmusic',loop=true,duration=res.sounds.bgmusic.duration}},
@@ -33,7 +33,7 @@ end
 function Entities.animal(estore, res, kind)
   return estore:newEntity({
     {'tag',{name="animal"}},
-    {'img', {imgId=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
+    {'pic', {id=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
     {'pos', {}},
     {'vel', {}},
     {'body', {kind="animal", group=0, debugDraw=false}},
@@ -50,7 +50,7 @@ end
 
 function Entities.quitButton(estore, res)
   return estore:newEntity({
-    {'img', {imgId='power-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+    {'pic', {id='power-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=980,y=50}},
     {'button', {eventtype='POWER', holdtime=0.8, radius=40}},
   })
@@ -58,7 +58,7 @@ end
 
 function Entities.nextModeButton(estore, res)
   return estore:newEntity({
-    {'img', {imgId='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+    {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=900,y=50}},
     {'button', {eventtype='SKIP', holdtime=0.8, radius=40}},
   })

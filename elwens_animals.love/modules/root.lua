@@ -15,7 +15,7 @@ M.newWorld = function()
   w.modes["f3"] = { module=FishBowl, state=FishBowl.newWorld() }
   w.modes["f4"] = { module=ImgScratch, state=ImgScratch.newWorld() }
   w.cycle = {"f2","f3"}
-  w.current = "f3"
+  w.current = "f2"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
