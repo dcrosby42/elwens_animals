@@ -10,7 +10,7 @@ local UPDATE = composeSystems(requireModules({
   'systems.physics',
   'systems.sound',
   'systems.touchbutton',
-  'modules.animalscreen.manipsystem',
+  -- 'modules.animalscreen.manipsystem',
   'modules.animalscreen.boundarysystem',
   'modules.fishbowl.fishspawnersystem',
   'modules.fishbowl.fishsystem',

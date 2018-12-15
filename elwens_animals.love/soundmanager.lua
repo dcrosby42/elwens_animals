@@ -1,4 +1,3 @@
-
 -- SoundManager
 --   Thin layer between ECS 'sound' components and the love audio library.
 --   Each update, SoundManager tries to make sure the state of the sound world matches what the 
@@ -10,6 +9,9 @@
 --     clear()
 --
 local SoundManager = {}
+
+require 'mydebug'
+local Debug = Debug.sub("SoundManager", false,false)
 
 function SoundManager:new()
   local o ={
@@ -62,7 +64,7 @@ function SoundManager:update(estore, _, res)
       else
         if snd.state == 'playing' then
           -- Sound component is new, we need to act.
-          print("Playing sound "..snd.sound)
+          Debug.println("Playing sound "..snd.sound)
           local soundCfg = res.sounds[snd.sound]
           if soundCfg then
             local src = love.audio.newSource(soundCfg.data, soundCfg.mode or "static")
@@ -81,12 +83,11 @@ function SoundManager:update(estore, _, res)
               vol = vol * soundCfg.volume
             end
             src:setVolume(vol)
-            print("snd.volume "..vol)
 
             self.sources[snd.cid] = src
             src:play()
           else
-            print("!! SoundManager:upadte(): unknown sound in "..tflatten(snd))
+            Debug.println("!! update() unknown sound in "..tflatten(snd))
           end
         end
       end

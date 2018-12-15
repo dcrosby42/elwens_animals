@@ -61,10 +61,28 @@ local function draw()
   love.graphics.setColor(1,1,1,1)
 end
 
+local function makeSub(name,printToScreen,printToConsole)
+  D.onScreen[name] = printToScreen
+  D.onConsole[name] = printToConsole
+  return {
+    println=function(str)
+      if D.onScreen[name] then
+        D.println("["..name.."] "..str)
+      end
+      if D.onConsole[name] then
+        print("["..name.."] "..str)
+      end
+    end
+  }
+end
+
 D.toLines = toLines
 D.println = println
 D.setup = setup
 D.update = update
 D.draw = draw
+D.sub = makeSub
+D.onConsole={}
+D.onScreen={}
 
 return D

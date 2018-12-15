@@ -440,6 +440,12 @@ function randomInt(lo,hi)
   return math.floor(love.math.random() * (hi-lo+1)) + lo
 end
 
+function randomFloat(lo,hi)
+  lo=lo or 0
+  hi=hi or 1
+  return love.math.random() * (hi-lo) + lo
+end
+
 function pickRandom(list)
   return list[randomInt(1, #list)]
 end

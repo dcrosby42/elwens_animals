@@ -26,7 +26,7 @@ return defineDrawSystem({'physicsWorld'}, function(physWorldE,estore,res)
             love.graphics.points(obj.body:getWorldPoint(0,0))
           end
         else
-          print("!! physicsdraw: No physics object in cache for body.cid="..e.body.cid.." in entity eid="..e.eid)
+          print("!! physicsdraw: No physics object in cache for body.cid="..e.body.cid.." .kind=".. e.body.kind .." in entity eid="..e.eid)
         end
       end
     end

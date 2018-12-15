@@ -21,7 +21,7 @@ local animalsWithSounds = {
 local function loadAnimalPics()
   local pics = {}
   pics["aquarium"] = R.makePic("data/images/aquarium.jpg")
-  pics["aquarium"] = R.makePic("data/images/aquarium.jpg")
+  pics["bubble_white"] = R.makePic("data/images/bubble_white.png")
 
   for _,name in ipairs(animalNames) do
     pics[name] = R.makePic("data/images/"..name..".png")

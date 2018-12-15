@@ -21,11 +21,11 @@ return defineUpdateSystem({'fish'}, function(e, estore,input,res)
       end
     end
   end
+  e.force.fx = 0
+  e.force.fy = 0
   if e.fish.state == "idle" then
     e.vel.dx = (1-dampen) * e.vel.dx
     e.vel.dy = (1-dampen) * e.vel.dy
-    e.force.fx = 0
-    e.force.fy = 0
   else
     if e.fish.targetspeed > 0 then
       if e.vel.dx < e.fish.targetspeed then
