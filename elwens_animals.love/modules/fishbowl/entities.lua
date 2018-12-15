@@ -40,10 +40,12 @@ function Entities.fish(estore, res)
   return estore:newEntity({
     {'tag',{name="animal"}},
     {'tag',{name="fish"}},
-    {'pic', {id="fish", sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
     {'pos', {}},
     {'vel', {}},
     {'body', {kind="animal", group=0, debugDraw=false}},
+
+    {'anim',   {name="fishy", id="fish_black_idle", sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
+    {'timer', {name="fishy", countup=true}},
   })
 end
 

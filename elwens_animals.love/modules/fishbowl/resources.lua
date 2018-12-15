@@ -1,6 +1,7 @@
 local R = require 'resourceloader'
 local Phys = require 'modules.fishbowl.resources_physics'
 local AnimalRes = require 'modules.animalscreen.resources'
+local Anim = require 'anim'
 
 local Res = {}
 
@@ -57,6 +58,23 @@ local function loadAnimalSounds()
   return sounds
 end
 
+local FishFPS=10
+local FishW = 164.25
+local FishH = 108
+
+local function makeFishAnim(fname)
+  local pics = Anim.simpleSheetToPics(R.getImage(fname), FishW,FishH)
+  return Anim.makeSimpleAnim(pics, 1/FishFPS)
+end
+
+local function loadFishAnims()
+  local anims = {
+    fish_black_swim=makeFishAnim("data/images/cartoon_fish_06_black_swim.png"),
+    fish_black_idle=makeFishAnim("data/images/cartoon_fish_06_black_idle.png"),
+  }
+  return anims
+end
+
 local cached
 function Res.load()
   if not cached then
@@ -71,6 +89,9 @@ function Res.load()
       newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
       caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
     }
+
+    r.anims = loadFishAnims()
+
     cached = r
   end
   return cached

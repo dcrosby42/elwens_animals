@@ -10,7 +10,8 @@ Comp.define("timer", {'t',0, 'reset',0, 'countDown',true, 'loop',false, 'alarm',
 
 Comp.define("controller", {'id','','leftx',0,'lefty',0,})
 
-Comp.define("pic", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawBounds',false})
+Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawBounds',false})
+Comp.define("anim", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawBounds',false})
 
 Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil})
 

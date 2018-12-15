@@ -19,7 +19,8 @@ return defineUpdateSystem({'fishspawner','timer'}, function(e, estore,input,res)
     else
       -- start at left, go right
       f.pos.x = 0
-      f.pic.sx = -f.pic.sx
+      f.anim.sx = -f.anim.sx
     end
+    print("Fish spawner: new fish "..f.eid)
   end
 end)
