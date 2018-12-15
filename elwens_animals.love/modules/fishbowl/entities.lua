@@ -44,8 +44,8 @@ function Entities.fish(estore, res)
     {'vel', {}},
     {'body', {kind="animal", group=0, debugDraw=false}},
 
-    {'anim',   {name="fishy", id="fish_black_idle", sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
-    {'timer', {name="fishy", countup=true}},
+    {'anim',   {name="fishy", id="fish_black_swim", sx=1, sy=1, centerx=0.5, centery=0.5, drawbounds=false}}, 
+    {'timer', {name="fishy", countDown=false}},
   })
 end
 

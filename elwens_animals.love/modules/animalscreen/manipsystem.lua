@@ -7,6 +7,7 @@ local FlingFactorY=10
 
 -- Helper
 function addSound(e, name, res)
+  if not name then return end
   local cfg = res.sounds[name]
   if cfg then
     return e:newComp('sound', {
@@ -19,6 +20,9 @@ function addSound(e, name, res)
     Debug.println("(No sound for "..tostring(name)..")")
     return nil
   end
+end
+
+function setScale(e,sx,sy)
 end
 
 return function(estore, input, res)
@@ -43,11 +47,14 @@ return function(estore, input, res)
         animalName = pickRandom(res.animalNames)
         e = Entities.animal(estore, res, animalName)
 			else
-        animalName = e.pic.id
+        if e.pic then
+          animalName = e.pic.id
+        end
       end
       -- slightly enlarge the animal image (normally it's 0.5)
-      e.pic.sx = 0.7
-      e.pic.sy = 0.7
+      vis = e.anim or e.pic
+      vis.sx = 0.7
+      vis.sy = 0.7
       e.pos.x = touch.x
       e.pos.y = touch.y
       e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE?
@@ -84,11 +91,11 @@ return function(estore, input, res)
           if e.manipulator.id == touch.id then
             e.pos.x = touch.x
             e.pos.y = touch.y
-            e.pic.drawBounds = false
-            e.pic.sx = 0.5
-            e.pic.sy = 0.5
             e.vel.dx = (e.manipulator.dx or 0) * FlingFactorX
             e.vel.dy = (e.manipulator.dy or 0) * FlingFactorY
+            local comp = e.anim or e.pic
+            comp.sx = 0.5
+            comp.sy = 0.5
             e:removeComp(e.manipulator)
           end
       end)

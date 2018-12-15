@@ -14,7 +14,7 @@ function Anim.simpleSheetToPics(img,w,h)
     local x=(i-1)*w
     for j=1,imgh/h do
       local y=(j-1)*h
-      local pic = R.makePic(fname,img,{x=x,y=y,w=w,h=h}, {sx=1,sy=1,duration=0.2})
+      local pic = R.makePic(fname,img,{x=x,y=y,w=w,h=h})
       table.insert(pics, pic)
     end
   end

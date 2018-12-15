@@ -72,14 +72,6 @@ return function(estore, input, res)
             Debug.println("Released button "..e.eid)
             e.button.touchid = ''
             e:removeComp(e.timers.holdbutton)
-            -- e.pos.x = touch.x
-            -- e.pos.y = touch.y
-            -- e.img.drawBounds = false
-            -- e.img.sx = 0.5
-            -- e.img.sy = 0.5
-            -- e.vel.dx = (e.manipulator.dx or 0) * FlingFactorX
-            -- e.vel.dy = (e.manipulator.dy or 0) * FlingFactorY
-            -- e:removeComp(e.manipulator)
             return true -- absorb event
           end
       end)

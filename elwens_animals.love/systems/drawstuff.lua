@@ -5,8 +5,8 @@ local TwoPi = 2*math.pi
 return function(estore,res)
   local drawBounds = false
   estore:walkEntities(hasComps('debug'), function(e)
-    if e.debugs.drawBounds then
-      drawBounds = e.debugs.drawBounds.value
+    if e.debugs.drawbounds then
+      drawBounds = e.debugs.drawbounds.value
     end
   end)
 
@@ -74,7 +74,7 @@ return function(estore,res)
         pic.sx, pic.sy,
         offx, offy)
 
-      if pic.drawBounds then
+      if pic.drawbounds then
         love.graphics.rectangle(
           "line",
           x-(pic.sx*offx), y-(pic.sy*offy),
@@ -85,9 +85,9 @@ return function(estore,res)
     --
     -- ANIM
     --
-    if e.anim then
-        local anim = e.anim
-      -- for _,anim in pairs(e.anims) do
+    if e.anims then
+        -- local anim = e.anim
+      for _,anim in pairs(e.anims) do
         local animRes = res.anims[anim.id]
         if not animRes then error("No anim resource '".. anim.id .."'") end
         local timer = e.timers[anim.name]
@@ -125,13 +125,15 @@ return function(estore,res)
             anim.sx, anim.sy,
             offx, offy)
 
-          if anim.drawBounds then
+          if anim.drawbounds then
             love.graphics.rectangle(
               "line",
               x-(anim.sx*offx), y-(anim.sy*offy),
               picRes.rect.w * anim.sx, picRes.rect.h * anim.sy)
           end
-        -- end
+        else
+          print("For eid="..e.eid.." anim.cid="..anim.cid.." NEED TIMER named '".. anim.name  .."'")
+        end -- end if timer
       end
     end
 

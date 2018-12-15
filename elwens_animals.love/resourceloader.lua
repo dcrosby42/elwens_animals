@@ -31,8 +31,11 @@ end
 --   image Image
 --   quad   Quad
 --   rect   {x,y,w,h}
---   duration_ms
-function R.makePic(fname, img, rect)
+--   duration
+function R.makePic(fname, img, rect,opts)
+  rect=rect or {}
+  opts=opts or {}
+
   if fname and not img then
     img = R.getImage(fname)
   end
@@ -40,8 +43,16 @@ function R.makePic(fname, img, rect)
     error("ResourceLoader.makePic() requires filename or image object, but both were nil")
   end
 
-  local x,y,w,h = unpack(rect or {})
-  if x == nil then
+  local x,y,w,h
+  if rect and rect.x then
+    x=rect.x
+    y=rect.y
+    w=rect.w
+    h=rect.h
+  else
+    x,y,w,h= unpack(rect)
+  end
+  if not x then
     x = 0
     y = 0
   end
@@ -49,12 +60,14 @@ function R.makePic(fname, img, rect)
     w = img:getWidth()
     h = img:getHeight()
   end
+  
   local quad = love.graphics.newQuad(x,y,w,h, img:getDimensions())
   local pic = {
     filename=fname,
     rect={x=x, y=y, w=w, h=h},
     image=img,
     quad=quad,
+    duration=(opts.duration or 1/60),
   }
   return pic
 end

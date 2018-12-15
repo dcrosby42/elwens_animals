@@ -3,6 +3,9 @@ local Phys = require 'modules.fishbowl.resources_physics'
 local AnimalRes = require 'modules.animalscreen.resources'
 local Anim = require 'anim'
 
+-- local debugPrint = print
+local debugPrint = function() end
+
 local Res = {}
 
 local animalNames = {
@@ -64,6 +67,11 @@ local FishH = 108
 
 local function makeFishAnim(fname)
   local pics = Anim.simpleSheetToPics(R.getImage(fname), FishW,FishH)
+  debugPrint("makeFishAnim fname="..fname)
+  for i,pic in ipairs(pics) do
+    debugPrint("  pic "..i.." rect="..tflatten(pic.rect))
+  end
+
   return Anim.makeSimpleAnim(pics, 1/FishFPS)
 end
 
