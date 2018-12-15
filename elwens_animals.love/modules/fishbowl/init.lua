@@ -13,6 +13,7 @@ local UPDATE = composeSystems(requireModules({
   'modules.animalscreen.manipsystem',
   'modules.animalscreen.boundarysystem',
   'modules.fishbowl.fishspawnersystem',
+  'modules.fishbowl.fishsystem',
 }))
 
 local DRAW = composeDrawSystems(requireModules({
@@ -52,14 +53,14 @@ function M.updateWorld(w,action)
     sidefx = w.input.events -- return events as potential sidefx
     resetInput(w.input)
 
-  elseif action.type == 'touch' then
-    table.insert(w.input.events, shallowclone(action))
-
   elseif action.type == 'mouse' then
     local evt = shallowclone(action)
     evt.type = "touch"
     evt.id = 1
     table.insert(w.input.events, evt)
+
+  elseif action.type == 'touch' or action.type == 'keyboard' then
+    table.insert(w.input.events, shallowclone(action))
 
   end
   return w, sidefx

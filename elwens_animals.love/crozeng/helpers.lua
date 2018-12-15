@@ -425,6 +425,17 @@ function floatstr(x, places)
   return ""..math.round(x,places)
 end
 
+-- Given w between 0.0 and 1.0,
+-- generate a random number and
+-- return true if less-or-equal than w.
+-- Eg, randomChance(0.25) should return true 25% of the time.
+function randomChance(w)
+  w = w or 0.5
+  return love.math.random() <= w
+end
+flipCoin=randomChance
+coinFlip=randomChance
+
 function randomInt(lo,hi)
   return math.floor(love.math.random() * (hi-lo+1)) + lo
 end

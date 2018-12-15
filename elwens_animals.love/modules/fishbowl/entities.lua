@@ -38,14 +38,14 @@ end
 
 function Entities.fish(estore, res)
   return estore:newEntity({
-    {'tag',{name="animal"}},
-    {'tag',{name="fish"}},
+    {'fish', {kind='yellow',state="swim",targetspeed=0}},
+    {'anim',   {name="fishy", id="", centerx=0.5, centery=0.5, drawbounds=false}}, 
+    {'timer', {name="fishy", countDown=false}},
+    {'body', {kind="animal", group=0, debugDraw=false}},
+    {'force', {}},
     {'pos', {}},
     {'vel', {}},
-    {'body', {kind="animal", group=0, debugDraw=false}},
-
-    {'anim',   {name="fishy", id="fish_black_swim", sx=1, sy=1, centerx=0.5, centery=0.5, drawbounds=false}}, 
-    {'timer', {name="fishy", countDown=false}},
+    {'timer', {name="brain", t=3, reset=3, loop=true}},
   })
 end
 

@@ -75,11 +75,14 @@ local function makeFishAnim(fname)
   return Anim.makeSimpleAnim(pics, 1/FishFPS)
 end
 
+local FishColors = {"black","blue","green","purple","yellow","red"}
 local function loadFishAnims()
-  local anims = {
-    fish_black_swim=makeFishAnim("data/images/cartoon_fish_06_black_swim.png"),
-    fish_black_idle=makeFishAnim("data/images/cartoon_fish_06_black_idle.png"),
-  }
+  local anims = {}
+  for _,color in ipairs(FishColors) do
+    for _,state in ipairs({"swim","idle"}) do
+      anims["fish_"..color.."_"..state] = makeFishAnim("data/images/cartoon_fish_06_"..color.."_"..state..".png")
+    end
+  end
   return anims
 end
 
@@ -99,6 +102,7 @@ function Res.load()
     }
 
     r.anims = loadFishAnims()
+    r.fishColors = FishColors
 
     cached = r
   end
