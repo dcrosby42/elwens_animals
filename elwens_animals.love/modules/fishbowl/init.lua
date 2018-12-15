@@ -11,6 +11,7 @@ local UPDATE = composeSystems(requireModules({
   'systems.sound',
   'systems.touchbutton',
   -- 'modules.animalscreen.manipsystem',
+  'modules.fishbowl.bubblesprayersystem',
   'modules.animalscreen.boundarysystem',
   'modules.fishbowl.fishspawnersystem',
   'modules.fishbowl.fishsystem',

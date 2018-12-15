@@ -34,6 +34,8 @@ Comp.define("force", {'fx',0,'fy',0})
 
 Comp.define("button", {'touchid','','holdtime',1,'eventtype','','radius',40})
 
+Comp.define("touch", {'touchid','','startx',0,'starty',0,'lastx',0,'lasty',0})
+
 Comp.define("fishspawner", {})
 Comp.define("fish", {'kind','black','state','idle','targetspeed',0})
 
