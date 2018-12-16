@@ -17,14 +17,19 @@ end
 --
 -- Bubble Sprayer System
 --
+local bubbleThrottle=0.03
 return function(estore,input,res)
   EventHelpers.handle(input.events, "touch", {
     pressed=function(evt)
+      local dur = res.sounds.bubbles.duration
+      local ptime = randomFloat(0,dur)
       estore:newEntity({
         {'tag', {name='bubblesprayer'}},
         {'touch', {touchid=evt.id, startx=evt.x, starty=evt.y, lastx=evt.x,lasty=evt.y}},
+        {'sound', {sound='bubbles', loop=true, duration=dur, playtime=ptime}},
+        {'timer', {name='trigger', t=0,reset=bubbleThrottle,loop=true}},
       })
-      Debug.println("Start bubblesprayer touch="..evt.id)
+      Debug.println("Start bubblesprayer touch="..tostring(evt.id).." soundpos="..ptime)
       return true
     end,
 
@@ -47,7 +52,7 @@ return function(estore,input,res)
         if e.touch.touchid == evt.id then
           estore:destroyEntity(e)
           found=true
-          Debug.println("End bubblesprayer touch="..evt.id)
+          Debug.println("End bubblesprayer touch="..tostring(evt.id))
           return true -- end seek
         end
       end)
@@ -56,9 +61,9 @@ return function(estore,input,res)
   })
 
   estore:walkEntities(hasTag('bubblesprayer'), function(e)
+    if e.timer and not e.timer.alarm then return end -- respect the timer only if it exists
     local x=e.touch.lastx
     local y=e.touch.lasty
-    Debug.println("spray x="..x.." y="..y)
     local b = spawnBubble(e,estore,input,res)
     b.pos.x = x + randomInt(-5,5)
     b.pos.y = y + randomInt(-5,5)

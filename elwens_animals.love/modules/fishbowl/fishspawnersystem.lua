@@ -41,6 +41,9 @@ return defineUpdateSystem({'fishspawner','timer'}, function(e, estore,input,res)
   local ftimer = e.timers.fishspawner
   if ftimer and ftimer.alarm then
     spawnFish(e,estore,input,res)
+    local nextFish = randomInt(1,6)
+    ftimer.t = nextFish
+    ftimer.reset = nextFish
   end
 
   local btimer = e.timers.bubbler

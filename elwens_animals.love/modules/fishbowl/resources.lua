@@ -29,6 +29,17 @@ local function loadAnimalPics()
   return pics
 end
 
+local function fetchSoundDatas(sounds)
+  for name,cfg in pairs(sounds) do
+    if not cfg.data then
+      cfg.data = love.sound.newSoundData(cfg.file)
+    end
+    if not cfg.duration or cfg.duration == '' then
+      cfg.duration = cfg.data:getDuration()
+    end
+  end
+end
+
 local function loadAnimalSounds()
   local sounds = {}
   for _,name in ipairs(animalsWithSounds) do
@@ -44,20 +55,19 @@ local function loadAnimalSounds()
     mode="static",
   }
 
+  sounds["bubbles"] = {
+    file="data/sounds/fx/bubbles.wav",
+    mode="static",
+    volume=0.5,
+  }
+
   sounds["fishmusic"] = {
     file="data/sounds/music/Chamber-of-Jewels.mp3",
     mode="stream",
     volume=0.1,
   }
 
-  for name,cfg in pairs(sounds) do
-    if not cfg.data then
-      cfg.data = love.sound.newSoundData(cfg.file)
-    end
-    if not cfg.duration or cfg.duration == '' then
-      cfg.duration = cfg.data:getDuration()
-    end
-  end
+  fetchSoundDatas(sounds)
   return sounds
 end
 

@@ -23,7 +23,6 @@ function Entities.initialEntities(res)
 end
 
 function Entities.fishBowl(estore,res)
-  local spawnInterval = 5
   local bubbleInt = 0.3
   return estore:newEntity({
     {'tag',{name="fishbowl"}},
@@ -33,7 +32,7 @@ function Entities.fishBowl(estore,res)
     {'sound', {name="bgm", sound='fishmusic', loop=true, duration=res.sounds.fishmusic.duration}},
     {'physicsWorld', {gy=0,allowSleep=false}},
     {'fishspawner', {}},
-    {'timer',{name='fishspawner',reset=spawnInterval,t=spawnInterval,loop=true}},
+    {'timer',{name='fishspawner',reset=1,t=1,loop=true}},
     {'timer',{name='bubbler',reset=bubbleInt,t=bubbleInt,loop=true}},
   })
 end
