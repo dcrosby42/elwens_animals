@@ -3,6 +3,7 @@ local AnimalScreen = require 'modules/animalscreen'
 local FishBowl = require 'modules/fishbowl'
 local Christmas = require 'modules/christmas'
 local ImgScratch = require 'modules/imgscratch'
+local GC = require 'garbagecollect'
 
 local M = {}
 
@@ -68,7 +69,7 @@ M.updateWorld = function(w,action)
   if action.type == "mouse" and action.state == "pressed" then
     if action.x < 75 and action.y > Debug.d.bounds.y then
       w.showLog = not w.showLog
-      return
+      return w
     end
   end
 
@@ -81,6 +82,9 @@ M.updateWorld = function(w,action)
     handleSidefx(w,sidefx)
   end)
 
+  if action.type == "tick" then
+    GC.ifNeeded(action.dt)
+  end
   return w
 end
 

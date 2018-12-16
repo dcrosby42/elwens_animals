@@ -1,4 +1,5 @@
 local Comps = require 'comps'
+local GC = require 'garbagecollect'
 
 -- local logDebug = print
 local logDebug = function() end
@@ -140,22 +141,23 @@ function mkCollisionFuncs(target)
     logDebug("endContact a="..a:getUserData().." b="..b:getUserData())
     table.insert(target.collisionBuffer, {"end",a,b,{}})
     _contact = nil
-    collectgarbage()
+    GC.request()
   end
 
-  local preSolve = function(a,b,coll)
+  -- local preSolve = function(a,b,coll)
     -- local af,bf = coll:getFixtures()
     -- adx,ady = af:getBody():getLinearVelocity()
     -- bdx,bdy = bf:getBody():getLinearVelocity()
     -- logDebug("preSolve  a={"..adx..","..ady.."} b={"..bdx..","..bdy.."}")
-  end
+  -- end
 
-  local postSolve = function(a,b,coll,normalImpulse, tangentImpulse)
+  -- local postSolve = function(a,b,coll,normalImpulse, tangentImpulse)
     -- print("postSolve",normalImpulse, tangentImpulse)
-  end
+  -- end
 
 
-  return beginContact, endContact, preSolve, postSolve
+  -- return beginContact, endContact, preSolve, postSolve
+  return beginContact, endContact, nil, nil
 end
 
 -- For each collision notes in physWorld._secret_collision_buffer,

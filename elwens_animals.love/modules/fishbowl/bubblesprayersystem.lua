@@ -17,7 +17,7 @@ end
 --
 -- Bubble Sprayer System
 --
-local bubbleThrottle=0.03
+local bubbleThrottle=0.01
 return function(estore,input,res)
   EventHelpers.handle(input.events, "touch", {
     pressed=function(evt)
