@@ -12,18 +12,43 @@ function requireModules(reqs)
   return modules
 end
 
+function resolveSystem(s)
+  if type(s) == "string" then
+    s = require(s)
+  end
+  if type(s) == "function" then
+    return s
+  end
+  if type(s) == "table" then
+    if s.system and type(s.system) == "function" then
+      return s.system
+    end
+    if s.System and type(s.System) == "function" then
+      return s.System
+    end
+  end
+  error("ecshelpers.resolveSystem '"..tostring(s).."' cannot be resolved as a System")
+end
+
 function composeSystems(systems)
+  local rsystems = {}
+  for i=1,#systems do
+    table.insert(rsystems, resolveSystem(systems[i]))
+  end
   return function(estore,input,res)
-    for _,system in ipairs(systems) do
+    for _,system in ipairs(rsystems) do
       system(estore,input,res)
     end
   end
 end
 
 function composeDrawSystems(systems)
-  debug("composeDrawSystems composing "..#systems.." modules")
+  local rsystems = {}
+  for i=1,#systems do
+    table.insert(rsystems, resolveSystem(systems[i]))
+  end
   return function(estore,res)
-    for _,system in ipairs(systems) do
+    for _,system in ipairs(rsystems) do
       system(estore,res)
     end
   end

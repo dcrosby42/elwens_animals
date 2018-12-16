@@ -1,4 +1,5 @@
 local Debug = require 'mydebug'
+Debug = Debug.sub("TouchButton",true,true)
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.animalscreen.entities'
 

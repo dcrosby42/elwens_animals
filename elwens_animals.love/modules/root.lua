@@ -1,6 +1,7 @@
 local Debug = require 'mydebug'
 local AnimalScreen = require 'modules/animalscreen'
 local FishBowl = require 'modules/fishbowl'
+local Christmas = require 'modules/christmas'
 local ImgScratch = require 'modules/imgscratch'
 
 local M = {}
@@ -13,9 +14,10 @@ M.newWorld = function()
   w.modes={}
   w.modes["f2"] = { module=AnimalScreen, state=AnimalScreen.newWorld() }
   w.modes["f3"] = { module=FishBowl, state=FishBowl.newWorld() }
-  w.modes["f4"] = { module=ImgScratch, state=ImgScratch.newWorld() }
-  w.cycle = {"f2","f3"}
-  w.current = "f3"
+  w.modes["f4"] = { module=Christmas, state=Christmas.newWorld() }
+  w.modes["f5"] = { module=ImgScratch, state=ImgScratch.newWorld() }
+  w.cycle = {"f2","f3","f4"}
+  w.current = "f4"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false

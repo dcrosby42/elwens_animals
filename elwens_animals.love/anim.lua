@@ -1,3 +1,4 @@
+local Debug = (require('mydebug')).sub("Anim",false,false)
 local R = require 'resourceloader'
 
 local Anim = {}
@@ -5,17 +6,23 @@ local Anim = {}
 -- Assume the image at fname has left-to-right, top-to-bottom
 -- uniform sprite frames of w-by-h.
 function Anim.simpleSheetToPics(img,w,h)
+  if type(img) == "string" then
+    Debug.println(img)
+    img = R.getImage(img)
+  end
   local imgw = img:getWidth()
   local imgh = img:getHeight()
+  Debug.println("imgw="..imgw.." imgh="..imgh)
 
   local pics = {}
 
-  for i=1,imgw/w do
-    local x=(i-1)*w
-    for j=1,imgh/h do
-      local y=(j-1)*h
-      local pic = R.makePic(fname,img,{x=x,y=y,w=w,h=h})
+  for j=1,imgh/h do
+    local y=(j-1)*h
+    for i=1,imgw/w do
+      local x=(i-1)*w
+      local pic = R.makePic(nil,img,{x=x,y=y,w=w,h=h})
       table.insert(pics, pic)
+      Debug.println("Added pic.rect x="..x.." y="..y.." w="..w.." h="..h)
     end
   end
   return pics

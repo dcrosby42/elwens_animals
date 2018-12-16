@@ -46,7 +46,7 @@ return function(estore, input, res)
         -- Nothing.  Let's generate a random animal
         animalName = pickRandom(res.animalNames)
         e = Entities.animal(estore, res, animalName)
-			else
+      else
         if e.pic then
           animalName = e.pic.id
         end

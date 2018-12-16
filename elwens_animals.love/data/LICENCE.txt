@@ -12,5 +12,6 @@ aquarium.jpg: https://www.google.com/search?q=cartoon+fish+tank+background&tbm=i
 
 white_bubble.png: Bubbles.zip, https://opengameart.org/content/bubbles8-colors, CC-by-3 license http://creativecommons.org/licenses/by/3.0/
 
+reindeer_fireplace.jpg: https://wallpapercave.com/w/G7cGy57 (not yet licensed)
 
-reindeer_fireplace.jpg: https://wallpapercave.com/w/G7cGy57
+xmas_bg_music.wav: https://www.youtube.com/watch?v=mng4p8yWFjs (not yet licensed)

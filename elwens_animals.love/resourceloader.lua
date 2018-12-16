@@ -1,6 +1,7 @@
 local R={}
 
 local Images = {}
+local Sounds = {}
 
 function R.getImage(fname)
   local img = Images[fname]
@@ -16,9 +17,13 @@ function R.getFont(fname, size)
   return nil
 end
 
-function R.getSound(fname)
-  -- TODO
-  return nil
+function R.getSoundData(fname)
+  local sdata = Sounds[fname]
+  if not sdata then 
+    sdata = love.sound.newSoundData(fname)
+    Sounds[fname] = sdata
+  end
+  return sdata
 end
 
 -- Args:

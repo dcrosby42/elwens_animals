@@ -169,15 +169,16 @@ return function(estore,res)
     --
     -- CIRCLE
     --
-    if e.circle then
-      -- print("circle")
-      local circle = e.circle
-      local x,y = getPos(e)
-      x = x + circle.offx
-      y = y + circle.offy
-      love.graphics.setColor(unpack(circle.color))
-      love.graphics.circle("line", x, y, circle.radius)
-      -- love.graphics.circle("fill", x, y, circle.radius)
+    if e.circles then
+      for _,circle in pairs(e.circles) do
+        local x,y = getPos(e)
+        x = x + circle.offx
+        y = y + circle.offy
+        love.graphics.setColor(unpack(circle.color))
+        local style = "line"
+        if circle.fill then style = "fill" end
+        love.graphics.circle(style, x, y, circle.radius)
+      end
     end
 
     --
