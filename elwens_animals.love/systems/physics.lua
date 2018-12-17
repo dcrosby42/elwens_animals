@@ -1,5 +1,6 @@
 local Comps = require 'comps'
 local GC = require 'garbagecollect'
+local Debug = (require('mydebug')).sub("Physics",false,true)
 
 -- local logDebug = print
 local logDebug = function() end
@@ -14,7 +15,7 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
   local comp = physEnt.physicsWorld
   local stuff = res.physics.caches[comp.cid]
   if not stuff then
-    logDebug("Creating new physics world")
+    Debug.println("Creating new physics world")
     stuff = {
       world = love.physics.newWorld(comp.gx, comp.gy, comp.allowSleep),
       collisionBuffer = {},
@@ -40,7 +41,7 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
       -- newly-added physics component -> create new obj in cache
       obj = res.physics.newObject(world, e)
       oc[id] = obj
-      logDebug("New physics body for cid="..e.body.cid.." kind="..e.body.kind)
+      Debug.println("New physics body for cid="..e.body.cid.." kind="..e.body.kind)
     end
     -- Apply values from Entity to the physics object
     obj.body:setPosition(getPos(e))
@@ -61,7 +62,7 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
     end
   end
   for _,id in ipairs(remIds) do
-    logDebug("Removing phys obj cid="..id)
+    Debug.println("Removing phys obj cid="..id)
     local obj = oc[id]
     if obj then
       obj.body:destroy()
@@ -132,13 +133,13 @@ function mkCollisionFuncs(target)
         vel={bdx,bdy},
       },
     }
-    logDebug("beginContact a="..a:getUserData().." b="..b:getUserData())
-    logDebug("  a={"..adx..","..ady.."} b={"..bdx..","..bdy.."}")
+    Debug.println("beginContact a="..a:getUserData().." b="..b:getUserData())
+    Debug.println("  a={"..adx..","..ady.."} b={"..bdx..","..bdy.."}")
     table.insert(target.collisionBuffer, {"begin",a,b,contactInfo})
   end
 
   local endContact = function(a,b,_contact)
-    logDebug("endContact a="..a:getUserData().." b="..b:getUserData())
+    Debug.println("endContact a="..a:getUserData().." b="..b:getUserData())
     table.insert(target.collisionBuffer, {"end",a,b,{}})
     _contact = nil
     GC.request()
@@ -148,7 +149,7 @@ function mkCollisionFuncs(target)
     -- local af,bf = coll:getFixtures()
     -- adx,ady = af:getBody():getLinearVelocity()
     -- bdx,bdy = bf:getBody():getLinearVelocity()
-    -- logDebug("preSolve  a={"..adx..","..ady.."} b={"..bdx..","..bdy.."}")
+    -- Debug.println("preSolve  a={"..adx..","..ady.."} b={"..bdx..","..bdy.."}")
   -- end
 
   -- local postSolve = function(a,b,coll,normalImpulse, tangentImpulse)
@@ -164,7 +165,7 @@ end
 -- Create a "collision event" object and append to the given events list.
 function generateCollisionEvents(collbuf, estore, events)
   if #collbuf > 0 then
-    logDebug("handleCollisions: num items:"..#collbuf)
+    Debug.println("handleCollisions: num items:"..#collbuf)
     for _,c in ipairs(collbuf) do
       local state,a,b,contactInfo = unpack(c)
       local aCid = tryGetUserData(a)
@@ -172,8 +173,8 @@ function generateCollisionEvents(collbuf, estore, events)
       if aCid and bCid then 
         local aComp, aEnt = estore:getCompAndEntityForCid(a:getUserData())
         local bComp, bEnt = estore:getCompAndEntityForCid(b:getUserData())
-        -- logDebug("  aComp[eid="..aComp.eid.." cid="..aComp.cid.."] aEnt.eid="..aEnt.eid)
-        -- logDebug("  bComp[eid="..bComp.eid.." cid="..bComp.cid.."] bEnt.eid="..bEnt.eid)
+        -- Debug.println("  aComp[eid="..aComp.eid.." cid="..aComp.cid.."] aEnt.eid="..aEnt.eid)
+        -- Debug.println("  bComp[eid="..bComp.eid.." cid="..bComp.cid.."] bEnt.eid="..bEnt.eid)
         if aEnt and bEnt then
           local evt = {
             type="collision",

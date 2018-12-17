@@ -70,7 +70,9 @@ local snowMachineSystem = defineUpdateSystem(
 --
 local snowSystem = defineUpdateSystem({'snow'},
   function(e, estore, input, res)
-    e.pos.y = e.pos.y + e.vel.dy * input.dt
+    local x,y = getPos(e)
+    e.pos.y = y + e.vel.dy * input.dt
+    e.pos.x = x + e.vel.dx * input.dt
     if e.pos.y > e.snow.lowerbound then
       estore:destroyEntity(e)
       return false

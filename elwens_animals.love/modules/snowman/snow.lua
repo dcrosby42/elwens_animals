@@ -6,8 +6,7 @@ Comp.define("snow", {'lowerbound',0})
 
 Snow = {}
 
--- TODO see this about managing rng state more directly: https://love2d.org/wiki/RandomGenerator:getState
-local CHEAT_RNG = love.math.newRandomGenerator(1234,5678)
+local Rng = love.math.newRandomGenerator(1234,5678)
 
 Snow.Defaults = {
   large=3,
@@ -32,14 +31,14 @@ end
 local function addSnowflake(e,y)
   local left = e.pos.x
   local right = left + e.bounds.w
-  local x = CHEAT_RNG:random(left,right)
-  local rad = CHEAT_RNG:random(e.snowmachine.small, e.snowmachine.large)
+  local x = Rng:random(left,right)
+  local rad = Rng:random(e.snowmachine.small, e.snowmachine.large)
 
   e:newChild({
     {'snow', {lowerbound=e.pos.y+e.bounds.h}},
     {'vel', {dx=e.snowmachine.dx, dy=e.snowmachine.dy}},
     {'pos', { x=x, y=y}},
-    {'circle', { radius=rad, color={1,1,1}}},
+    {'circle', { radius=rad, color={255,255,255}}},
   })
 end
 

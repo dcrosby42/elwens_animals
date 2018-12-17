@@ -2,7 +2,9 @@ local Debug = require 'mydebug'
 local AnimalScreen = require 'modules/animalscreen'
 local FishBowl = require 'modules/fishbowl'
 local Christmas = require 'modules/christmas'
-local ImgScratch = require 'modules/imgscratch'
+local Snowman = require 'modules/snowman'
+-- local ImgScratch = require 'modules/imgscratch'
+local PhysicsScratch = require 'modules/physicsscratch'
 local GC = require 'garbagecollect'
 
 local M = {}
@@ -13,12 +15,13 @@ M.newWorld = function()
   Debug.setup()
   local w = {}
   w.modes={}
-  w.modes["f2"] = { module=AnimalScreen, state=AnimalScreen.newWorld() }
-  w.modes["f3"] = { module=FishBowl, state=FishBowl.newWorld() }
-  w.modes["f4"] = { module=Christmas, state=Christmas.newWorld() }
-  w.modes["f5"] = { module=ImgScratch, state=ImgScratch.newWorld() }
-  w.cycle = {"f2","f3","f4"}
-  w.current = "f4"
+  w.modes["f2"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
+  w.modes["f3"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
+  w.modes["f4"] = function() return { module=Christmas, state=Christmas.newWorld() } end
+  w.modes["f5"] = function() return { module=Snowman, state=Snowman.newWorld() } end
+  w.modes["f6"] = function() return { module=PhysicsScratch, state=PhysicsScratch.newWorld() } end
+  w.cycle = {"f2","f3","f4","f5","f6"}
+  w.current = "f6"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
@@ -31,6 +34,11 @@ end
 
 local function withCurrentMode(w,func)
   local mode = w.modes[w.current]
+  if type(mode) == 'function' then
+    -- Lazy-load of mode stuff, replace w result on first use:
+    mode = mode()
+    w.modes[w.current] = mode
+  end
   if mode then func(mode) end
 end
 
@@ -121,10 +129,6 @@ end
 M.drawWorld = function(w)
   love.graphics.setBackgroundColor(0,0,0,0)
 
-  -- local mode = w.modes[w.current]
-  -- if mode then
-  --   mode.module.drawWorld(mode.state)
-  -- end
   withCurrentMode(w, function(mode) 
     mode.module.drawWorld(mode.state)
   end)
