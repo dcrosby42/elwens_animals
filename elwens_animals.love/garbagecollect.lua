@@ -1,6 +1,6 @@
 local Debug = (require('mydebug')).sub("GarbageCollect",false,false)
 local GC = {}
-local Thresh = 3
+local Thresh = 1
 local State = {
   t=0,
   lastGC=0,

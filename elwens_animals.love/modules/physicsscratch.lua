@@ -1,8 +1,10 @@
 local Debug = require('mydebug').sub("PhysScratch",true,true)
+local GC= require 'garbagecollect'
 local R = require 'resourceloader'
 local A = require 'animalpics'
 local P = love.physics
 local M={}
+
 
 function M.newWorld()
   love.physics.setMeter(64)
@@ -135,10 +137,32 @@ local function fireBullet(w, x,y, vx,vy)
   w.bulletCount = w.bulletCount + 1
   local name = "bullet"..w.bulletCount
   w.objects[name]={name,b,{sh},{f}}
+  b:setMass(1)
+  b:setBullet(true)
   b:setLinearVelocity(vx*power,vy*power)
 
 end
 
+local function uprightSnowman(w)
+  _,body,_,_ = unpack(w.objects.ball1)
+  local ta = 0
+  local a = body:getAngle()
+  local diff = a-ta
+  local sign=1
+  if diff == 0 then 
+    return
+  elseif math.abs(diff) < 0.01 and body:getAngularVelocity() < 0.01 then
+    body:setAngle(ta)
+    body:setAngularVelocity(0)
+    return
+  elseif diff < 0 then
+    sign = -1
+  end
+  -- local f = -sign * 100000
+  local f = -sign * (math.pow(math.abs(diff),0.5) * 500000)
+  -- print("diff="..diff.." sign="..sign.." force="..f)
+  body:applyTorque(f)
+end
 
 function M.updateWorld(w,action,res)
   if action.type == "tick" then
@@ -146,8 +170,12 @@ function M.updateWorld(w,action,res)
       w.joints.MJ:setTarget(love.mouse.getPosition())
     end
 
+    uprightSnowman(w)
+
     w.physicsWorld:update(action.dt)
 
+    GC.request()
+    GC.ifNeeded(action.dt)
 
   elseif action.type == "mouse" then
     if action.state == "pressed" and action.button == 1 then
@@ -171,7 +199,7 @@ function M.updateWorld(w,action,res)
     if action.state == "pressed" then
       if action.key == "d" then
         local x,y = love.mouse.getPosition()
-        fireBullet(w,x,y,1,0)
+        fireBullet(w,x,y,1,-0.2)
       elseif action.key == "a" then
         local x,y = love.mouse.getPosition()
         fireBullet(w,x,y,-1,0)
@@ -229,7 +257,8 @@ function M.drawWorld(w)
   love.graphics.setColor(1,1,1)
 
   do 
-    local a = w.objects.ball1[2]:getAngle()
+    -- local a = w.objects.ball1[2]:getAngle()
+    local a = w.objects.ball1[2]:getAngularVelocity()
     love.graphics.print("angle: "..a,0,0)
   end
 end
