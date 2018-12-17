@@ -14,7 +14,9 @@ function M.newWorld()
 
   local phw = love.physics.newWorld(0, 9.81*64, true)
   w.physicsWorld = phw
+  w.bulletCount = 0
   w.objects = {}
+  w.joints = {}
   
   -- floor
   do
@@ -31,6 +33,7 @@ function M.newWorld()
     local f = P.newFixture(b,s)
     f:setUserData("ball1")
     w.objects.ball1={"ball1",b,{s},{f}}
+    Debug.println("ball1 mass: "..b:getMass())
   end
   do
     local b = P.newBody(phw,400,400,"dynamic")
@@ -38,8 +41,71 @@ function M.newWorld()
     local f = P.newFixture(b,s)
     f:setUserData("ball2")
     w.objects.ball2={"ball2",b,{s},{f}}
+    Debug.println("ball2 mass: "..b:getMass())
+  end
+  do
+    local b = P.newBody(phw,400,300,"dynamic")
+    local s = P.newCircleShape(25)
+    local f = P.newFixture(b,s)
+    f:setUserData("ball3")
+    w.objects.ball3={"ball3",b,{s},{f}}
+    Debug.println("ball3 mass: "..b:getMass())
   end
 
+  do
+    local joint = P.newPrismaticJoint(
+      w.objects.ball1[2],
+      w.objects.ball2[2],
+      400, 500,
+      400, 400,
+      0,-1,
+      false
+    )
+    joint:setLimits(120,140)
+    joint:setMotorEnabled(true)
+    -- joint:setMotorSpeed(-1000)
+    joint:setMotorSpeed(-1000)
+    joint:setMaxMotorForce(1000)
+    Debug.println("joint limits enabled"..tostring(joint:areLimitsEnabled()))
+    local lower, upper  = joint:getLimits()
+    Debug.println(" lower="..lower.." upper="..upper)
+    Debug.println("joint motor enabled"..tostring(joint:isMotorEnabled()))
+    w.joints.rail1 = joint
+  end
+
+  do
+    local joint = P.newPrismaticJoint(
+      w.objects.ball2[2],
+      w.objects.ball3[2],
+      400, 400,
+      400, 300,
+      0,-1,
+      false
+    )
+    joint:setLimits(65,85)
+    joint:setMotorEnabled(true)
+    -- joint:setMotorSpeed(-1000)
+    joint:setMotorSpeed(-1000)
+    joint:setMaxMotorForce(1000)
+    w.joints.rail2 = joint
+  end
+
+    
+
+  do
+    local b = P.newBody(phw,800,600,"dynamic")
+    local s = P.newRectangleShape(60,150)
+    local f = P.newFixture(b,s)
+    f:setUserData("box1")
+    w.objects.box1={"box1",b,{s},{f}}
+  end
+  do
+    local b = P.newBody(phw,15,600,"dynamic")
+    local s = P.newRectangleShape(60,150)
+    local f = P.newFixture(b,s)
+    f:setUserData("box2")
+    w.objects.box2={"box2",b,{s},{f}}
+  end
 
   return w
 end
@@ -59,13 +125,27 @@ local function pickFixtures(objs,x,y,fn)
   end
 end
 
-local MJ
+local function fireBullet(w, x,y, vx,vy)
+  local s = 20
+  local power = 1000
+  local b = P.newBody(w.physicsWorld,x,y,"dynamic")
+  local sh = P.newRectangleShape(s,s)
+  local f = P.newFixture(b,sh)
+  f:setUserData("bullet")
+  w.bulletCount = w.bulletCount + 1
+  local name = "bullet"..w.bulletCount
+  w.objects[name]={name,b,{sh},{f}}
+  b:setLinearVelocity(vx*power,vy*power)
+
+end
+
 
 function M.updateWorld(w,action,res)
   if action.type == "tick" then
-    if MJ then
-      MJ:setTarget(love.mouse.getPosition())
+    if w.joints.MJ then
+      w.joints.MJ:setTarget(love.mouse.getPosition())
     end
+
     w.physicsWorld:update(action.dt)
 
 
@@ -76,15 +156,31 @@ function M.updateWorld(w,action,res)
       pickFixtures(w.objects, x,y, function(f)
         Debug.println("Clicked: "..f:getUserData())
         local b = f:getBody()
-        MJ = P.newMouseJoint(b,x,y)
+        w.joints.MJ = P.newMouseJoint(b,x,y)
         return true
       end)
     elseif action.state == "released" and action.button == 1 then
-      if MJ then
+      if w.joints.MJ then
         Debug.println("Letting go")
-        MJ:destroy()
-        MJ = nil
+        w.joints.MJ:destroy()
+        w.joints.MJ = nil
         collectgarbage()
+      end
+    end
+  elseif action.type == "keyboard" then
+    if action.state == "pressed" then
+      if action.key == "d" then
+        local x,y = love.mouse.getPosition()
+        fireBullet(w,x,y,1,0)
+      elseif action.key == "a" then
+        local x,y = love.mouse.getPosition()
+        fireBullet(w,x,y,-1,0)
+      elseif action.key == "w" then
+        local x,y = love.mouse.getPosition()
+        fireBullet(w,x,y,0,-1)
+      elseif action.key == "s" then
+        local x,y = love.mouse.getPosition()
+        fireBullet(w,x,y,0,1)
       end
     end
   end
@@ -114,10 +210,27 @@ local function drawObject(name,body,shapes,fixtures)
   end
 end
 
+local function drawJoint(joint)
+  -- local x1,y1, x2,y2 = joint:getAnchors()
+  love.graphics.setColor(0,0,1)
+  love.graphics.line(joint:getAnchors())
+  -- Debug.println(""..x1..","..y1.."    "..x2..","..y2)
+
+end
+
 function M.drawWorld(w)
   love.graphics.setBackgroundColor(0,0,0,1)
   for _,obj in pairs(w.objects) do
     drawObject(unpack(obj))
+  end
+  for _,j in pairs(w.joints) do
+    drawJoint(j)
+  end
+  love.graphics.setColor(1,1,1)
+
+  do 
+    local a = w.objects.ball1[2]:getAngle()
+    love.graphics.print("angle: "..a,0,0)
   end
 end
 
