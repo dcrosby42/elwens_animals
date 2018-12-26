@@ -1,10 +1,10 @@
 local R = require 'resourceloader'
-local Phys = require 'modules.fishbowl.resources_physics'
+local Phys = require 'modules.snowman.resources_physics'
 local AnimalRes = require 'modules.animalscreen.resources'
 local Anim = require 'anim'
 
 local Debug = require 'mydebug'
-Debug = Debug.sub("Xmas res",true,true)
+Debug = Debug.sub("Snowman res",true,true)
 
 
 local Res = {}
@@ -12,6 +12,7 @@ local Res = {}
 local function loadPics()
   local pics = {}
   pics["woodsbg"] = R.makePic("data/images/woods.png")
+  pics["snowman_ball_1"] = R.makePic("data/images/snowman_ball_1.png")
 
   return pics
 end
@@ -35,6 +36,7 @@ end
 local function loadSounds()
   local sounds = {}
 
+  -- FIXME
   -- sounds["bgmusic"] = {
   --   file="data/sounds/music/xmas_bg_music.mp3",
   --   mode="stream",
@@ -60,7 +62,8 @@ function Res.load()
     r.sounds = loadSounds()
 
     r.physics = {
-      newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
+      newObject=Phys.newObject,   -- func(pw, e) -> {body,shapes,fixtures,componentId}
+      newJoint=Phys.newJoint,   -- func(pw, jointComp, e, estore, objCache) -> {joint}
       caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
     }
 

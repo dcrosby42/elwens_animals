@@ -2,7 +2,7 @@ local Comp = require 'ecs/component'
 
 Comp.define("bounds", {'offx',0,'offy',0,'w',0,'h',0})
 Comp.define("pos", {'x',0,'y',0,'r',0})
-Comp.define("vel", {'dx',0,'dy',0})
+Comp.define("vel", {'dx',0,'dy',0,'angularvelocity',0,'lineardamping',0,'angulardamping',0})
 
 Comp.define("tag", {})
 
@@ -16,7 +16,7 @@ Comp.define("anim", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,
 Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil})
 
 Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'fill',true, 'color',{0,0,0}})
-Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{0,0,0}, 'style','fill'})
+Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{0,0,0}, 'style','fill','draw',true})
 
 -- Comp.define("event", {'data',''})
 
@@ -30,7 +30,8 @@ Comp.define("sound", {'sound','','loop',false,'state','playing','volume',1,'pitc
 
 Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
 Comp.define('body', {'kind','', 'group',0,'debugDraw',false})
-Comp.define("force", {'fx',0,'fy',0})
+Comp.define("force", {'fx',0,'fy',0,'torque',0,'impx',0,'impy',0,'angimp',0})
+Comp.define('joint', {'kind','', 'to',''})
 
 Comp.define("button", {'touchid','','holdtime',1,'eventtype','','radius',40})
 

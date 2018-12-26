@@ -29,6 +29,7 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
   --
   -- SYNC: Components->to->Physics Objects
   --
+  -- Sync body comps to phys bodies:
   local oc = stuff.objectCache
   local sawIds = {}
   -- estore:walkEntity(physEnt, hasComps('body'), function(e) -- XXX
@@ -48,13 +49,40 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
     obj.body:setAngle(e.pos.r)
     if e.vel then
       obj.body:setLinearVelocity(e.vel.dx, e.vel.dy)
+      obj.body:setLinearDamping(e.vel.lineardamping)
+      obj.body:setAngularVelocity(e.vel.angularvelocity)
+      obj.body:setAngularDamping(e.vel.angulardamping)
     end
     if e.force then
-      obj.body:applyForce(e.force.fx, e.force.fy)
+      local f = e.force
+      local b = obj.body
+      b:applyForce(f.fx, f.fy)
+      b:applyTorque(f.torque)
+      b:applyLinearImpulse(f.impx, f.impy)
+      b:applyAngularImpulse(f.angimp)
+      -- Impulses need to be reset to 0 here
+      f.impx=0
+      f.impy=0
+      f.angimp=0
     end
   end)
+  -- Sync joint comps to phys bodies:
+  estore:walkEntities(hasComps('joint'), function(e)
+    local id = e.joint.cid
+    table.insert(sawIds,id)
+    -- See if there's a cached phys obj for this component
+    local obj = oc[id]
+    if obj == nil then
+      -- newly-added Joint component -> create new phys joint in cache
+      obj = res.physics.newJoint(world, e.joint, e, estore, oc)
+      oc[id] = obj
+      Debug.println("New physics joint for cid="..id.." kind="..e.joint.kind)
+    end
+    -- Apply values from Joint comp to the physics Joint object
+    -- TODO ... when we have more interesting Joints
+  end)
 
-  -- Remove cached objects whose ids weren't seen in the last pass through the physics components
+  -- Remove cached objects (bodies and joints) whose ids weren't seen in the last pass through the physics components
   local remIds = {}
   for id,obj in pairs(oc) do
     if not lcontains(sawIds, id) then
@@ -65,7 +93,14 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
     Debug.println("Removing phys obj cid="..id)
     local obj = oc[id]
     if obj then
-      obj.body:destroy()
+      if obj.body then 
+        obj.body:destroy()
+        GC.request()
+      end
+      if obj.joint then 
+        obj.joint:destroy()
+        GC.request()
+      end
       oc[id] = nil
     end
   end
@@ -91,17 +126,25 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
     local obj = oc[id]
     if obj then
       -- Copy values from physics object to entity's pos and vel components
-      local x,y = obj.body:getPosition()
+      local b = obj.body
+      local x,y = b:getPosition()
       e.pos.x = x
       e.pos.y = y
-      e.pos.r = obj.body:getAngle()
-      local dx,dy = obj.body:getLinearVelocity()
-      e.vel.dx = dx
-      e.vel.dy = dy
+      e.pos.r = b:getAngle()
+      if e.vel then
+        local dx,dy = b:getLinearVelocity()
+        e.vel.dx = dx
+        e.vel.dy = dy
+        e.vel.lineardamping = b:getLinearDamping()
+        e.vel.angularvelocity = b:getAngularVelocity()
+        e.vel.angulardamping = b:getAngularDamping()
+      end
     else
-      -- ? wtf
+      -- ? wtf ? obj is missing from the cache
     end
   end)
+  -- TODO walkEntities(hasComps('joint'), ....)
+  -- ...when we actually need to
 end)
 
 local function tryGetUserData(obj)

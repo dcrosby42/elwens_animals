@@ -58,20 +58,16 @@ function M.newWorld()
     local joint = P.newPrismaticJoint(
       w.objects.ball1[2],
       w.objects.ball2[2],
-      400, 500,
-      400, 400,
-      0,-1,
-      false
+      400, 500, -- lower snowball
+      400, 400, -- middle snowball 
+      0,-1,     -- vector pointing up from a to b
+      false     -- no collide
     )
-    joint:setLimits(120,140)
+    joint:setLimits(120,140) -- the two radii sum (50+80)=130... these limits allow for 10px overlap and 10px separation
+    -- contracting spring action:
     joint:setMotorEnabled(true)
-    -- joint:setMotorSpeed(-1000)
     joint:setMotorSpeed(-1000)
     joint:setMaxMotorForce(1000)
-    Debug.println("joint limits enabled"..tostring(joint:areLimitsEnabled()))
-    local lower, upper  = joint:getLimits()
-    Debug.println(" lower="..lower.." upper="..upper)
-    Debug.println("joint motor enabled"..tostring(joint:isMotorEnabled()))
     w.joints.rail1 = joint
   end
 
@@ -128,6 +124,7 @@ local function pickFixtures(objs,x,y,fn)
 end
 
 local function fireBullet(w, x,y, vx,vy)
+  Debug.println("fireBullet x="..x.." y="..y.." vx="..vx.." vy="..vy)
   local s = 20
   local power = 1000
   local b = P.newBody(w.physicsWorld,x,y,"dynamic")
