@@ -13,8 +13,12 @@ function Entities.initialEntities(res)
   Entities.snowBack(estore,res)
 
   Entities.snowman(estore,res)
+  -- local g = Entities.gift(estore,res,"purple")
+  -- g.pos.x=200
+  -- g.body.debugDraw=true
 
   Entities.snowFore(estore,res)
+
 
   AnimalEnts.nextModeButton(estore,res)
   AnimalEnts.quitButton(estore,res)
@@ -44,6 +48,9 @@ function Entities.snowFore(estore,res)
 end
 
 function Entities.snowman(estore,res)
+  local motor = -1000
+  local maxForce = 1000
+
   -- head:
   local ball3 = estore:newEntity({
     {'tag', {name='snowman_head'}},
@@ -56,12 +63,14 @@ function Entities.snowman(estore,res)
   -- middle:
   local ball2 = estore:newEntity({
     {'tag', {name='snowman_body'}},
+    {'tag', {name='cannon_target'}},
     {'body', {kind="snowman_ball_2", group=0, debugDraw=false}},
     {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5}}, 
     {'pos', {x=600,y=500}},
     {'vel', {}},
     {'force', {}},
-    {'joint', {kind='snowman', to='snowman_head'}},
+    -- {'joint', {kind='snowman', to='snowman_head', lowerlimit=65, upperlimit=85, motorspeed=motor, maxmotorforce=maxForce}},
+    {'joint', {kind='snowman', to='snowman_head', lowerlimit=65, upperlimit=85, motorspeed=0, maxmotorforce=0}},
   })
   -- base:
   local ball1 = estore:newEntity({
@@ -72,17 +81,23 @@ function Entities.snowman(estore,res)
     {'pos', {x=600,y=600}},
     {'vel', {}},
     {'force', {}},
-    {'joint', {kind='snowman', to='snowman_body'}},
+    -- {'joint', {kind='snowman', to='snowman_body', lowerlimit=120, upperlimit=140, motorspeed=motor, maxmotorforce=maxForce}},
+    {'joint', {kind='snowman', to='snowman_body', lowerlimit=120, upperlimit=140, motorspeed=0, maxmotorforce=0}},
   })
 
 end
 
-function Entities.box(estore, res)
+function Entities.gift(estore,res,name)
+  local g = res.gifts[name]
+  if not g then error("No gift resource named "..tostring(name)) end
+  local scale = g.scale
+  local w = scale
+  local cx = g.centerx or 0.5
+  local cy = g.centery or 0.5
   return estore:newEntity({
-    {'tag', {name='box'}},
-    -- {'pic', {id=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
-    {'body', {kind="rect", name="box", group=0, debugDraw=true}},
-    {'rect', {name="box", w=20,h=20,draw=false}},
+    {'body', {}},
+    {'rectangleShape', {w=scale*g.w,h=scale*g.h}},
+    {'pic', {id=g.name, sx=scale, sy=scale, centerx=cx, centery=cy,r=-0.3}}, 
     {'pos', {}},
     {'vel', {}},
     {'force', {}},

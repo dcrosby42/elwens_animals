@@ -9,10 +9,43 @@ Debug = Debug.sub("Snowman res",true,true)
 
 local Res = {}
 
+local gifts = {
+  red={
+    name="gift_red",
+    w=245,
+    h=200,
+    scale=0.25,
+  },
+  green={
+    name="gift_green",
+    w=245,
+    h=200,
+    scale=0.25,
+  },
+  gold={
+    name="gift_gold",
+    w=245,
+    h=200,
+    scale=0.25,
+  },
+  purple={
+    name="gift_purple",
+    w=200,
+    h=180,
+    scale=0.3,
+    centerx=0.6,
+    centery=0.4,
+  },
+}
+
 local function loadPics()
   local pics = {}
   pics["woodsbg"] = R.makePic("data/images/woods.png")
   pics["snowman_ball_1"] = R.makePic("data/images/snowman_ball_1.png")
+
+  for _,gift in pairs(gifts) do
+    pics[gift.name] = R.makePic("data/images/"..gift.name..".png")
+  end
 
   return pics
 end
@@ -55,8 +88,6 @@ function Res.load()
     r.pics = loadPics()
     tmerge(r.pics, AnimalRes.loadButtonPics())
 
-    r.ornamentNames = ornamentNames
-
     r.anims = loadAnims()
 
     r.sounds = loadSounds()
@@ -67,6 +98,12 @@ function Res.load()
       caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
     }
 
+
+    r.gifts = gifts
+    r.giftNames = {}
+    for n,_ in pairs(gifts) do
+      table.insert(r.giftNames, n)
+    end
 
     cached = r
   end

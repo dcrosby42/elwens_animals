@@ -26,7 +26,7 @@ M.newWorld = function()
   if w.ios then
     w.showLog = false
   else
-    w.showLog = true
+    w.showLog = false
   end
 
   return w

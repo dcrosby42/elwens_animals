@@ -308,8 +308,11 @@ function iterateFuncs(funcs)
 end
 
 function math.dist(x1,y1, x2,y2)
-  return ((x2-x1)^2+(y2-y1)^2)^0.5
+  -- return ((x2-x1)^2+(y2-y1)^2)^0.5
+  return math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
 end
+
+dist = math.dist
 
 function math.pointinrect(x1,y1, rx,ry,rw,rh)
   return x1 >= rx and x1 < rx+rw and y1 >= ry and y1 < ry + rh
@@ -450,9 +453,6 @@ function pickRandom(list)
   return list[randomInt(1, #list)]
 end
 
-function dist(x1,y1, x2,y2)
-  return math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
-end
 
 -- split a string
 -- function string:split(delimiter)

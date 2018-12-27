@@ -24,11 +24,51 @@ local function newBubble(pw,e)
 end
 
 local function newSnowball(pw,e,r)
-  local b = P.newBody(pw,400,500,"dynamic")
+  local b = P.newBody(pw,400,500,"dynamic") -- FIXME pos?
   local s = P.newCircleShape(r)
   local f = P.newFixture(b,s)
   f:setUserData(e.body.cid)
   return {body=b, shapes={s}, fixtures={f}}
+end
+
+local function newGeneric(pw,e)
+  if not (e.rectangleShape or e.polygonShape or e.circleShape) then
+    error("newGeneric() requires the Entity have rectangleShape, polygonShape or circleShape component(s)")
+  end
+  local x,y = getPos(e)
+  local dyn = "dynamic"
+  if not e.body.dynamic then dyn="static" end
+  local b = P.newBody(pw,x,y,dyn)
+  b:setBullet(e.body.bullet)
+
+  local shapes={}
+  local fixtures={}
+
+  local function addShape(s) 
+    local f = P.newFixture(b,s)
+    f:setUserData(e.body.cid)
+    table.insert(shapes,s)
+    table.insert(fixtures,f)
+  end
+
+  for _,r in pairs(e.rectangleShapes or {}) do
+    local s = P.newRectangleShape(r.x,r.y, r.w,r.h, r.angle)
+    addShape(s)
+  end
+  for _,poly in pairs(e.polygonShapes or {}) do
+    local s = P.newPolygonShape(poly.vertices)
+    addShape(s)
+  end
+  for _,c in pairs(e.circleShapes or {}) do
+    local s = P.newCircleShape(c.x,c.y, c.radius)
+    addShape(s)
+  end
+
+  if type(e.body.mass) == "number" then
+    b:setMass(e.body.mass)
+  end
+
+  return {body=b, shapes=shapes, fixtures=fixtures}
 end
 
 -- (physicsWorld, entity) -> { body, shapes, fixtures }
@@ -37,7 +77,10 @@ function M.newObject(pw, e)
     error("newObject requires an entity with a body component")
   end
 
-  if e.body.kind == "snowman_ball_1" then
+  if e.body.kind == '' or e.body.kind == 'generic'  then
+    return newGeneric(pw, e)
+
+  elseif e.body.kind == "snowman_ball_1" then
     return newSnowball(pw,e, 80)
 
   elseif e.body.kind == "snowman_ball_2" then
@@ -56,6 +99,7 @@ function M.newJoint(pw, jointComp, e, estore, objCache)
   if e == nil or jointComp == nil then
     error("newJoint requires an entity with a joint component")
   end
+  Debug.println("jointComp: "..tflatten(jointComp))
 
   local fromComp = e.body
   Debug.println("fromComp: "..tflatten(fromComp))
@@ -79,18 +123,6 @@ function M.newJoint(pw, jointComp, e, estore, objCache)
   Debug.println("toCenterX="..toCenterX.." toCenterY="..toCenterY)
   local vx = toCenterX - fromCenterX
   local vy = toCenterY - fromCenterY
-  local doCollide=false
-  local lower
-  local upper
-
-  -- FIXME this is TOTALLY JANK!! 
-  if fromComp.kind == "snowman_ball_1" then
-    lower=120
-    upper=140
-  else -- snoman_ball_2 (body) connecting to snowman_ball_3 (head)
-    lower=65
-    upper=85
-  end
   
   local joint = P.newPrismaticJoint(
     from.body,
@@ -98,12 +130,16 @@ function M.newJoint(pw, jointComp, e, estore, objCache)
     fromCenterX,fromCenterY,
     toCenterX,toCenterY,
     vx,vy,
-    doCollide
+    fromComp.docollide
   )
-  joint:setLimits(lower,upper)
-  joint:setMotorEnabled(true)
-  joint:setMotorSpeed(-1000)
-  joint:setMaxMotorForce(1000)
+  if jointComp.upperlimit ~= '' and jointComp.lowerlimit ~= '' then
+    joint:setLimits(jointComp.lowerlimit, jointComp.upperlimit)
+  end
+  if jointComp.motorspeed ~= '' and jointComp.maxmotorforce ~= '' then
+    joint:setMotorEnabled(true)
+    joint:setMotorSpeed(jointComp.motorspeed) -- -1000
+    joint:setMaxMotorForce(jointComp.maxmotorforce) -- 1000
+  end
   return {joint=joint}
 end
 

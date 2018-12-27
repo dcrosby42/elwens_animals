@@ -13,6 +13,7 @@ local UPDATE = composeSystems({
   -- 'modules.christmas.xmassystem',
   -- 'modules.animalscreen.boundarysystem',
   'modules.christmas.snow',
+  'modules.snowman.cannonsystem',
   'modules.snowman.upright',
 })
 
@@ -105,7 +106,7 @@ function M.updateWorld(w,action)
     table.insert(w.input.events, shallowclone(action))
 
   end
-    scratchUpdate(w,action)
+  -- XXX scratchUpdate(w,action)
   return w, sidefx
 end
 

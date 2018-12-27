@@ -45,17 +45,17 @@ local physicsSystem =  defineUpdateSystem({'physicsWorld'},function(physEnt,esto
       Debug.println("New physics body for cid="..e.body.cid.." kind="..e.body.kind)
     end
     -- Apply values from Entity to the physics object
-    obj.body:setPosition(getPos(e))
-    obj.body:setAngle(e.pos.r)
+    local b = obj.body
+    b:setPosition(getPos(e))
+    b:setAngle(e.pos.r)
     if e.vel then
-      obj.body:setLinearVelocity(e.vel.dx, e.vel.dy)
-      obj.body:setLinearDamping(e.vel.lineardamping)
-      obj.body:setAngularVelocity(e.vel.angularvelocity)
-      obj.body:setAngularDamping(e.vel.angulardamping)
+      b:setLinearVelocity(e.vel.dx, e.vel.dy)
+      b:setLinearDamping(e.vel.lineardamping)
+      b:setAngularVelocity(e.vel.angularvelocity)
+      b:setAngularDamping(e.vel.angulardamping)
     end
     if e.force then
       local f = e.force
-      local b = obj.body
       b:applyForce(f.fx, f.fy)
       b:applyTorque(f.torque)
       b:applyLinearImpulse(f.impx, f.impy)
