@@ -24,15 +24,6 @@ function Entities.initialEntities(res)
   return estore
 end
 
--- function Entities.floor(estore,res)
---   return estore:newEntity({
---     {'tag', {name='floor'}},
---     {'body', {debugDraw=true, dynamic=false}},
--- 		{'rectangleShape', {w=1024,h=50}},
---     {'pos', {x=512,y=793}},
--- 	})
--- end
-
 function Entities.background(estore,res)
   estore:newEntity({
     {'pic', {id='woodsbg', sx=1, sy=1}}, 
@@ -56,9 +47,10 @@ function Entities.snowman(estore,res)
   local maxForce = 1000
 	local debugDraw = false
 
+
   -- head:
-  local ball3 = estore:newEntity({
-    {'tag', {name='snowman_head'}},
+  local head = estore:newEntity({
+    {'name', {name='snowman_head'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=25}},
     {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5}}, 
@@ -67,8 +59,8 @@ function Entities.snowman(estore,res)
     {'force', {}},
   })
   -- middle:
-  local ball2 = estore:newEntity({
-    {'tag', {name='snowman_body'}},
+  local body = estore:newEntity({
+    {'name', {name='snowman_body'}},
     {'tag', {name='cannon_target'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=50}},
@@ -76,11 +68,11 @@ function Entities.snowman(estore,res)
     {'pos', {x=600,y=500}},
     {'vel', {}},
     {'force', {}},
-    {'joint', {kind='snowman', to='snowman_head', lowerlimit=65, upperlimit=85, motorspeed=0, maxmotorforce=0}},
+    {'joint', {kind='prismatic', toEntity=head.eid, lowerlimit=70, upperlimit=85, motorspeed=0, maxmotorforce=0}},
   })
   -- base:
-  local ball1 = estore:newEntity({
-    {'tag', {name='snowman_base'}},
+  local base = estore:newEntity({
+    {'name', {name='snowman_base'}},
     {'tag', {name='upright_snowman'}}, -- signals the "upright" system to operate on this object
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=80}},
@@ -88,7 +80,67 @@ function Entities.snowman(estore,res)
     {'pos', {x=600,y=600}},
     {'vel', {}},
     {'force', {}},
-    {'joint', {kind='snowman', to='snowman_body', lowerlimit=120, upperlimit=140, motorspeed=0, maxmotorforce=0}},
+    {'joint', {kind='prismatic', toEntity=body.eid, lowerlimit=120, upperlimit=140, motorspeed=0, maxmotorforce=0}},
+  })
+
+  -- Hat
+  local hat = estore:newEntity({
+    {'body', {debugDraw=debugDraw}},
+		{'rectangleShape', {w=60,h=40}},
+    {'pic', {id="hat", sx=0.55, sy=0.55, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
+    {'pos', {x=600,y=376}},
+    {'vel', {}},
+    {'force', {}},
+    {'joint', {kind='prismatic', toEntity=head.eid, lowerlimit=50, upperlimit=60, motorspeed=0, maxmotorforce=0}},
+  })
+  -- Eyes
+  local rightEye = estore:newEntity({
+    {'pic', {id="coal3", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
+    {'body', {debugDraw=debugDraw}},
+		{'circleShape', {radius=5}},
+    {'pos', {x=602,y=388}},
+    {'joint', {kind='weld', toEntity=head.eid}},
+    {'vel', {}},
+    {'force', {}},
+  })
+  local leftEye = estore:newEntity({
+    {'pic', {id="coal1", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
+    {'body', {debugDraw=debugDraw}},
+		{'circleShape', {radius=5}},
+    {'pos', {x=580,y=388}},
+    {'joint', {kind='weld', toEntity=head.eid}},
+    {'vel', {}},
+    {'force', {}},
+  })
+  local dots = {
+    {-9,-5},
+    {-3,-2},
+    {3,-2},
+    {9,-5},
+  }
+  local anchX=591
+  local anchY=415
+  for _,xy in ipairs(dots) do
+    estore:newEntity({
+      {'pic', {id="coal2", sx=0.3, sy=0.3, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
+      {'body', {debugDraw=debugDraw}},
+      {'circleShape', {radius=2}},
+      {'pos', {x=anchX+(xy[1]*1.5), y=anchY+(xy[2]*1.5)}},
+      {'joint', {kind='weld', toEntity=head.eid}},
+      {'vel', {}},
+      {'force', {}},
+    })
+  end
+  
+  -- Nose
+  local nose = estore:newEntity({
+    {'pic', {id="carrot", sx=0.28, sy=0.28, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
+    {'body', {debugDraw=debugDraw}},
+		{'rectangleShape', {w=45,h=7}},
+    {'pos', {x=567,y=402}},
+    {'joint', {kind='weld', toEntity=head.eid}},
+    {'vel', {}},
+    {'force', {}},
   })
 
 end

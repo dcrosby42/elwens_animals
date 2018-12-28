@@ -236,40 +236,61 @@ function newJoint(pw, jointComp, e, estore, objCache)
   local fromComp = e.body
   Debug.println("fromComp: "..tflatten(fromComp))
 
-  local toComp
-  estore:seekEntity(hasTag(jointComp.to), function(e) 
-    toComp = e.body
-    return true
-  end)
+  local toEnt = estore:getEntity(jointComp.toEntity)
+  if not toEnt then
+    error("No entity '"..jointComp.toEntity.."'; cannot make joint "..tflatten(jointComp))
+  end
+  local toComp = toEnt.body
+  -- estore:seekEntity(hasTag(jointComp.to), function(e) 
+  --   toComp = e.body
+  --   return true
+  -- end)
   Debug.println("toComp: "..tflatten(toComp))
 
   local from = objCache[fromComp.cid]
   local to = objCache[toComp.cid]
 
-  local fromCenterX = from.body:getX()
-  local fromCenterY = from.body:getY()
-  local toCenterX = to.body:getX()
-  local toCenterY = to.body:getY()
-  Debug.println("fromCenterX="..fromCenterX.." fromCenterY="..fromCenterY)
-  Debug.println("toCenterX="..toCenterX.." toCenterY="..toCenterY)
-  local vx = toCenterX - fromCenterX
-  local vy = toCenterY - fromCenterY
-  
-  local joint = P.newPrismaticJoint(
-    from.body,
-    to.body,
-    fromCenterX,fromCenterY,
-    toCenterX,toCenterY,
-    vx,vy,
-    fromComp.docollide
-  )
-  if jointComp.upperlimit ~= '' and jointComp.lowerlimit ~= '' then
-    joint:setLimits(jointComp.lowerlimit, jointComp.upperlimit)
-  end
-  if jointComp.motorspeed ~= '' and jointComp.maxmotorforce ~= '' then
-    joint:setMotorEnabled(true)
-    joint:setMotorSpeed(jointComp.motorspeed) 
-    joint:setMaxMotorForce(jointComp.maxmotorforce) 
+  local joint
+  if jointComp.kind == "prismatic" then
+    local fromCenterX = from.body:getX()
+    local fromCenterY = from.body:getY()
+    local toCenterX = to.body:getX()
+    local toCenterY = to.body:getY()
+    Debug.println("fromCenterX="..fromCenterX.." fromCenterY="..fromCenterY)
+    Debug.println("toCenterX="..toCenterX.." toCenterY="..toCenterY)
+    local vx = toCenterX - fromCenterX
+    local vy = toCenterY - fromCenterY
+    
+    joint = P.newPrismaticJoint(
+      from.body,
+      to.body,
+      fromCenterX,fromCenterY,
+      toCenterX,toCenterY,
+      vx,vy,
+      fromComp.docollide
+    )
+    if jointComp.upperlimit ~= '' and jointComp.lowerlimit ~= '' then
+      joint:setLimits(jointComp.lowerlimit, jointComp.upperlimit)
+    end
+    if jointComp.motorspeed ~= '' and jointComp.maxmotorforce ~= '' then
+      joint:setMotorEnabled(true)
+      joint:setMotorSpeed(jointComp.motorspeed) 
+      joint:setMaxMotorForce(jointComp.maxmotorforce) 
+    end
+
+  elseif jointComp.kind == "weld" then
+    local x = from.body:getX()
+    local y = from.body:getY()
+    joint = P.newWeldJoint(
+      from.body,
+      to.body,
+      x,
+      y,
+      false
+    )
+
+  else
+    error("Cannot make a physics joint for: "..tflatten(jointComp))
   end
   return {joint=joint}
 end

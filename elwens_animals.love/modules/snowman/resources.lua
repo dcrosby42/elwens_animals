@@ -40,7 +40,18 @@ local gifts = {
 local function loadPics()
   local pics = {}
   pics["woodsbg"] = R.makePic("data/images/woods.png")
-  pics["snowman_ball_1"] = R.makePic("data/images/snowman_ball_1.png")
+
+  local pngs={
+    "snowman_ball_1",
+    "carrot",
+    "coal1",
+    "coal2",
+    "coal3",
+    "hat",
+  }
+  for _,name in ipairs(pngs) do
+    pics[name] = R.makePic("data/images/"..name..".png")
+  end
 
   for _,gift in pairs(gifts) do
     pics[gift.name] = R.makePic("data/images/"..gift.name..".png")

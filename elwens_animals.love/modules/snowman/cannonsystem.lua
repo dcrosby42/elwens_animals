@@ -10,6 +10,8 @@ local MinPow = 500
 local MaxPow = 1000
 
 function newProjectile(evt, estore, res,targetEnt)
+  if not targetEnt then return end
+
   Debug.println("Projectile!")
 
   -- local CannonWallRadius = math.dist(0,0, love.graphics.getWidth()/2, love.graphics.getHeight())
@@ -46,14 +48,6 @@ function newProjectile(evt, estore, res,targetEnt)
   e.vel.dx = dx 
   e.vel.dy = dy 
   e.vel.angularvelocity = spin
-  -- local e = estore:newEntity({
-  --   {'tag', {name='projectile'}},
-  --   {'body', {bullet=true, mass=mass, debugDraw=true}},
-  --   {'rectangleShape', {w=w,h=h}},
-  --   {'pos', {x=x,y=y}},
-  --   {'vel', {dx=dx,dy=dy,angularvelocity=spin}},
-  --   {'force', {}},
-  -- })
 
   return e
 end
@@ -78,6 +72,21 @@ return function(estore,input,res)
     end,
 
     released=function(evt)
+    end,
+  })
+
+  -- XXX
+  EventHelpers.handle(input.events, "keyboard", {
+    pressed=function(evt)
+      if evt.key == "space" then
+        estore:walkEntities(hasComps('joint'), function(e)
+          e:removeComp(e.joint)
+          -- e.force.impy = -5
+        end)
+        if targetEnt then
+          targetEnt:removeComp(targetEnt.tags.cannon_target)
+        end
+      end
     end,
   })
 end
