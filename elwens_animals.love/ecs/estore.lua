@@ -14,6 +14,7 @@ function Estore:new(o)
     cidCounter=1,
     comps={},
     ents={},
+    caches={},
     _root={_children={}},
   }
   setmetatable(o, self)
@@ -339,6 +340,16 @@ end
 
 function Estore:getChildren(e)
   return e._children
+end
+
+function Estore:getCache(name)
+  local cache = self.caches[name]
+  if not cache then
+    print("Estore:getCache making new cache named "..name)
+    cache = {}
+    self.caches[name] = cache
+  end
+  return cache
 end
 
 function compDebugString(comp)

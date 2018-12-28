@@ -31,7 +31,7 @@ local function newSnowball(pw,e,r)
   return {body=b, shapes={s}, fixtures={f}}
 end
 
-local function newGeneric(pw,e)
+local function newBody(pw,e)
   if not (e.rectangleShape or e.polygonShape or e.circleShape) then
     error("newGeneric() requires the Entity have rectangleShape, polygonShape or circleShape component(s)")
   end
@@ -95,52 +95,51 @@ function M.newObject(pw, e)
   end
 end
 
-function M.newJoint(pw, jointComp, e, estore, objCache)
-  if e == nil or jointComp == nil then
-    error("newJoint requires an entity with a joint component")
-  end
-  Debug.println("jointComp: "..tflatten(jointComp))
-
-  local fromComp = e.body
-  Debug.println("fromComp: "..tflatten(fromComp))
-
-  local toEnt, toComp
-  estore:seekEntity(hasTag(jointComp.to), function(e) 
-    toEnt = e
-    toComp = e.body
-    return true
-  end)
-  Debug.println("toComp: "..tflatten(toComp))
-
-  local from = objCache[fromComp.cid]
-  local to = objCache[toComp.cid]
-
-  local fromCenterX = from.body:getX()
-  local fromCenterY = from.body:getY()
-  local toCenterX = to.body:getX()
-  local toCenterY = to.body:getY()
-  Debug.println("fromCenterX="..fromCenterX.." fromCenterY="..fromCenterY)
-  Debug.println("toCenterX="..toCenterX.." toCenterY="..toCenterY)
-  local vx = toCenterX - fromCenterX
-  local vy = toCenterY - fromCenterY
-  
-  local joint = P.newPrismaticJoint(
-    from.body,
-    to.body,
-    fromCenterX,fromCenterY,
-    toCenterX,toCenterY,
-    vx,vy,
-    fromComp.docollide
-  )
-  if jointComp.upperlimit ~= '' and jointComp.lowerlimit ~= '' then
-    joint:setLimits(jointComp.lowerlimit, jointComp.upperlimit)
-  end
-  if jointComp.motorspeed ~= '' and jointComp.maxmotorforce ~= '' then
-    joint:setMotorEnabled(true)
-    joint:setMotorSpeed(jointComp.motorspeed) -- -1000
-    joint:setMaxMotorForce(jointComp.maxmotorforce) -- 1000
-  end
-  return {joint=joint}
-end
+-- function M.newJoint(pw, jointComp, e, estore, objCache)
+--   if e == nil or jointComp == nil then
+--     error("newJoint requires an entity with a joint component")
+--   end
+--   Debug.println("jointComp: "..tflatten(jointComp))
+--
+--   local fromComp = e.body
+--   Debug.println("fromComp: "..tflatten(fromComp))
+--
+--   local toComp
+--   estore:seekEntity(hasTag(jointComp.to), function(e) 
+--     toComp = e.body
+--     return true
+--   end)
+--   Debug.println("toComp: "..tflatten(toComp))
+--
+--   local from = objCache[fromComp.cid]
+--   local to = objCache[toComp.cid]
+--
+--   local fromCenterX = from.body:getX()
+--   local fromCenterY = from.body:getY()
+--   local toCenterX = to.body:getX()
+--   local toCenterY = to.body:getY()
+--   Debug.println("fromCenterX="..fromCenterX.." fromCenterY="..fromCenterY)
+--   Debug.println("toCenterX="..toCenterX.." toCenterY="..toCenterY)
+--   local vx = toCenterX - fromCenterX
+--   local vy = toCenterY - fromCenterY
+--   
+--   local joint = P.newPrismaticJoint(
+--     from.body,
+--     to.body,
+--     fromCenterX,fromCenterY,
+--     toCenterX,toCenterY,
+--     vx,vy,
+--     fromComp.docollide
+--   )
+--   if jointComp.upperlimit ~= '' and jointComp.lowerlimit ~= '' then
+--     joint:setLimits(jointComp.lowerlimit, jointComp.upperlimit)
+--   end
+--   if jointComp.motorspeed ~= '' and jointComp.maxmotorforce ~= '' then
+--     joint:setMotorEnabled(true)
+--     joint:setMotorSpeed(jointComp.motorspeed) -- -1000
+--     joint:setMaxMotorForce(jointComp.maxmotorforce) -- 1000
+--   end
+--   return {joint=joint}
+-- end
 
 return M

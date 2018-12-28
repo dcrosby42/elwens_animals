@@ -46,48 +46,6 @@ end
 
 local function resetInput(i) i.dt=0 i.events={} end
 
-
-function scratchUpdate(w,action)
-  if action.type == "tick" then
-
-  elseif action.type == "keyboard" and action.state == "pressed" then
-    if action.key == "space" then
-
-      local phw
-      w.estore:seekEntity(hasComps('physicsWorld'),function(physEnt)
-        local stuff = w.resources.physics.caches[physEnt.physicsWorld.cid]
-        if stuff then
-          phw = stuff.world
-        end
-        return true
-      end)
-      
-      local x=330
-      local y=550
-      local vx=1
-      local vy=-0.2
-      local s = 20
-      local power = 1000
-      local P = love.physics
-      local b = P.newBody(phw,x,y,"dynamic")
-      local sh = P.newRectangleShape(s,s)
-      local f = P.newFixture(b,sh)
-      f:setUserData("bullet")
-      b:setMass(1)
-      b:setBullet(true)
-      b:setLinearVelocity(vx*power,vy*power)
-
-      -- w.bulletCount = w.bulletCount + 1
-      -- local name = "bullet"..w.bulletCount
-      w.bullets = w.bullets or {}
-      table.insert(w.bullets,b)
-      -- [name]={name,b,{sh},{f}}
-
-
-    end
-  end
-end
-
 function M.updateWorld(w,action)
   local sidefx = nil
   if action.type == 'tick' then
@@ -106,7 +64,6 @@ function M.updateWorld(w,action)
     table.insert(w.input.events, shallowclone(action))
 
   end
-  -- XXX scratchUpdate(w,action)
   return w, sidefx
 end
 

@@ -94,8 +94,7 @@ function Res.load()
 
     r.physics = {
       newObject=Phys.newObject,   -- func(pw, e) -> {body,shapes,fixtures,componentId}
-      newJoint=Phys.newJoint,   -- func(pw, jointComp, e, estore, objCache) -> {joint}
-      caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
+      -- newJoint=Phys.newJoint,   -- func(pw, jointComp, e, estore, objCache) -> {joint}
     }
 
 
