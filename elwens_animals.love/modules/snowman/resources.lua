@@ -1,5 +1,4 @@
 local R = require 'resourceloader'
-local Phys = require 'modules.snowman.resources_physics'
 local AnimalRes = require 'modules.animalscreen.resources'
 local Anim = require 'anim'
 
@@ -69,7 +68,7 @@ end
 local function loadSounds()
   local sounds = {}
 
-  -- FIXME
+  -- TODO
   -- sounds["bgmusic"] = {
   --   file="data/sounds/music/xmas_bg_music.mp3",
   --   mode="stream",
@@ -91,12 +90,6 @@ function Res.load()
     r.anims = loadAnims()
 
     r.sounds = loadSounds()
-
-    r.physics = {
-      newObject=Phys.newObject,   -- func(pw, e) -> {body,shapes,fixtures,componentId}
-      -- newJoint=Phys.newJoint,   -- func(pw, jointComp, e, estore, objCache) -> {joint}
-    }
-
 
     r.gifts = gifts
     r.giftNames = {}

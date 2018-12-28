@@ -36,16 +36,18 @@ function Entities.animal(estore, res, kind)
     {'pic', {id=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
     {'pos', {}},
     {'vel', {}},
-    {'body', {kind="animal", group=0, debugDraw=false}},
+    {'body', {}},
+    {'circleShape', {radius=50}},
   })
 end
 
-function Entities.floor(estore, res)
+function Entities.floor(estore,res)
   return estore:newEntity({
-    {'body', {kind="floor", group=0, debugDraw=false}},
-    {'pos', {x=512,y=798}},
-    {'vel', {}},
-  })
+    {'tag', {name='floor'}},
+    {'body', {debugDraw=true, dynamic=false}},
+		{'rectangleShape', {w=1024,h=50}},
+    {'pos', {x=512,y=793}},
+	})
 end
 
 function Entities.quitButton(estore, res)

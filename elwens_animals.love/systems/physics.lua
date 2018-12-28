@@ -14,7 +14,6 @@ local P = love.physics
 local _CollisionBuffer
 -- Creates and maintains a physics simulation for entities that have body components.
 local physicsSystem = defineUpdateSystem({'physicsWorld'},function(physEnt,estore,input,res)
-  Debug.println("Physics world update")
   local oc = estore:getCache('physics')
   local worlds = estore:getCache('physicsWorlds')
 
@@ -41,12 +40,12 @@ local physicsSystem = defineUpdateSystem({'physicsWorld'},function(physEnt,estor
       -- newly-added physics component -> create new obj in cache
       -- obj = res.physics.newObject(world, e)
       obj = newBody(world, e)
-      if not obj then
+      if not obj and res.physics and res.physics.newObject then
         obj = res.physics.newObject(world, e)
-        if obj == nil then
-          error("Can't build new physics object for "..tflatten(e.body))
-        end
       end
+			if obj == nil then
+				error("Can't build new physics object for "..tflatten(e.body))
+			end
       oc[id] = obj
       Debug.println("New physics body for cid="..e.body.cid.." kind="..e.body.kind)
     end
@@ -269,8 +268,8 @@ function newJoint(pw, jointComp, e, estore, objCache)
   end
   if jointComp.motorspeed ~= '' and jointComp.maxmotorforce ~= '' then
     joint:setMotorEnabled(true)
-    joint:setMotorSpeed(jointComp.motorspeed) -- -1000
-    joint:setMaxMotorForce(jointComp.maxmotorforce) -- 1000
+    joint:setMotorSpeed(jointComp.motorspeed) 
+    joint:setMaxMotorForce(jointComp.maxmotorforce) 
   end
   return {joint=joint}
 end

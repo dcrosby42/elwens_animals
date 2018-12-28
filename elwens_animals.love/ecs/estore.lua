@@ -345,7 +345,6 @@ end
 function Estore:getCache(name)
   local cache = self.caches[name]
   if not cache then
-    print("Estore:getCache making new cache named "..name)
     cache = {}
     self.caches[name] = cache
   end

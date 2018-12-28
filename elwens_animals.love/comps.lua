@@ -21,7 +21,7 @@ Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{0,0,0}, 'style','f
 Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
 Comp.define('body', {'kind','', 'group',0,'dynamic',true,'mass','','bullet',false,'debugDraw',false})
 Comp.define("force", {'fx',0,'fy',0,'torque',0,'impx',0,'impy',0,'angimp',0})
-Comp.define('joint', {'kind','', 'to','','lowerlimit','','upperlimit','','motorspeed','','maxmotorspeed','','docollide',false})
+Comp.define('joint', {'kind','', 'to','','lowerlimit','','upperlimit','','motorspeed','','maxmotorforce','','docollide',false})
 Comp.define("rectangleShape", {'x',0,'y',0,'w',0,'h',0,'angle',0})
 Comp.define("polygonShape", {'vertices',{}})
 Comp.define("circleShape", {'x',0,'y',0,'radius',0})

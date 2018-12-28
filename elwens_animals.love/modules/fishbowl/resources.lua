@@ -1,5 +1,4 @@
 local R = require 'resourceloader'
-local Phys = require 'modules.fishbowl.resources_physics'
 local AnimalRes = require 'modules.animalscreen.resources'
 local Anim = require 'anim'
 
@@ -106,10 +105,6 @@ function Res.load()
     tmerge(r.pics, AnimalRes.loadButtonPics())
 
     r.sounds = loadAnimalSounds()
-    r.physics = {
-      newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
-      caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
-    }
 
     r.anims = loadFishAnims()
     r.fishColors = FishColors

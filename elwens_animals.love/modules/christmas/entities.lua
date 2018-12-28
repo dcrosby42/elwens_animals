@@ -44,7 +44,8 @@ function Entities.ornament(estore, res, kind)
     {'pic', {id=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
     {'pos', {}},
     {'vel', {}},
-    {'body', {kind="animal", group=0, debugDraw=false}},
+    {'body', {}},
+    {'circleShape', {radius=50}},
   })
 end
 

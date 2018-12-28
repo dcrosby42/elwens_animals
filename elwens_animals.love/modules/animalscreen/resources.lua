@@ -1,5 +1,4 @@
 local R = require 'resourceloader'
-local Phys = require 'modules.animalscreen.resources_physics'
 
 local Res = {}
 
@@ -95,10 +94,10 @@ function Res.load()
     tmerge(r.pics, Res.loadButtonPics())
 
     r.sounds = loadAnimalSounds()
-    r.physics = {
-      newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
-      caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
-    }
+    -- r.physics = {
+    --   newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
+    --   caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
+    -- }
     cached = r
   end
   return cached

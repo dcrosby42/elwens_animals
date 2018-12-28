@@ -13,21 +13,25 @@ function Entities.initialEntities(res)
   Entities.snowBack(estore,res)
 
   Entities.snowman(estore,res)
-  -- local g = Entities.gift(estore,res,"purple")
-  -- g.pos.x=200
-  -- g.body.debugDraw=true
 
   Entities.snowFore(estore,res)
-
 
   AnimalEnts.nextModeButton(estore,res)
   AnimalEnts.quitButton(estore,res)
 
   local floor = AnimalEnts.floor(estore,res)
-  floor.pos.y = 793
   
   return estore
 end
+
+-- function Entities.floor(estore,res)
+--   return estore:newEntity({
+--     {'tag', {name='floor'}},
+--     {'body', {debugDraw=true, dynamic=false}},
+-- 		{'rectangleShape', {w=1024,h=50}},
+--     {'pos', {x=512,y=793}},
+-- 	})
+-- end
 
 function Entities.background(estore,res)
   estore:newEntity({
@@ -50,11 +54,13 @@ end
 function Entities.snowman(estore,res)
   local motor = -1000
   local maxForce = 1000
+	local debugDraw = false
 
   -- head:
   local ball3 = estore:newEntity({
     {'tag', {name='snowman_head'}},
-    {'body', {kind="snowman_ball_3", group=0, debugDraw=false}},
+    {'body', {debugDraw=debugDraw}},
+		{'circleShape', {radius=25}},
     {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5}}, 
     {'pos', {x=600,y=400}},
     {'vel', {}},
@@ -64,24 +70,24 @@ function Entities.snowman(estore,res)
   local ball2 = estore:newEntity({
     {'tag', {name='snowman_body'}},
     {'tag', {name='cannon_target'}},
-    {'body', {kind="snowman_ball_2", group=0, debugDraw=false}},
+    {'body', {debugDraw=debugDraw}},
+		{'circleShape', {radius=50}},
     {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5}}, 
     {'pos', {x=600,y=500}},
     {'vel', {}},
     {'force', {}},
-    -- {'joint', {kind='snowman', to='snowman_head', lowerlimit=65, upperlimit=85, motorspeed=motor, maxmotorforce=maxForce}},
     {'joint', {kind='snowman', to='snowman_head', lowerlimit=65, upperlimit=85, motorspeed=0, maxmotorforce=0}},
   })
   -- base:
   local ball1 = estore:newEntity({
     {'tag', {name='snowman_base'}},
     {'tag', {name='upright_snowman'}}, -- signals the "upright" system to operate on this object
-    {'body', {kind="snowman_ball_1", group=0, debugDraw=false}},
+    {'body', {debugDraw=debugDraw}},
+		{'circleShape', {radius=80}},
     {'pic', {id="snowman_ball_1", sx=0.7, sy=0.7, centerx=0.5, centery=0.5}}, 
     {'pos', {x=600,y=600}},
     {'vel', {}},
     {'force', {}},
-    -- {'joint', {kind='snowman', to='snowman_body', lowerlimit=120, upperlimit=140, motorspeed=motor, maxmotorforce=maxForce}},
     {'joint', {kind='snowman', to='snowman_body', lowerlimit=120, upperlimit=140, motorspeed=0, maxmotorforce=0}},
   })
 

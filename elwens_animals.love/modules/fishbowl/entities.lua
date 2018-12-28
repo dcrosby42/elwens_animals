@@ -43,7 +43,8 @@ function Entities.fish(estore, res)
     {'fish', {kind='yellow',state="swim",targetspeed=0}},
     {'anim',   {name="fishy", id="", centerx=0.5, centery=0.5, drawbounds=false}}, 
     {'timer', {name="fishy", countDown=false}},
-    {'body', {kind="animal", group=0, debugDraw=false}},
+    {'body', {}},
+    {'circleShape', {radius=50}},
     {'force', {}},
     {'pos', {}},
     {'vel', {}},
@@ -51,13 +52,17 @@ function Entities.fish(estore, res)
   })
 end
 
-function Entities.bubble(estore, res)
+function Entities.bubble(estore, opts)
+  opts = opts or {x=0, y=0, size=0.5}
+  print(tflatten(opts))
+  
   return estore:newEntity({
     {'tag',{name="bubble"}},
-    {'pic',   {id="bubble_white", sx=0.5, sy=0.5, centerx=0.5, centery=0.5, drawbounds=false}}, 
-    {'body', {kind="bubble", group=0, debugDraw=false}},
+    {'pic',   {id="bubble_white", sx=opts.size, sy=opts.size, centerx=0.5, centery=0.5, drawbounds=false}}, 
+    {'body', {}},
+    {'circleShape',{radius=opts.size*40}},
     {'force', {fx=0,fy=-50}},
-    {'pos', {}},
+    {'pos', {x=opts.x, y=opts.y}},
     {'vel', {}},
   })
 end

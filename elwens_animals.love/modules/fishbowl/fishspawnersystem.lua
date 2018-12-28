@@ -25,13 +25,12 @@ local function spawnFish(e,estore,input,res)
   Debug.println("Fish spawner: new fish "..f.eid)
 end
 
-local function spawnBubble(e,estore,input,res)
-  local bub = Entities.bubble(estore,res)
-  bub.pic.sx = randomFloat(0.1, 0.5)
-  bub.pic.sy = bub.pic.sx
-  bub.pos.x = randomInt(0,1024)
-  bub.pos.y = 770
-  return bub
+local function spawnBubble(estore)
+  return Entities.bubble(estore,{
+    size=randomFloat(0.1,0.5),
+    x=randomInt(0,1024),
+    y=770,
+  })
 end
 
 --
@@ -48,13 +47,13 @@ return defineUpdateSystem({'fishspawner','timer'}, function(e, estore,input,res)
 
   local btimer = e.timers.bubbler
   if btimer and btimer.alarm then
-    spawnBubble(e,estore,input,res)
+    spawnBubble(estore)
   end
 
   EventHelpers.handle(input.events, "keyboard", {
     pressed=function(evt)
       if evt.key == "space" then
-        spawnBubble(e,estore,input,res)
+        spawnBubble(estore)
       end
     end,
   })

@@ -57,6 +57,9 @@ local function mkComp(typeName, fieldNames, proto, poolOpts)
       local c = pool:getClean()
       if o then
         for k,v in pairs(o) do
+          if c[k] == nil then
+            print("!! Component<"..typeName..">.cleanCopy() INVALID KEY "..tostring(k).." however we're copying it anyway. Plz fix.")
+          end
           c[k] = v
         end
       end
