@@ -165,29 +165,25 @@ local function tryGetUserData(obj)
 end
 
 function beginContact(a,b,contact)
-  local userA = tryGetUserData(a)
-  local userB = tryGetUserData(a)
-  if not userA or not userB then return end -- sometimes we get stale fixtures, abort
+  local cidA = tryGetUserData(a)
+  local cidB = tryGetUserData(b)
+  if not cidA or not cidB then return end -- sometimes we get stale fixtures, abort
 
   local af,bf = contact:getFixtures()
-  adx,ady = af:getBody():getLinearVelocity()
-  bdx,bdy = bf:getBody():getLinearVelocity()
-  local contactInfo = {
-    a={
-      vel={adx,ady},
-    },
-    b={
-      vel={bdx,bdy},
-    },
-  }
-  Debug.println("beginContact a="..a:getUserData().." b="..b:getUserData())
-  Debug.println("  a={"..adx..","..ady.."} b={"..bdx..","..bdy.."}")
-  table.insert(_CollisionBuffer, {"begin",a,b,contactInfo})
+  local velA = {af:getBody():getLinearVelocity()}
+  local velB = {bf:getBody():getLinearVelocity()}
+  Debug.println("beginContact cidA="..cidA.." velA={"..velA[1]..","..velA[2].."} cidB="..cidB.." velB={"..velB[1]..","..velB[2].."}")
+  table.insert(_CollisionBuffer, {"begin",a,b,cidA,cidB,velA,velB})
+  contact=nil
+  GC.request()
 end
 
 function endContact(a,b,_contact)
-  Debug.println("endContact a="..a:getUserData().." b="..b:getUserData())
-  table.insert(_CollisionBuffer, {"end",a,b,{}})
+  local cidA = tryGetUserData(a)
+  local cidB = tryGetUserData(b)
+  if not cidA or not cidB then return end -- sometimes we get stale fixtures, abort
+  Debug.println("endContact cidA="..cidA.." cidB="..cidB)
+  table.insert(_CollisionBuffer, {"end",a,b,cidA,cidB})
   _contact = nil
   GC.request()
 end
@@ -197,31 +193,26 @@ end
 -- Create a "collision event" object and append to the given events list.
 function generateCollisionEvents(collbuf, estore, events)
   if #collbuf > 0 then
-    Debug.println("handleCollisions: num items:"..#collbuf)
+    Debug.println("generateCollisionEvents: num items:"..#collbuf)
     for _,c in ipairs(collbuf) do
-      local state,a,b,contactInfo = unpack(c)
-      local aCid = tryGetUserData(a)
-      local bCid = tryGetUserData(b)
-      if aCid and bCid then 
-        local aComp, aEnt = estore:getCompAndEntityForCid(a:getUserData())
-        local bComp, bEnt = estore:getCompAndEntityForCid(b:getUserData())
-        -- Debug.println("  aComp[eid="..aComp.eid.." cid="..aComp.cid.."] aEnt.eid="..aEnt.eid)
-        -- Debug.println("  bComp[eid="..bComp.eid.." cid="..bComp.cid.."] bEnt.eid="..bEnt.eid)
-        if aEnt and bEnt then
-          local evt = {
-            type="collision",
-            state=state,
-            ent1=aEnt,
-            comp1=aComp,
-            ent2=bEnt,
-            comp2=bComp,
-            contactInfo=contactInfo,
-          }
-          table.insert(events, evt)
-        
-        else
-          logError("!! Unable to register collision between '".. aCid .."' and '".. bCid .."'")
-        end
+      local state,a,b,cidA,cidB,velA,velB = unpack(c)
+      local compA, entA = estore:getCompAndEntityForCid(cidA)
+      local compB, entB = estore:getCompAndEntityForCid(cidB)
+      if entA and entB then
+        local evt = {
+          type="collision",
+          state=state,
+          entA=entA,
+          compA=compA,
+          entB=entB,
+          compB=compB,
+          velA=velA,
+          velB=velB,
+        }
+        table.insert(events, evt)
+      
+      else
+        logError("!! Unable to register collision between '".. aCid .."' and '".. bCid .."'")
       end
     end
   end

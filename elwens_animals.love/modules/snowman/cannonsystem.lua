@@ -89,4 +89,19 @@ return function(estore,input,res)
       end
     end,
   })
+  if targetEnt then
+    EventHelpers.handle(input.events, "collision", {
+      begin=function(evt)
+        local vel
+        if evt.entA.eid == targetEnt.eid then
+          vel = evt.velA
+        elseif evt.entB.eid == targetEnt.eid then
+          vel = evt.velB
+        end
+        if vel then
+          Debug.println("Snowman hit: "..tflatten(vel))
+        end
+      end,
+    })
+  end
 end
