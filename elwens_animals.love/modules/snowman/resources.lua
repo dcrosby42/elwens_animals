@@ -85,6 +85,26 @@ local function loadSounds()
   --   mode="stream",
   --   volume=0.25,
   -- }
+  sounds["woosh1"] = {
+    file="data/sounds/fx/woosh.wav",
+    mode="static",
+    volume=0.5,
+  }
+  sounds["woosh2"] = {
+    file="data/sounds/fx/woosh2.wav",
+    mode="static",
+    volume=1,
+  }
+  sounds["thud1"] = {
+    file="data/sounds/fx/thud.wav",
+    mode="static",
+    volume=1,
+  }
+  sounds["thud2"] = {
+    file="data/sounds/fx/woosh-punch.wav",
+    mode="static",
+    volume=1,
+  }
 
   fetchSoundDatas(sounds)
   return sounds

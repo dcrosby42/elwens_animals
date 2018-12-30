@@ -10,7 +10,23 @@ local Range = 500
 local MinPow = 500
 local MaxPow = 1000
 
-function newProjectile(evt, estore, res,targetEnt)
+local function addSound(e, res, name)
+  if not name then return end
+  local cfg = res.sounds[name]
+  if cfg then
+    return e:newComp('sound', {
+      sound=name,
+      state='playing',
+      duration=cfg.duration,
+      volume=cfg.volume or 1,
+    })
+  else
+    Debug.println("(No sound for "..tostring(name)..")")
+    return nil
+  end
+end
+
+local function newProjectile(evt, estore, res,targetEnt)
   if not targetEnt then return end
 
   local touchX=evt.x
@@ -44,6 +60,9 @@ function newProjectile(evt, estore, res,targetEnt)
   e.vel.dx = dx 
   e.vel.dy = dy 
   e.vel.angularvelocity = spin
+
+  
+  addSound(e,res, pickRandom({"woosh1","woosh2"}))
 
   return e
 end
@@ -139,8 +158,11 @@ return function(estore,input,res)
             snowmanEnt.health.hp = snowmanEnt.health.hp - dmg
             Debug.println("Snowman HIT, hp: "..snowmanEnt.health.hp)
             if snowmanEnt.health.hp <= 0 then
+              addSound(snowmanEnt, res, pickRandom({"thud2"}))
               Debug.println("Snowman KILLED")
               killSnowman(estore,snowmanEnt)
+            else
+              addSound(snowmanEnt, res, pickRandom({"thud1"}))
             end
           end
         end
