@@ -169,11 +169,17 @@ function beginContact(a,b,contact)
   local cidB = tryGetUserData(b)
   if not cidA or not cidB then return end -- sometimes we get stale fixtures, abort
 
-  local af,bf = contact:getFixtures()
-  local velA = {af:getBody():getLinearVelocity()}
-  local velB = {bf:getBody():getLinearVelocity()}
+  -- XXX local af,bf = contact:getFixtures()
+  local x,y,_,_ = contact:getPositions()
+  local dxA,dyA = a:getBody():getLinearVelocityFromWorldPoint(x,y)
+  local dxB,dyB = b:getBody():getLinearVelocityFromWorldPoint(x,y)
+
+  local velA = {a:getBody():getLinearVelocity()}
+  local velB = {b:getBody():getLinearVelocity()}
   Debug.println("beginContact cidA="..cidA.." velA={"..velA[1]..","..velA[2].."} cidB="..cidB.." velB={"..velB[1]..","..velB[2].."}")
-  table.insert(_CollisionBuffer, {"begin",a,b,cidA,cidB,velA,velB})
+  Debug.println("   dxA="..dxA.." dyA="..dyA.."  dxB="..dxB.." dyB="..dyB)
+  -- table.insert(_CollisionBuffer, {"begin",a,b,cidA,cidB,velA,velB})
+  table.insert(_CollisionBuffer, {"begin",a,b,cidA,cidB,dxA,dyA,dxB,dyB})
   contact=nil
   GC.request()
 end
@@ -195,7 +201,7 @@ function generateCollisionEvents(collbuf, estore, events)
   if #collbuf > 0 then
     Debug.println("generateCollisionEvents: num items:"..#collbuf)
     for _,c in ipairs(collbuf) do
-      local state,a,b,cidA,cidB,velA,velB = unpack(c)
+      local state,a,b,cidA,cidB,dxA,dyA,dxB,dyB = unpack(c)
       local compA, entA = estore:getCompAndEntityForCid(cidA)
       local compB, entB = estore:getCompAndEntityForCid(cidB)
       if entA and entB then
@@ -206,8 +212,8 @@ function generateCollisionEvents(collbuf, estore, events)
           compA=compA,
           entB=entB,
           compB=compB,
-          velA=velA,
-          velB=velB,
+          dxA=dxA, dyA=dyA,
+          dxB=dxB, dyB=dyB,
         }
         table.insert(events, evt)
       

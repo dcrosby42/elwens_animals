@@ -54,7 +54,7 @@ function Entities.quitButton(estore, res)
   return estore:newEntity({
     {'pic', {id='power-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=980,y=50}},
-    {'button', {eventtype='POWER', holdtime=0.5, radius=40}},
+    {'button', {kind='hold', eventtype='POWER', holdtime=0.5, radius=40}},
   })
 end
 
@@ -62,7 +62,7 @@ function Entities.nextModeButton(estore, res)
   return estore:newEntity({
     {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=900,y=50}},
-    {'button', {eventtype='SKIP', holdtime=0.5, radius=40}},
+    {'button', {kind='hold', eventtype='SKIP', holdtime=0.5, radius=40}},
   })
 end
 

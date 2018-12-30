@@ -48,7 +48,8 @@ function Entities.snowman(estore,res)
 	local debugDraw = false
 
   local parent = estore:newEntity({
-    {'tag', {name='snowman1'}},
+    {'tag', {name='snowman'}},
+    {'health', {hp=5,maxhp=5}},
   })
 
   -- head:
@@ -153,6 +154,7 @@ function Entities.gift(estore,res,name)
   local cx = g.centerx or 0.5
   local cy = g.centery or 0.5
   return estore:newEntity({
+    {'tag', {name='gift'}},
     {'body', {}},
     {'rectangleShape', {w=scale*g.w,h=scale*g.h}},
     {'pic', {id=g.name, sx=scale, sy=scale, centerx=cx, centery=cy,r=-0.3}}, 

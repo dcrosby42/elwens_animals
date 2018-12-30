@@ -33,10 +33,11 @@ Comp.define("manipulator", {'id','','mode','','x',0,'y',0,'dx',0,'dy',0})
 
 Comp.define("sound", {'sound','','loop',false,'state','playing','volume',1,'pitch',1,'playtime',0,'duration',''})
 
-Comp.define("button", {'touchid','','holdtime',1,'eventtype','','radius',40})
+Comp.define("button", {'kind','tap', 'touchid','','holdtime',1,'eventtype','','shape','circle','size',40,'w',80,'h',80})
 
 Comp.define("touch", {'touchid','','startx',0,'starty',0,'lastx',0,'lasty',0})
 
 Comp.define("fishspawner", {})
 Comp.define("fish", {'kind','black','state','idle','targetspeed',0})
 
+Comp.define("health", {'hp',10,'maxhp',10})

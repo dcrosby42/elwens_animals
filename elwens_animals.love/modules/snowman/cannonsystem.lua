@@ -1,5 +1,6 @@
 require 'ecs.ecshelpers'
 require 'mydebug'
+local V = require "vector-light"
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.snowman.entities'
 
@@ -11,10 +12,6 @@ local MaxPow = 1000
 
 function newProjectile(evt, estore, res,targetEnt)
   if not targetEnt then return end
-
-  Debug.println("Projectile!")
-
-  -- local CannonWallRadius = math.dist(0,0, love.graphics.getWidth()/2, love.graphics.getHeight())
 
   local touchX=evt.x
   local touchY=evt.y
@@ -39,7 +36,6 @@ function newProjectile(evt, estore, res,targetEnt)
   local spin=10
 
   local name = pickRandom(res.giftNames)
-  Debug.println("res.giftNames "..tflatten(res.giftNames))
   local e =Entities.gift(estore,res,name)
   e.body.mass = mass
   e.body.debugDraw = false
@@ -50,6 +46,40 @@ function newProjectile(evt, estore, res,targetEnt)
   e.vel.angularvelocity = spin
 
   return e
+end
+
+local function findSnowman(ents)
+  for i=1,#ents do
+    local par = ents[i]:getParent()
+    if par and par.tags and par.tags.snowman and par.health then
+      return par,ents[i]
+    end
+  end
+  return nil,nil
+end
+local function findGift(ents)
+  for i=1,#ents do
+    local e = ents[i]
+    if e.tags and e.tags.gift then
+      return e
+    end
+  end
+  return nil
+end
+
+local function killSnowman(estore,snowman) 
+  estore:walkEntity(snowman, hasComps('tag'), function(e)
+    if e.tags.cannon_target then
+      e:removeComp(e.tags.cannon_target)
+    end
+    -- if e.tags and e.tags.upright_snowman then
+    --   e:removeComp(e.tags.upright_snowman)
+    -- end
+  end)
+  estore:walkEntity(snowman, hasComps('joint'), function(e)
+    e:removeComp(e.joint)
+    -- e.force.impy = -5
+  end)
 end
 
 -- 
@@ -79,27 +109,35 @@ return function(estore,input,res)
   EventHelpers.handle(input.events, "keyboard", {
     pressed=function(evt)
       if evt.key == "space" then
-        estore:walkEntities(hasComps('joint'), function(e)
-          e:removeComp(e.joint)
-          -- e.force.impy = -5
-        end)
-        if targetEnt then
-          targetEnt:removeComp(targetEnt.tags.cannon_target)
-        end
+        local fake={x=randomInt(10,1000),y=100}
+        newProjectile(fake,estore,res,targetEnt)
+        -- estore:walkEntities(hasTag('snowman'), function(e)
+        --   killSnowman(estore,e)
+        -- end)
       end
     end,
   })
+  
   if targetEnt then
     EventHelpers.handle(input.events, "collision", {
       begin=function(evt)
-        local vel
-        if evt.entA.eid == targetEnt.eid then
-          vel = evt.velA
-        elseif evt.entB.eid == targetEnt.eid then
-          vel = evt.velB
-        end
-        if vel then
-          Debug.println("Snowman hit: "..tflatten(vel))
+        local snowmanEnt,childEnt = findSnowman({evt.entA,evt.entB})
+        local giftEnt = findGift({evt.entA,evt.entB})
+        if giftEnt and snowmanEnt then
+          local vx,vy = V.sub(evt.dxA,evt.dyA, evt.dxB,evt.dyB)
+          local mag = V.len(vx,vy)
+          -- Debug.println("Collision "..evt.compA.cid.."-"..evt.compB.cid.." "..V.rstr(evt.dxA,evt.dyA).."-"..V.rstr(evt.dxB,evt.dyB).." vel: ".. V.rstr(vx,vy).." mag: "..mag)
+          -- Debug.println("  compA: "..tflatten(evt.compA))
+          -- Debug.println("  compB: "..tflatten(evt.compB))
+          if mag > 1000 then
+            local dmg=1
+            snowmanEnt.health.hp = snowmanEnt.health.hp - dmg
+            Debug.println("Snowman HIT, hp: "..snowmanEnt.health.hp)
+            if snowmanEnt.health.hp <= 0 then
+              Debug.println("Snowman KILLED")
+              killSnowman(estore,snowmanEnt)
+            end
+          end
         end
       end,
     })
