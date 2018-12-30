@@ -65,6 +65,11 @@ function Entity:addChild(childEnt)
   self._estore:setupParent(self, childEnt)
 end
 
+function Entity:walkEntities(matchFn, handler)
+  self._estore:walkEntity(self,matchFn,handler)
+end
+
+
 function Entity:resortChildren()
   if self._children then
     table.sort(self._children, byOrder)

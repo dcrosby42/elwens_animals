@@ -155,12 +155,14 @@ function Entities.gift(estore,res,name)
   local cy = g.centery or 0.5
   return estore:newEntity({
     {'tag', {name='gift'}},
+    {'tag', {name='self_destruct'}},
     {'body', {}},
     {'rectangleShape', {w=scale*g.w,h=scale*g.h}},
     {'pic', {id=g.name, sx=scale, sy=scale, centerx=cx, centery=cy,r=-0.3}}, 
     {'pos', {}},
     {'vel', {}},
     {'force', {}},
+    {'timer', {t=4, name='self_destruct'}},
   })
 end
 

@@ -68,7 +68,10 @@ local function findGift(ents)
 end
 
 local function killSnowman(estore,snowman) 
-  estore:walkEntity(snowman, hasComps('tag'), function(e)
+  snowman:newComp('tag',{name="self_destruct"})
+  snowman:newComp('timer',{name="self_destruct",t=4})
+
+  snowman:walkEntities(hasComps('tag'), function(e)
     if e.tags.cannon_target then
       e:removeComp(e.tags.cannon_target)
     end
@@ -78,7 +81,7 @@ local function killSnowman(estore,snowman)
   end)
   estore:walkEntity(snowman, hasComps('joint'), function(e)
     e:removeComp(e.joint)
-    -- e.force.impy = -5
+    e.force.impy = -2
   end)
 end
 
@@ -109,8 +112,10 @@ return function(estore,input,res)
   EventHelpers.handle(input.events, "keyboard", {
     pressed=function(evt)
       if evt.key == "space" then
-        local fake={x=randomInt(10,1000),y=100}
-        newProjectile(fake,estore,res,targetEnt)
+        -- local fake={x=randomInt(10,1000),y=100}
+        -- newProjectile(fake,estore,res,targetEnt)
+        Entities.snowman(estore,res)
+
         -- estore:walkEntities(hasTag('snowman'), function(e)
         --   killSnowman(estore,e)
         -- end)

@@ -7,6 +7,7 @@ local Snow = require 'modules.christmas.snow'
 
 local UPDATE = composeSystems({
   'systems.timer',
+  'systems.selfdestruct',
   'systems.physics',
   'systems.sound',
   'systems.touchbutton',
