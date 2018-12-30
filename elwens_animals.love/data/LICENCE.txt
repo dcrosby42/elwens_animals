@@ -15,3 +15,10 @@ white_bubble.png: Bubbles.zip, https://opengameart.org/content/bubbles8-colors, 
 reindeer_fireplace.jpg: https://wallpapercave.com/w/G7cGy57 (not yet licensed)
 
 xmas_bg_music.wav: https://www.youtube.com/watch?v=mng4p8yWFjs (not yet licensed)
+
+Wooshes and thuds in snowman scene:
+  https://freesound.org/people/DigestContent/sounds/442755/
+  https://freesound.org/people/InspectorJ/sounds/394446/
+  https://freesound.org/people/qubodup/sounds/60013/
+  https://freesound.org/people/OtisJames/sounds/215162/
+
