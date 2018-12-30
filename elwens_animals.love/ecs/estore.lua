@@ -15,7 +15,7 @@ function Estore:new(o)
     comps={},
     ents={},
     caches={},
-    _root={_children={}},
+    _root={_root=true, _children={}},
   }
   setmetatable(o, self)
   self.__index = self
@@ -34,8 +34,7 @@ function Estore:nextCid()
   return cid
 end
 
-function Estore:newEntity(compList, subs)
-  local eid = self:nextEid()
+function Estore:_makeEnt(eid)
   local e = Entity:new({
     eid=eid,
     _estore=self,
@@ -44,6 +43,12 @@ function Estore:newEntity(compList, subs)
   })
   self.ents[eid] = e
   addChildEntityTo(self._root, e)
+  return e
+end
+
+function Estore:newEntity(compList, subs)
+  local eid = self:nextEid()
+  local e = self:_makeEnt(eid)
 
   if compList then
     for _,cinfo in ipairs(compList) do
@@ -124,7 +129,7 @@ function Estore:addComp(e,comp)
   -- Officially relate this comp to its entity
   comp.eid = e.eid
 
-  -- Assign the next cid:
+  -- Assign the next cid (if not already set):
   if not comp.cid or comp.cid == '' then
     comp.cid = self:nextCid()
   end
@@ -136,8 +141,8 @@ function Estore:addComp(e,comp)
   local keyp = key .. "s"
 
   if key == "parent" then
-    if e.parent then
-      error("UNACCEPTABLE! only one 'parent' Component per Entity please! comp="..tdebug(comp).." entity="..entityDebugString(e))
+    if e._parent and not e._parent._root then
+      error("UNACCEPTABLE! only one 'parent' Component per Entity please!\nNew Component: "..Comp.debugString(comp).."\nThis Entity: "..entityDebugString(e).."\nExisting parent: "..tdebug1(e._parent))
     end
     local pid = comp.parentEid
     local parentEntity = self.ents[pid]
@@ -353,6 +358,28 @@ end
 
 function compDebugString(comp)
   return Comp.debugString(comp)
+end
+
+function Estore:clone(opts)
+  opts = opts or {}
+  local estore2 = Estore:new()
+  estore2.eidCounter = self.eidCounter
+  estore2.cidCounter = self.cidCounter
+
+  for _cid, comp in pairs(self.comps) do
+    -- Clone the Component
+    local comp2 = Comp.getType(comp.type).copy(comp)
+    -- Add to the proper Entity, creating new as needed, maintaining expected eid and cid
+    local e = estore.ents[comp.eid]
+    if not e then
+      e = estore2:_makeEnt(comp.eid)
+    end
+    estore2:addComp(e,comp2) -- note this will rebuild parent/child structures as needed
+  end
+  if opts.keepCaches then
+    estore2.caches = self.caches
+  end
+  return estore2
 end
 
 

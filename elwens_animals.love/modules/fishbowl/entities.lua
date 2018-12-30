@@ -54,8 +54,6 @@ end
 
 function Entities.bubble(estore, opts)
   opts = opts or {x=0, y=0, size=0.5}
-  print(tflatten(opts))
-  
   return estore:newEntity({
     {'tag',{name="bubble"}},
     {'pic',   {id="bubble_white", sx=opts.size, sy=opts.size, centerx=0.5, centery=0.5, drawbounds=false}}, 

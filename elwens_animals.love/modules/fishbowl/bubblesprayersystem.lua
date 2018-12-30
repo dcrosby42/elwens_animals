@@ -3,18 +3,7 @@ require 'mydebug'
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.fishbowl.entities'
 
-local Debug = Debug.sub("BubbleSprayer",true,true)
-
--- local function spawnBubble(e,estore,input,res)
---   local size = randomFloat(0.1, 0.5)
---
---   local bub = Entities.bubble(estore,res, size)
---   -- XXX bub.pic.sx = 
---   -- XXX bub.pic.sy = bub.pic.sx
---   bub.pos.x = randomInt(0,1024)
---   bub.pos.y = 770
---   return bub
--- end
+local Debug = Debug.sub("BubbleSprayer",false,false)
 
 --
 -- Bubble Sprayer System

@@ -117,6 +117,8 @@ Comp.define = define
 Comp.release = releaseComp
 Comp.debugString = compDebugString
 
+Comp.getType = getT
+
 --
 -- BUILT-IN COMPONENTS (these are used internally by Estore)
 --

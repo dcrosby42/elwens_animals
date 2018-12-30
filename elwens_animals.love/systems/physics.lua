@@ -1,6 +1,6 @@
 local Comps = require 'comps'
 local GC = require 'garbagecollect'
-local Debug = (require('mydebug')).sub("Physics",false,true)
+local Debug = (require('mydebug')).sub("Physics",false,false)
 
 -- local logDebug = print
 local logDebug = function() end

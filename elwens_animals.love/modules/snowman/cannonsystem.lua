@@ -128,19 +128,13 @@ return function(estore,input,res)
   })
 
   -- XXX
-  EventHelpers.handle(input.events, "keyboard", {
-    pressed=function(evt)
-      if evt.key == "space" then
-        -- local fake={x=randomInt(10,1000),y=100}
-        -- newProjectile(fake,estore,res,targetEnt)
-        Entities.snowman(estore,res)
-
-        -- estore:walkEntities(hasTag('snowman'), function(e)
-        --   killSnowman(estore,e)
-        -- end)
-      end
-    end,
-  })
+  -- EventHelpers.handle(input.events, "keyboard", {
+  --   pressed=function(evt)
+  --     if evt.key == "space" then
+  --       Entities.snowman(estore,res)
+  --     end
+  --   end,
+  -- })
   
   if targetEnt then
     EventHelpers.handle(input.events, "collision", {
@@ -150,9 +144,6 @@ return function(estore,input,res)
         if giftEnt and snowmanEnt then
           local vx,vy = V.sub(evt.dxA,evt.dyA, evt.dxB,evt.dyB)
           local mag = V.len(vx,vy)
-          -- Debug.println("Collision "..evt.compA.cid.."-"..evt.compB.cid.." "..V.rstr(evt.dxA,evt.dyA).."-"..V.rstr(evt.dxB,evt.dyB).." vel: ".. V.rstr(vx,vy).." mag: "..mag)
-          -- Debug.println("  compA: "..tflatten(evt.compA))
-          -- Debug.println("  compB: "..tflatten(evt.compB))
           if mag > 1000 then
             local dmg=1
             snowmanEnt.health.hp = snowmanEnt.health.hp - dmg
