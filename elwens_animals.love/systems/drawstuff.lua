@@ -14,21 +14,29 @@ return function(estore,res)
     --
     -- BUTTON (hold-button)
     --
-    if e.button and e.timers and e.timers.holdbutton then
-      local elapsed = e.button.holdtime - e.timers.holdbutton.t
-      if elapsed > 0 then
-        -- local lw = love.graphics.getLineWidth()
-        -- love.graphics.setLineWidth(1)
+    if e.button then
+      if e.button.shape == "circle" then
+        if e.button.kind == "hold" and e.timers and e.timers.holdbutton then
+          local elapsed = e.button.holdtime - e.timers.holdbutton.t
+          if elapsed > 0 then
+            -- local lw = love.graphics.getLineWidth()
+            -- love.graphics.setLineWidth(1)
 
-        local x,y = getPos(e)
-        local a1=-math.pi/2
-        local a2 = a1 + (elapsed / e.button.holdtime) * TwoPi
-        love.graphics.setColor(1,1,1,0.5)
-        love.graphics.arc("fill",x,y,e.button.radius,a1,a2,30)
-        -- Debug.println("arc: "..x..", "..y.." "..a1.." _ "..a2)
-        -- love.graphics.setLineWidth(lw)
+            local x,y = getPos(e)
+            local a1=-math.pi/2
+            local a2 = a1 + (elapsed / e.button.holdtime) * TwoPi
+            love.graphics.setColor(1,1,1,0.5)
+            love.graphics.arc("fill",x,y,e.button.radius,a1,a2,30)
+            -- Debug.println("arc: "..x..", "..y.." "..a1.." _ "..a2)
+            -- love.graphics.setLineWidth(lw)
+          end
+
+        elseif e.button and e.button.kind == "tap" and e.button.touchid ~= '' then
+          local x,y = getPos(e)
+          love.graphics.setColor(1,1,1,0.5)
+          love.graphics.circle("fill",x,y,e.button.radius)
+        end
       end
-
     end
 
     --

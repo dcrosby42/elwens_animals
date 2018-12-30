@@ -7,6 +7,7 @@ return function(estore, input, res)
   -- 1. Look for hold-me buttons that have been held long enough to trigger:
   estore:walkEntities(hasComps('button', 'timer'), 
     function(e)
+      if e.button.kind ~= 'hold' then return end
       local timer = e.timers.holdbutton
       if timer and timer.alarm then
         -- TODO something like this: EventHelpers.deleteAll('touch',{id=e.button.touchid})
@@ -26,7 +27,8 @@ return function(estore, input, res)
       local hit
       estore:seekEntity(hasComps("button"),
         function(e)
-          if dist(touch.x,touch.y, e.pos.x,e.pos.y) <= e.button.radius then
+          local x,y=getPos(e)
+          if dist(touch.x,touch.y, x,y) <= e.button.radius then
             hit = e
             Debug.println("Touch button "..e.eid)
             return true -- short circuit seekEntity
@@ -35,8 +37,10 @@ return function(estore, input, res)
       )
       if hit then
         hit.button.touchid = touch.id
-        hit:newComp('timer', {name="holdbutton",t=hit.button.holdtime})
-        Debug.println("...holdtime="..hit.button.holdtime)
+        if hit.button.kind == "hold" then
+          hit:newComp('timer', {name="holdbutton",t=hit.button.holdtime})
+          Debug.println("...holdtime="..hit.button.holdtime)
+        end
         return true -- absorb event
       end
     end,
@@ -48,7 +52,16 @@ return function(estore, input, res)
           if e.button.touchid == touch.id then
             Debug.println("Released button "..e.eid)
             e.button.touchid = ''
-            e:removeComp(e.timers.holdbutton)
+            if e.timers and e.timers.holdbutton then
+              e:removeComp(e.timers.holdbutton)
+            end
+            if e.button.kind == "tap" then
+              local x,y=getPos(e)
+              if dist(touch.x,touch.y, x,y) <= e.button.radius then
+                table.insert(input.events, {type=e.button.eventtype, state="tapped", eid=e.eid, cid=e.button.cid})
+                Debug.println("Emit event "..e.button.eventtype)
+              end
+            end
             return true -- absorb event
           end
       end)
