@@ -28,7 +28,7 @@ function Entities.background(estore,res)
   estore:newEntity({
     {'pic', {id='woodsbg', sx=1, sy=1}}, 
     {'pos', {}},
-    -- {'sound', {sound='bgmusic', loop=true, duration=res.sounds.bgmusic.duration}},
+    {'sound', {sound='bgmusic', loop=true, duration=res.sounds.bgmusic.duration}},
     {'physicsWorld', {gy=9.8*64,allowSleep=false}},
   })
 end 

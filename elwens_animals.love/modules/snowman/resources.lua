@@ -79,28 +79,27 @@ end
 local function loadSounds()
   local sounds = {}
 
-  -- TODO
-  -- sounds["bgmusic"] = {
-  --   file="data/sounds/music/xmas_bg_music.mp3",
-  --   mode="stream",
-  --   volume=0.25,
-  -- }
+  sounds["bgmusic"] = {
+    file="data/sounds/music/Into-Battle_v001.mp3",
+    mode="stream",
+    volume=0.6,
+  }
   sounds["woosh1"] = {
     file="data/sounds/fx/woosh.wav",
     mode="static",
-    volume=0.5,
+    volume=1,
   }
   sounds["woosh2"] = {
     file="data/sounds/fx/woosh2.wav",
     mode="static",
     volume=1,
   }
-  sounds["thud1"] = {
+  sounds["thud"] = {
     file="data/sounds/fx/thud.wav",
     mode="static",
     volume=1,
   }
-  sounds["thud2"] = {
+  sounds["wpunch"] = {
     file="data/sounds/fx/woosh-punch.wav",
     mode="static",
     volume=1,

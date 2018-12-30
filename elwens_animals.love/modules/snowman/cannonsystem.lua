@@ -158,15 +158,25 @@ return function(estore,input,res)
             snowmanEnt.health.hp = snowmanEnt.health.hp - dmg
             Debug.println("Snowman HIT, hp: "..snowmanEnt.health.hp)
             if snowmanEnt.health.hp <= 0 then
-              addSound(snowmanEnt, res, pickRandom({"thud2"}))
+              addSound(snowmanEnt, res, pickRandom({"wpunch"}))
               Debug.println("Snowman KILLED")
               killSnowman(estore,snowmanEnt)
+              estore:newEntity({
+                {'timer', {t=5, event={type='snowmanSpawn',state='fired'}}},
+              })
             else
-              addSound(snowmanEnt, res, pickRandom({"thud1"}))
+              addSound(snowmanEnt, res, pickRandom({"thud"}))
             end
           end
         end
       end,
     })
   end
+
+  EventHelpers.handle(input.events, "snowmanSpawn", {
+    fired=function(evt)
+      Entities.snowman(estore,res)
+    end
+  })
 end
+

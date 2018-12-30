@@ -2,6 +2,9 @@ Asset origins, licenses and attributions:
 
 http://soundimage.org/wp-content/uploads/2015/03/Chamber-of-Jewels.mp3 - Music by Eric Matyas www.soundimage.org
 
+https://soundimage.org/epic-battle/
+  http://soundimage.org/wp-content/uploads/2016/07/Into-Battle_v001.mp3
+
 fx/underwater.mp3 - http://soundbible.com/1660-Underwater-Pool.html
 
 power-button-outline.png: <div>Icons made by <a href="https://www.flaticon.com/authors/bogdan-rosu" title="Bogdan Rosu">Bogdan Rosu</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
