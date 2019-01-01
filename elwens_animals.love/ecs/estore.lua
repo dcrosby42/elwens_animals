@@ -141,8 +141,9 @@ function Estore:addComp(e,comp)
   local keyp = key .. "s"
 
   if key == "parent" then
-    if e._parent and not e._parent._root then
-      error("UNACCEPTABLE! only one 'parent' Component per Entity please!\nNew Component: "..Comp.debugString(comp).."\nThis Entity: "..entityDebugString(e).."\nExisting parent: "..tdebug1(e._parent))
+    if e.parent then
+    -- if e._parent and not e._parent._root then
+      error("UNACCEPTABLE! only one 'parent' Component per Entity please!\nExisting parent Comonent: "..Comp.debugString(e.parent).."\nNew parent Component: "..Comp.debugString(comp).."\nThis Entity: "..entityDebugString(e).."\nExisting parent: "..tdebug1(e._parent))
     end
     local pid = comp.parentEid
     local parentEntity = self.ents[pid]
@@ -166,7 +167,7 @@ function Estore:addComp(e,comp)
       end
       table.insert(chs, e)
       if reorder then
-        parentEntity:resort()
+        parentEntity:resortChildren()
       end
     end
   end
@@ -366,19 +367,22 @@ function Estore:clone(opts)
   estore2.eidCounter = self.eidCounter
   estore2.cidCounter = self.cidCounter
 
+  local count = 0
   for _cid, comp in pairs(self.comps) do
     -- Clone the Component
-    local comp2 = Comp.getType(comp.type).copy(comp)
+    local comp2 = Comp.getType(comp).copy(comp)
     -- Add to the proper Entity, creating new as needed, maintaining expected eid and cid
-    local e = estore.ents[comp.eid]
+    local e = estore2.ents[comp.eid]
     if not e then
       e = estore2:_makeEnt(comp.eid)
     end
     estore2:addComp(e,comp2) -- note this will rebuild parent/child structures as needed
+    count = count + 1
   end
   if opts.keepCaches then
     estore2.caches = self.caches
   end
+  -- print("cloned "..count.." components")
   return estore2
 end
 
