@@ -1,7 +1,7 @@
 -- SoundManager
 --   Thin layer between ECS 'sound' components and the love audio library.
 --   Each update, SoundManager tries to make sure the state of the sound world matches what the 
---   data frmo the ECS world says.  Starting, pausing, stopping, removing sounds objects as needed.
+--   data from the ECS world says.  Starting, pausing, stopping, removing sounds objects as needed.
 --   Took some hints from https://love2d.org/wiki/Minimalist_Sound_Manager
 --
 --   Methods:

@@ -37,8 +37,6 @@ function M.newWorld(args)
     },
     resources = res,
     soundmgr=SoundManager:new(),
-
-    timeDilation = 0.5,
   }
   return world
 end
@@ -63,7 +61,7 @@ function M.updateWorld(w,action)
       w.sub.module.updateWorld(w.sub.world, sidefx[i])
     end
     -- tick
-    action.dt = action.dt * w.timeDilation
+    action.dt = action.dt * slider.value
     w.sub.world, sidefx = w.sub.module.updateWorld(w.sub.world, action)
 
   elseif action.type == 'mouse' then
@@ -76,10 +74,6 @@ function M.updateWorld(w,action)
     table.insert(w.input.events, shallowclone(action))
 
   end
-
-  -- local updatedSub, subSidefx = w.sub..updateWorld(w.submodule_state, action)
-  -- w.submodule_state = updatedSub
-  -- tconcat(sidefx, subSidefx)
 
   return w, sidefx
 end
