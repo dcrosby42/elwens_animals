@@ -2,7 +2,9 @@
 local BOUNDS=false
 local TwoPi = 2*math.pi
 
-return function(estore,res)
+local Plugins={}
+
+local function drawSystem(estore,res)
   local drawBounds = false
   estore:walkEntities(hasComps('debug'), function(e)
     if e.debugs.drawbounds then
@@ -11,6 +13,10 @@ return function(estore,res)
   end)
 
   estore:walkEntities(hasComps('pos'), function(e)
+    for i=1,#Plugins do
+      Plugins[i](e,estore,res)
+    end
+
     --
     -- BUTTON (hold-button)
     --
@@ -216,3 +222,10 @@ return function(estore,res)
 
   end)
 end
+
+return {
+  drawSystem=drawSystem,
+  addPlugin=function(fn)
+    table.insert(Plugins,fn)
+  end,
+}

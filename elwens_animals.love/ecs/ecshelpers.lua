@@ -12,7 +12,9 @@ function requireModules(reqs)
   return modules
 end
 
-function resolveSystem(s)
+function resolveSystem(s,opts)
+  opts=opts or {}
+  opts.systemKeys = opts.systemKeys or {"system","System"}
   if type(s) == "string" then
     s = require(s)
   end
@@ -20,11 +22,10 @@ function resolveSystem(s)
     return s
   end
   if type(s) == "table" then
-    if s.system and type(s.system) == "function" then
-      return s.system
-    end
-    if s.System and type(s.System) == "function" then
-      return s.System
+    for _,key in ipairs(opts.systemKeys) do
+      if type(s[key]) == "function" then
+        return s[key]
+      end
     end
   end
   error("ecshelpers.resolveSystem '"..tostring(s).."' cannot be resolved as a System")
@@ -45,7 +46,7 @@ end
 function composeDrawSystems(systems)
   local rsystems = {}
   for i=1,#systems do
-    table.insert(rsystems, resolveSystem(systems[i]))
+    table.insert(rsystems, resolveSystem(systems[i],{systemKeys={"drawSystem"}}))
   end
   return function(estore,res)
     for _,system in ipairs(rsystems) do

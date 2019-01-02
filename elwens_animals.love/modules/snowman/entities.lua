@@ -1,7 +1,7 @@
 local Comps = require 'comps'
 local Estore = require 'ecs.estore'
 local AnimalEnts = require 'modules.animalscreen.entities'
-local Snow = require 'modules.christmas.snow'
+local Snow = require 'modules.snowman.snow'
 
 local Entities={}
 
@@ -34,12 +34,12 @@ function Entities.background(estore,res)
 end 
 
 function Entities.snowBack(estore,res)
-  Snow.newSnowMachine(estore, {interval=0.1, large=2, small=1, dy=30,dx=-10})
-  Snow.newSnowMachine(estore, {interval=0.1,large=3, small=1, dy=60,dx=-20})
+  Snow.newSnowField(estore, {seed=1, small=1, big=2, dy=30,dx=-10})
+  Snow.newSnowField(estore, {seed=2, small=1, big=3, dy=60,dx=-20})
 end
 
 function Entities.snowFore(estore,res)
-  Snow.newSnowMachine(estore, {interval=0.1, large=5, small=3, dy=120,dx=-40})
+  Snow.newSnowField(estore, {seed=3, small=3, big=4, dy=120,dx=-40})
 end
 
 function Entities.snowman(estore,res)

@@ -3,7 +3,12 @@ require 'ecs.ecshelpers'
 local Entities = require 'modules.christmas.entities'
 local Resources = require 'modules.christmas.resources'
 local SoundManager = require 'soundmanager'
-local Snow = require 'modules.christmas.snow'
+
+local Snow = require 'modules.snowman.snow'
+
+local DrawStuff = require 'systems.drawstuff'
+
+DrawStuff.addPlugin(Snow.drawingPlugin)
 
 local UPDATE = composeSystems({
   'systems.timer',
@@ -12,7 +17,6 @@ local UPDATE = composeSystems({
   'systems.touchbutton',
   'modules.christmas.xmassystem',
   'modules.animalscreen.boundarysystem',
-  'modules.christmas.snow',
 })
 
 local DRAW = composeDrawSystems({
