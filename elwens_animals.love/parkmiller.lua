@@ -35,8 +35,8 @@ local function pickRandom(s, list)
 end
 
 local function localRandom(seed, x,y)
-  local num = seed * math.floor(math.pow(love.math.noise(x/10,y/10)*10000,2))
-  num = churnState(num,2)
+  local num = (seed % B) * math.floor(math.pow(love.math.noise(x/10,y/10)*10000,2))
+  num = churnState(num,5)
   return num
 end
 
@@ -72,6 +72,8 @@ end
 
 
 return {
+  A=A,
+  B=B,
   nextState = nextState,
   churnState = churnState,
   randomFloat = randomFloat,
