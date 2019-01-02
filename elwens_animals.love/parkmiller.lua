@@ -13,11 +13,14 @@ local function churnState(s,n)
   return s
 end
 
-local function randomFloat(s)
+local function randomFloat(s, lo,hi)
+  lo=lo or 0.0
+  hi=hi or 1.0
   local s1 = nextState(s)
-  return s1/B, s1
+  return (s1/B)*(hi-lo)+lo, s1
 end
 
+-- lo and hi are INclusive
 local function randomInt(s, lo,hi)
   local f,s1 = randomFloat(s)
   return math.floor(f * (hi-lo+1)) + lo, s1

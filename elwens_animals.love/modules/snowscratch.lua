@@ -11,27 +11,27 @@ local function setupSnow()
     layers={
       {
         seed=1,
-        vx=10,
-        vy=200,
+        vx=-40,
+        vy=120,
         coverage=0.0001,
-        small=2,
-        big=3,
+        small=3,
+        big=5,
       },
       {
         seed=2,
-        vx=5,
-        vy=100,
+        vx=-20,
+        vy=60,
         coverage=0.0001,
         small=1,
-        big=2,
+        big=3,
       },
       {
         seed=3,
-        vx=2.5,
-        vy=50,
-        coverage=0.001,
+        vx=-10,
+        vy=30,
+        coverage=0.0001,
         small=1,
-        big=1,
+        big=2,
       },
     },
   }
@@ -71,9 +71,12 @@ local function drawTile(baseSeed, tx,ty,tw,th,offx,offy,coverage,small,big)
   local num = math.floor(coverage * tw*th)
   local px,py
   for i=1,num do
-    px,s = Rng.randomInt(s,0,tw)
-    py,s = Rng.randomInt(s,0,th)
-    r,s = Rng.randomInt(s,small,big)
+    -- px,s = Rng.randomInt(s,0,tw)
+    -- py,s = Rng.randomInt(s,0,th)
+    -- r,s = Rng.randomInt(s,small,big)
+    px,s = Rng.randomFloat(s,0,tw)
+    py,s = Rng.randomFloat(s,0,th)
+    r,s = Rng.randomFloat(s,small,big)
     G.circle("fill",x+px,y+py,r)
   end
   -- G.rectangle("line",x,y,tw,th)
