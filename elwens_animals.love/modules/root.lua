@@ -4,6 +4,7 @@ local FishBowl = require 'modules/fishbowl'
 local Christmas = require 'modules/christmas'
 local Snowman = require 'modules/snowman'
 local EcsDev2 = require 'modules/ecsdev2'
+local SnowScratch = require 'modules/snowscratch'
 -- local EcsDev = require 'modules/ecsdev'
 -- local ImgScratch = require 'modules/imgscratch'
 -- local PhysicsScratch = require 'modules/physicsscratch'
@@ -22,8 +23,9 @@ M.newWorld = function()
   w.modes["f4"] = function() return { module=Christmas, state=Christmas.newWorld() } end
   w.modes["f5"] = function() return { module=EcsDev2, state=EcsDev2.newWorld({module=Snowman}) } end
   -- w.modes["f6"] = function() return { module=PhysicsScratch, state=PhysicsScratch.newWorld() } end
+  w.modes["f6"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f2","f3","f4","f5"}
-  w.current = "f5"
+  w.current = "f6"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
