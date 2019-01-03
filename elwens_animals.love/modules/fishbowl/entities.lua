@@ -25,6 +25,7 @@ end
 function Entities.fishBowl(estore,res)
   local bubbleInt = 0.3
   return estore:newEntity({
+    {'name',{name="fishbowl"}},
     {'tag',{name="fishbowl"}},
     {'pic', {id='aquarium', sx=1, sy=1}}, 
     {'pos', {}},
@@ -39,6 +40,7 @@ end
 
 function Entities.fish(estore, res)
   return estore:newEntity({
+    {'name',{name="fish"}},
     {'tag',{name="fish"}},
     {'fish', {kind='yellow',state="swim",targetspeed=0}},
     {'anim',   {name="fishy", id="", centerx=0.5, centery=0.5, drawbounds=false}}, 
@@ -55,6 +57,7 @@ end
 function Entities.bubble(estore, opts)
   opts = opts or {x=0, y=0, size=0.5}
   return estore:newEntity({
+    {'name',{name="bubble"}},
     {'tag',{name="bubble"}},
     {'pic',   {id="bubble_white", sx=opts.size, sy=opts.size, centerx=0.5, centery=0.5, drawbounds=false}}, 
     {'body', {}},

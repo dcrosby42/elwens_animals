@@ -19,7 +19,10 @@ Snow.SnowfieldDefaults = {
 
 Snow.newSnowField = function(estore, opts)
   local opts = tcopy(opts,Snow.SnowfieldDefaults)
+  local name = opts.name or "snowfield?"
+  opts.name=nil
   return estore:newEntity({
+    {'name', {name=name}},
     {'snowfield', opts},
     {'timer', {name='snow', countDown=false}},
     {'pos', {}},

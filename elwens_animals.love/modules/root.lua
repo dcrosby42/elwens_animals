@@ -22,6 +22,7 @@ M.newWorld = function()
   w.modes["f3"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
   w.modes["f4"] = function() return { module=Christmas, state=Christmas.newWorld() } end
   w.modes["f5"] = function() return { module=EcsDev2, state=EcsDev2.newWorld({module=Snowman}) } end
+  -- w.modes["f5"] = function() return { module=EcsDev2, state=EcsDev2.newWorld({module=FishBowl}) } end
   -- w.modes["f6"] = function() return { module=PhysicsScratch, state=PhysicsScratch.newWorld() } end
   w.modes["f6"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f2","f3","f4","f5"}

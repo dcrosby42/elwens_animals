@@ -20,7 +20,7 @@ local UPDATE = composeSystems({
 
 local DRAW = composeDrawSystems({
   'systems.drawstuff',
-  'systems.physicsdraw',
+  -- 'systems.physicsdraw',
 })
 
 love.physics.setMeter(64) --the height of a meter our worlds will be 64px

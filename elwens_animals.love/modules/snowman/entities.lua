@@ -26,6 +26,7 @@ end
 
 function Entities.background(estore,res)
   estore:newEntity({
+    {'name', {name="background"}},
     {'pic', {id='woodsbg', sx=1, sy=1}}, 
     {'pos', {}},
     {'sound', {sound='bgmusic', loop=true, duration=res.sounds.bgmusic.duration}},
@@ -34,12 +35,12 @@ function Entities.background(estore,res)
 end 
 
 function Entities.snowBack(estore,res)
-  Snow.newSnowField(estore, {seed=1, small=1, big=2, dy=30,dx=-10})
-  Snow.newSnowField(estore, {seed=2, small=1, big=3, dy=60,dx=-20})
+  Snow.newSnowField(estore, {name="snowfield3", seed=1, small=1, big=2, dy=30,dx=-10})
+  Snow.newSnowField(estore, {name="snowfield2", seed=2, small=1, big=3, dy=60,dx=-20})
 end
 
 function Entities.snowFore(estore,res)
-  Snow.newSnowField(estore, {seed=3, small=3, big=4, dy=120,dx=-40})
+  Snow.newSnowField(estore, {name="snowfield1", seed=3, small=3, big=4, dy=120,dx=-40})
 end
 
 function Entities.snowman(estore,res)
@@ -48,12 +49,14 @@ function Entities.snowman(estore,res)
 	local debugDraw = false
 
   local parent = estore:newEntity({
+    {'name', {name='snowman'}},
     {'tag', {name='snowman'}},
     {'health', {hp=5,maxhp=5}},
   })
 
   -- head:
   local head = parent:newEntity({
+    {'name', {name='snowman_head'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=25}},
     {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5}}, 
@@ -63,6 +66,7 @@ function Entities.snowman(estore,res)
   })
   -- middle:
   local body = parent:newEntity({
+    {'name', {name='snowman_body'}},
     {'tag', {name='cannon_target'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=50}},
@@ -74,6 +78,7 @@ function Entities.snowman(estore,res)
   })
   -- base:
   local base = parent:newEntity({
+    {'name', {name='snowman_base'}},
     {'tag', {name='upright_snowman'}}, -- signals the "upright" system to operate on this object
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=80}},
@@ -86,6 +91,7 @@ function Entities.snowman(estore,res)
 
   -- Hat
   local hat = parent:newEntity({
+    {'name', {name='snowman_hat'}},
     {'body', {debugDraw=debugDraw}},
 		{'rectangleShape', {w=60,h=40}},
     {'pic', {id="hat", sx=0.55, sy=0.55, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
@@ -96,6 +102,7 @@ function Entities.snowman(estore,res)
   })
   -- Eyes
   local rightEye = parent:newEntity({
+    {'name', {name='righteye'}},
     {'pic', {id="coal3", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=5}},
@@ -105,6 +112,7 @@ function Entities.snowman(estore,res)
     {'force', {}},
   })
   local leftEye = parent:newEntity({
+    {'name', {name='lefteye'}},
     {'pic', {id="coal1", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=5}},
@@ -123,6 +131,7 @@ function Entities.snowman(estore,res)
   local anchY=415
   for _,xy in ipairs(mouthCoals) do
     parent:newEntity({
+      {'name',{name="mouthcoal"}},
       {'pic', {id="coal2", sx=0.3, sy=0.3, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
       {'body', {debugDraw=debugDraw}},
       {'circleShape', {radius=2}},
@@ -135,6 +144,7 @@ function Entities.snowman(estore,res)
   
   -- Nose
   local nose = parent:newEntity({
+      {'name',{name="nose"}},
     {'pic', {id="carrot", sx=0.28, sy=0.28, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
 		{'rectangleShape', {w=45,h=7}},
@@ -154,6 +164,7 @@ function Entities.gift(estore,res,name)
   local cx = g.centerx or 0.5
   local cy = g.centery or 0.5
   return estore:newEntity({
+    {'name',{name="gift"}},
     {'tag', {name='gift'}},
     {'tag', {name='self_destruct'}},
     {'body', {}},
