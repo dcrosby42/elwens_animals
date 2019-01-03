@@ -3,7 +3,7 @@ local AnimalScreen = require 'modules/animalscreen'
 local FishBowl = require 'modules/fishbowl'
 local Christmas = require 'modules/christmas'
 local Snowman = require 'modules/snowman'
-local EcsDev2 = require 'modules/ecsdev2'
+local EcsDev = require 'modules/ecsdev'
 local SnowScratch = require 'modules/snowscratch'
 -- local EcsDev = require 'modules/ecsdev'
 -- local ImgScratch = require 'modules/imgscratch'
@@ -21,8 +21,8 @@ M.newWorld = function()
   w.modes["f2"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
   w.modes["f3"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
   w.modes["f4"] = function() return { module=Christmas, state=Christmas.newWorld() } end
-  w.modes["f5"] = function() return { module=EcsDev2, state=EcsDev2.newWorld({module=Snowman}) } end
-  -- w.modes["f5"] = function() return { module=EcsDev2, state=EcsDev2.newWorld({module=FishBowl}) } end
+  w.modes["f5"] = function() return { module=EcsDev, state=EcsDev.newWorld({module=Snowman}) } end
+  -- w.modes["f5"] = function() return { module=EcsDev, state=EcsDev.newWorld({module=FishBowl}) } end
   -- w.modes["f6"] = function() return { module=PhysicsScratch, state=PhysicsScratch.newWorld() } end
   w.modes["f6"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f2","f3","f4","f5"}
