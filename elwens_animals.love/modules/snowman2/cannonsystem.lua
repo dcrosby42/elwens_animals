@@ -51,20 +51,21 @@ local function newProjectile(evt, estore, res,targetEnt)
   local mass=1
   local spin=10
 
-  local name = pickRandom(res.giftNames)
-  local e =Entities.gift(estore,res,name)
-  e.body.mass = mass
-  e.body.debugDraw = false
-  e.pos.x = x
-  e.pos.y = y
-  e.vel.dx = dx 
-  e.vel.dy = dy 
-  e.vel.angularvelocity = spin
-
-  
-  addSound(e,res, pickRandom({"woosh1","woosh2"}))
-
-  return e
+  estore:seekEntity(hasComps('name'),function(bgEnt)
+    if bgEnt.names and bgEnt.names.background then
+      local name = pickRandom(res.giftNames)
+      local e =Entities.gift(bgEnt,res,name)
+      e.body.mass = mass
+      e.body.debugDraw = false
+      e.pos.x = x
+      e.pos.y = y
+      e.vel.dx = dx 
+      e.vel.dy = dy 
+      e.vel.angularvelocity = spin
+      addSound(e,res, pickRandom({"woosh1","woosh2"}))
+      return true
+    end
+  end)
 end
 
 local function findSnowman(ents)

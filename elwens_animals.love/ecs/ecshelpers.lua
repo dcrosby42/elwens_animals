@@ -201,3 +201,20 @@ function resolveEntCompKeyByPath(e, path)
   local comp = cur[path[#path-1]]
   return cur, comp, key
 end
+
+
+local function byOrder(a,b)
+  local aval,bval
+  if a.parent and a.parent.order then aval = a.parent.order else aval = 0 end
+  if b.parent and b.parent.order then bval = b.parent.order else bval = 0 end
+  return aval < bval
+end
+
+function sortEntities(ents, deep)
+  table.sort(ents, byOrder)
+  if deep then
+    for i=1,#ents do
+      sortEntities(ents[i]._children, true)
+    end
+  end
+end

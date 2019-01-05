@@ -14,8 +14,8 @@ local UPDATE = composeSystems({
   'systems.physics',
   'systems.sound',
   'systems.touchbutton',
-  'modules.snowman.cannonsystem',
-  'modules.snowman.upright',
+  'modules.snowman2.cannonsystem',
+  'modules.snowman2.upright',
 })
 
 local DRAW = composeDrawSystems({

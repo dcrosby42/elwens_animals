@@ -10,7 +10,8 @@ D.d = {
   notes = {},
   bounds = {},
   bgColor = {0,0,0,0.5},
-  fgColor = {1,1,1,1}
+  fgColor = {1,1,1,1},
+  onces={},
 }
 
 local function appendScrolled(lines,s,max)
@@ -109,6 +110,15 @@ local function makeSub(name,printToScreen,printToConsole,doNotes)
             n[key] = tostring(val)
           end
         end
+      end
+    end,
+    once=function(key,fn)
+      if not D.d.onces[key] then
+        local out = fn()
+        if out then
+          print("["..key.."] "..tostring(out))
+        end
+        D.d.onces[key] = true
       end
     end,
   }

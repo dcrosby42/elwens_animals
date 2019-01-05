@@ -17,11 +17,11 @@ Snow.SnowfieldDefaults = {
   screenh=G.getHeight(),
 }
 
-Snow.newSnowField = function(estore, opts)
+Snow.newSnowField = function(parent, opts)
   local opts = tcopy(opts,Snow.SnowfieldDefaults)
   local name = opts.name or "snowfield?"
   opts.name=nil
-  return estore:newEntity({
+  return parent:newEntity({
     {'name', {name=name}},
     {'snowfield', opts},
     {'timer', {name='snow', countDown=false}},

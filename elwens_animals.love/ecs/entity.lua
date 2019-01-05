@@ -70,18 +70,10 @@ function Entity:walkEntities(matchFn, handler)
 end
 
 
-function Entity:resortChildren()
+function Entity:resortChildren(deep)
   if self._children then
-    table.sort(self._children, byOrder)
+    sortEntities(self._children,deep)
   end
 end
-
-function byOrder(a,b)
-  local aval,bval
-  if a.parent and a.parent.order then aval = a.parent.order else aval = 0 end
-  if b.parent and b.parent.order then bval = b.parent.order else bval = 0 end
-  return aval < bval
-end
-
 
 return Entity
