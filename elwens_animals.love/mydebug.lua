@@ -1,3 +1,4 @@
+require 'crozeng.helpers'
 local D = {}
 
 D.d = {
@@ -6,6 +7,7 @@ D.d = {
   lineHeight = 12,
   maxStringLines = 10,
   stringLines = {},
+  notes = {},
   bounds = {},
   bgColor = {0,0,0,0.5},
   fgColor = {1,1,1,1}
@@ -61,10 +63,28 @@ local function draw()
   love.graphics.setColor(1,1,1,1)
 end
 
-local function makeSub(name,printToScreen,printToConsole)
+local function drawNotes(ox,oy)
+  local x,y = ox,oy
+  love.graphics.print("Notes:",x,y)
+  y=y+D.d.lineHeight
+  for name, notes in pairsByKeys(D.d.notes) do
+    love.graphics.print(name,x,y)
+    y=y+D.d.lineHeight
+    x=ox+10
+    for key,val in pairs(notes) do
+      love.graphics.print(key .. ": "..val,x,y)
+      y=y+D.d.lineHeight
+    end
+    x=ox
+  end
+end
+
+
+local function makeSub(name,printToScreen,printToConsole,doNotes)
   D.onScreen[name] = printToScreen
   D.onConsole[name] = printToConsole
-  return {
+  D.doNotes[name] = doNotes
+  local sub = {
     println=function(str)
       if D.onScreen[name] then
         D.println("["..name.."] "..str)
@@ -72,8 +92,36 @@ local function makeSub(name,printToScreen,printToConsole)
       if D.onConsole[name] then
         print("["..name.."] "..str)
       end
-    end
+    end,
+    note=function(key,val)
+      if D.doNotes[name] then
+        local n = D.d.notes[name]
+        if not n then
+          n = {}
+          D.d.notes[name] = n
+        end
+        if val == nil then
+          n[val] = nil
+        else
+          if type(val) == "number" then
+            n[key] = tostring(math.round(val,3))
+          else
+            n[key] = tostring(val)
+          end
+        end
+      end
+    end,
   }
+  sub.noteObj=function(leadup,map)
+    local pref = ""
+    for i=1,#leadup do
+      pref = pref..tostring(leadup[i]).."."
+    end
+    for k,v in pairs(map) do
+      sub.note(pref..k, v)
+    end
+  end
+  return sub
 end
 
 D.toLines = toLines
@@ -81,8 +129,10 @@ D.println = println
 D.setup = setup
 D.update = update
 D.draw = draw
+D.drawNotes = drawNotes
 D.sub = makeSub
 D.onConsole={}
 D.onScreen={}
+D.doNotes={}
 
 return D

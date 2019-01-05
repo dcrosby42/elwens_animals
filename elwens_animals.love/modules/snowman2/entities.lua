@@ -47,6 +47,7 @@ function Entities.snowman(estore,res)
   local motor = -1000
   local maxForce = 1000
 	local debugDraw = false
+	local drawPicBounds = true
 
   local parent = estore:newEntity({
     {'name', {name='snowman'}},
@@ -59,7 +60,7 @@ function Entities.snowman(estore,res)
     {'name', {name='snowman_head'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=25}},
-    {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5}}, 
+    {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=400}},
     {'vel', {}},
     {'force', {}},
@@ -70,7 +71,7 @@ function Entities.snowman(estore,res)
     {'tag', {name='cannon_target'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=50}},
-    {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5}}, 
+    {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=500}},
     {'vel', {}},
     {'force', {}},
@@ -82,7 +83,7 @@ function Entities.snowman(estore,res)
     {'tag', {name='upright_snowman'}}, -- signals the "upright" system to operate on this object
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=80}},
-    {'pic', {id="snowman_ball_1", sx=0.7, sy=0.7, centerx=0.5, centery=0.5}}, 
+    {'pic', {id="snowman_ball_1", sx=0.7, sy=0.7, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=600}},
     {'vel', {}},
     {'force', {}},

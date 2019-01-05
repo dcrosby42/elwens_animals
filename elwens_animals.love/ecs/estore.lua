@@ -273,7 +273,7 @@ end
 -- (Ie, match/process the given node, then the child nodes from first to last)
 -- IF a node IS matched AND the processing of that node returns false (explicitly), the children are NOT processed.
 function Estore:walkEntities(matchFn, doFn)
-  for _,e in pairs(self._root._children) do
+  for _,e in ipairs(self._root._children) do
     self:walkEntity(e, matchFn, doFn)
   end
 end
@@ -293,7 +293,7 @@ end
 -- Similar to walkEntities, but with the purpose of finding a particular result then exiting the search immediately.
 -- If the doFn() is applied to an Entity and returns explicitly true, the traversal exits and returns true.
 function Estore:seekEntity(matchFn, doFn)
-  for _,e in pairs(self._root._children) do
+  for _,e in ipairs(self._root._children) do
     if self:_seekEntity(e, matchFn, doFn) == true then return true end
   end
 end

@@ -467,6 +467,10 @@ function pairsByKeys(t, f)
 	return iter
 end
 
+function colorstring(c)
+  return "Color("..c[1]..","..c[2]..","..c[3]..","..tostring(c[4])..")"
+end
+
 -- split a string
 -- function string:split(delimiter)
 --   local result = { }

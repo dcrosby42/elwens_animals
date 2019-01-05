@@ -83,10 +83,7 @@ end
 local function drawEditor(ecsMod,world)
   local w = G.getWidth()
   local h = G.getHeight()
-  G.setColor(0,0,0, world.editor.ui.bgOpacity.value)
-  G.rectangle("fill", 0,0,w,h)
-  G.setColor(1,1,1)
-  Editor.draw(world.editor)
+  Editor.draw(world.editor,{rect={0,0,w,h}})
 end
 
 local function drawWorld(ecsMod, world)

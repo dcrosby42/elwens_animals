@@ -1,3 +1,4 @@
+local Debug = require('mydebug').sub("DrawStuff",true,true,true)
 
 local BOUNDS=false
 local TwoPi = 2*math.pi
@@ -94,6 +95,11 @@ local function drawSystem(estore,res)
           x-(pic.sx*offx), y-(pic.sy*offy),
           picRes.rect.w * pic.sx, picRes.rect.h * pic.sy)
       end
+
+      if e.names and e.names.snowman_body then
+        Debug.noteObj({e.eid,'snowman'},{picRes=tostring(picRes), x=x,y=y,r=r,sx=picsx,sy=pic.sy,offx=offx,offy=offy,color=colorstring(pic.color)})
+      end
+
     end
 
     --

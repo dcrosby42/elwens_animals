@@ -1,8 +1,8 @@
 require 'ecs.ecshelpers' -- composeSystems, composeDrawSystems 
 
 -- local Debug = require('mydebug').sub("Snowman2",true,true)
-local Entities = require 'modules.snowman.entities'
-local Snow = require 'modules.snowman.snow'
+local Entities = require 'modules.snowman2.entities'
+local Snow = require 'modules.snowman2.snow'
 local DrawStuff = require 'systems.drawstuff'
 local SoundManager = require 'soundmanager'
 

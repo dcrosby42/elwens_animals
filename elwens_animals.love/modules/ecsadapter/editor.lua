@@ -1,5 +1,7 @@
 local History = require('modules.ecsadapter.estorehistory')
+local Debug = require('mydebug')
 local suit = require 'SUIT'
+local G = love.graphics
 
 local Editor = {}
 
@@ -175,7 +177,7 @@ function Editor.update(editor)
 
   suit.Label("History:",{align='left'}, suit.layout:col(50,h))
   if editor.history:length() > 0 then
-    suit.Slider(ui.timeNavSlider, suit.layout:col(100,h))
+    suit.Slider(ui.timeNavSlider, suit.layout:col(300,h))
     roundSliderValue(ui.timeNavSlider)
     suit.Label(tostring(ui.timeNavSlider.value), suit.layout:col(50,h))
     if suit.Button("<", suit.layout:col(20,h)).hit then
@@ -201,8 +203,13 @@ function Editor.update(editor)
   return ret
 end
 
-function Editor.draw(editor)
+function Editor.draw(editor,opts)
+  G.setColor(0,0,0, editor.ui.bgOpacity.value)
+  G.rectangle("fill", unpack(opts.rect))
+  G.setColor(1,1,1)
   suit.draw()
+
+  Debug.drawNotes(400,200)
 end
 
 return Editor
