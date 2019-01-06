@@ -18,8 +18,14 @@ function Editor.init()
       pausedCheckbox={text="Paused", checked=false},
       estoreCheckbox={text="Entities", checked=true},
       timeNavSlider={value=0, min=0,max=0,step=1},
+      entityFilterInput={text=""},
       ents={},
       pinnedEnts={},
+      notesBox={
+        w=400,
+        h="full",
+        pin="right",
+      },
     },
   }
   return editor 
@@ -29,7 +35,7 @@ local function getEstore(editor)
   if editor.historyIndex > 0 then
     local es = editor.history:get(editor.historyIndex)
     if es == nil then
-      print("SHIT: editor.historyIndex="..editor.historyIndex.." but len is "..editor.history:length())
+      -- print("DANG: editor.historyIndex="..editor.historyIndex.." but len is "..editor.history:length())
       return editor.estore
     end
     return es
@@ -94,18 +100,49 @@ local function updateCompGui(c)
   suit.layout:returnLeft()
 end
 
-local function updateEstoreGui(ui, estore)
-  -- local x = ui.estorePanel[1]
-  -- local y = ui.estorePanel[2]
-  local h = 15
-  -- suit.layout:reset(x,y,5,2)
+local function makeFilter(filterTxt,pinnedEnts)
+  return {
+    text=filterText,
+    pat="^"..filterTxt,
+    pinned=pinnedEnts,
+  }
+end
 
+local function matchEntity(e, f)
+  if (f.pinned and f.pinned[e.eid]) or e.eid:match(f.pat) or (e.name and e.name.name:match(f.pat)) then
+    return true
+  end
+  return false
+end
+
+local function getFilteredEntities(ents,filter)
+  local ret = {}
+  for eid,e in pairsByKeys(ents,compareEids) do
+    if matchEntity(e, filter) then
+      table.insert(ret,e)
+    end
+  end
+  return ret
+end
+
+
+  -- for eid,e in pairsByKeys(estore.ents, compareEids) do
+
+local function updateEstoreGui(ui, estore)
+  local h = 15
+
+  suit.Input(ui.entityFilterInput ,suit.layout:row(130,h))
+  local filterTxt = ui.entityFilterInput.text
+
+  local ents = getFilteredEntities(estore.ents, makeFilter(filterTxt,ui.pinnedEnts))
 	-- For each Entity (sorted ascend by numeric eid)
-  for eid,e in pairsByKeys(estore.ents, compareEids) do
+  -- for eid,e in pairsByKeys(estore.ents, compareEids) do
+  for _,e in ipairs(ents) do
+    local eid = e.eid
 		-- Entity name button
     local name = eid
-    if e.name then name = e.name.name end
-    if suit.Button(name, {id=eid, align='left'}, suit.layout:row(100,h)).hit then
+    if e.name then name = name.."."..e.name.name end
+    if suit.Button(name, {id=eid, align='left'}, suit.layout:row(130,h)).hit then
       if ui.ents[eid] then
         ui.ents[eid] = nil
       else
@@ -209,7 +246,19 @@ function Editor.draw(editor,opts)
   G.setColor(1,1,1)
   suit.draw()
 
-  Debug.drawNotes(400,200)
+
+  local n = editor.ui.notesBox
+  local nx = opts.rect[3] - n.w
+  local ny = 0
+  Debug.drawNotes(nx,ny)
 end
+
+function Editor.keypressed(key)
+  suit.keypressed(key)
+end
+function Editor.textinput(text)
+  suit.textinput(text)
+end
+
 
 return Editor

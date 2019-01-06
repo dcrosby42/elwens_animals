@@ -147,20 +147,9 @@ function defineDrawSystem(matchSpec,fn)
   end
 end
 
-function buildEntity(estore, compList)
-  print("-- DEPRECATED: ecs/ecshelpers.lua:buildEntity(), use estore:buildEntity() or entity:newChild() instead")
-  local e = estore:newEntity()
-  for _,cinfo in ipairs(compList) do
-    local ctype, data = unpack(cinfo)
-    estore:newComp(e, ctype, data)
-  end
-  return e
-end
-
-
 function getPos(e)
   local par = e:getParent()
-  if par and par.pos then
+  if par and par.pos and not e.body then -- FIXME ZOINKS knowing about 'body' here is bad juju
     local x,y = getPos(par)
     return e.pos.x + x, e.pos.y + y
   else

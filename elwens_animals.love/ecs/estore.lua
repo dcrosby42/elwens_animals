@@ -1,6 +1,5 @@
 Comp = require 'ecs/component'
 Entity = require 'ecs/entity'
-local Debug = require('mydebug').sub("Estore",true,true,true)
 require 'ecs/debug'
 
 local Estore = {
@@ -172,9 +171,7 @@ function Estore:addComp(e,comp)
         parentEntity:resortChildren()
       end
     else
-      Debug.once("missed_pid_"..pid,function()
-        return "parentEntity with eid="..pid.." not found for comp: "..Comp.debugString(comp)
-      end)
+      print("!! ERR Estore:addComp(): parentEntity with eid="..pid.." not found for comp: "..Comp.debugString(comp))
     end
   end
 
@@ -368,11 +365,11 @@ function compDebugString(comp)
 end
 
 function Estore:clone(opts)
-  self._reorderLockout = true
   opts = opts or {}
   local estore2 = Estore:new()
   estore2.eidCounter = self.eidCounter
   estore2.cidCounter = self.cidCounter
+  estore2._reorderLockout = true
 
   for eid,_ent in pairs(self.ents) do
     estore2:_makeEnt(eid)
@@ -380,7 +377,6 @@ function Estore:clone(opts)
 
   local count = 0
   for _cid, comp in pairs(self.comps) do
-    Debug.once(_cid, function() return Comp.debugString(comp) end)
     -- Clone the Component
     local comp2 = Comp.getType(comp).copy(comp)
     -- Add to the proper Entity, creating new as needed, maintaining expected eid and cid
@@ -395,8 +391,8 @@ function Estore:clone(opts)
     estore2.caches = self.caches
   end
   -- print("cloned "..count.." components")
-  self._reorderLockout = false
-  sortEntities(self._root._children, true)
+  estore2._reorderLockout = false
+  sortEntities(estore2._root._children, true)
   return estore2
 end
 

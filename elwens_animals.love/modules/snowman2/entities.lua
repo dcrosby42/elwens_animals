@@ -21,9 +21,6 @@ function Entities.initialEntities(res)
 
   local floor = AnimalEnts.floor(bg,res)
   
-  for i=1,#bg._children do
-    print(entityDebugString(bg._children[i]))
-  end
   return estore
 end
 
@@ -50,7 +47,7 @@ function Entities.snowman(parent,res)
   local motor = -1000
   local maxForce = 1000
 	local debugDraw = false
-	local drawPicBounds = true
+	local drawPicBounds = false
 
   local parent = parent:newEntity({
     {'name', {name='snowman'}},
@@ -94,7 +91,7 @@ function Entities.snowman(parent,res)
   })
 
   -- Hat
-  local hat = parent:newEntity({
+  local hat = head:newEntity({
     {'name', {name='snowman_hat'}},
     {'body', {debugDraw=debugDraw}},
 		{'rectangleShape', {w=60,h=40}},
@@ -105,7 +102,7 @@ function Entities.snowman(parent,res)
     {'joint', {kind='prismatic', toEntity=head.eid, lowerlimit=50, upperlimit=60, motorspeed=0, maxmotorforce=0}},
   })
   -- Eyes
-  local rightEye = parent:newEntity({
+  local rightEye = head:newEntity({
     {'name', {name='righteye'}},
     {'pic', {id="coal3", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
@@ -115,7 +112,7 @@ function Entities.snowman(parent,res)
     {'vel', {}},
     {'force', {}},
   })
-  local leftEye = parent:newEntity({
+  local leftEye = head:newEntity({
     {'name', {name='lefteye'}},
     {'pic', {id="coal1", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
@@ -134,7 +131,7 @@ function Entities.snowman(parent,res)
   local anchX=591
   local anchY=415
   for i,xy in ipairs(mouthCoals) do
-    parent:newEntity({
+    head:newEntity({
       {'name',{name="mouthcoal_"..i}},
       {'pic', {id="coal2", sx=0.3, sy=0.3, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
       {'body', {debugDraw=debugDraw}},

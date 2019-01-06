@@ -43,6 +43,7 @@ end
 
 function Entities.floor(estore,res)
   return estore:newEntity({
+    {'name', {name="floor"}},
     {'tag', {name='floor'}},
     {'body', {debugDraw=true, dynamic=false}},
 		{'rectangleShape', {w=1024,h=50}},
@@ -52,6 +53,7 @@ end
 
 function Entities.quitButton(estore, res)
   return estore:newEntity({
+    {'name', {name="power_button"}},
     {'pic', {id='power-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=980,y=50}},
     {'button', {kind='hold', eventtype='POWER', holdtime=0.5, radius=40}},
@@ -60,6 +62,7 @@ end
 
 function Entities.nextModeButton(estore, res)
   return estore:newEntity({
+    {'name', {name="skip_button"}},
     {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=900,y=50}},
     {'button', {kind='hold', eventtype='SKIP', holdtime=0.5, radius=40}},

@@ -33,39 +33,6 @@ local function doTick(ecsMod,world,action)
     local copy = world.estore:clone({keepCaches=true})
     world.editor.history:push(copy)
     world.editor.historyIndex = world.editor.history:length()
-
-    Debug.once("after_clone",function()
-      copy:seekEntity(hasComps('name'),function(e)
-        if e.names and e.names.background then
-          bg = e
-          for i=1,#bg._children do
-            print(entityDebugString(bg._children[i]))
-          end
-          print("----")
-          bg:resortChildren()
-          for i=1,#bg._children do
-            print(entityDebugString(bg._children[i]))
-          end
-          print("=====")
-          local e3 = copy.ents["e3"]
-          if e3 then
-            print(entityDebugString(e3))
-          else
-            print("!! e3 is missing?")
-          end
-          local e17 = copy.ents["e17"]
-          if e17 then
-            print(entityDebugString(e17))
-          else
-            print("!! e3 is missing?")
-          end
-          
-
-          return true
-        end
-      end)
-    end)
-
   end
 
   return world, sidefx
@@ -77,7 +44,7 @@ local function updateWorld(ecsMod, world, action)
   local paused = world.editor.ui.pausedCheckbox.checked
 
   -- Reload game?
-  if action.state == 'pressed' and action.key == 'r' then
+  if action.state == 'pressed' and action.key == 'r' and action.gui then
     sidefx = {{type="crozeng.reloadRootModule"}}
 
   -- toggle editor?
@@ -93,6 +60,11 @@ local function updateWorld(ecsMod, world, action)
       world.editor.estore = world.estore
       Editor.update(world.editor)
     end
+
+  elseif action.type == 'keyboard' and action.state == "pressed" then
+    Editor.keypressed(action.key)
+  elseif action.type == 'textinput' then
+    Editor.textinput(action.text)
 
   -- convert mouse events to touch events:
   elseif action.type == 'mouse' then
