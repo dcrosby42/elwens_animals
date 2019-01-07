@@ -8,24 +8,24 @@ local Entities={}
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
-  Entities.background(estore,res)
+  local bg = Entities.background(estore,res)
 
-  Entities.snowBack(estore,res)
+  Entities.snowBack(bg,res)
 
-  Entities.snowman(estore,res)
+  Entities.snowman(bg,res)
 
-  Entities.snowFore(estore,res)
+  Entities.snowFore(bg,res)
 
-  AnimalEnts.nextModeButton(estore,res)
-  AnimalEnts.quitButton(estore,res)
+  AnimalEnts.nextModeButton(bg,res)
+  AnimalEnts.quitButton(bg,res)
 
-  local floor = AnimalEnts.floor(estore,res)
+  local floor = AnimalEnts.floor(bg,res)
   
   return estore
 end
 
-function Entities.background(estore,res)
-  estore:newEntity({
+function Entities.background(parent,res)
+  return parent:newEntity({
     {'name', {name="background"}},
     {'pic', {id='woodsbg', sx=1, sy=1}}, 
     {'pos', {}},
@@ -34,21 +34,22 @@ function Entities.background(estore,res)
   })
 end 
 
-function Entities.snowBack(estore,res)
-  Snow.newSnowField(estore, {name="snowfield3", seed=1, small=1, big=2, dy=30,dx=-10})
-  Snow.newSnowField(estore, {name="snowfield2", seed=2, small=1, big=3, dy=60,dx=-20})
+function Entities.snowBack(parent,res)
+  Snow.newSnowField(parent, {name="snowfield3", seed=1, small=1, big=2, dy=30,dx=-10})
+  Snow.newSnowField(parent, {name="snowfield2", seed=2, small=1, big=3, dy=60,dx=-20})
 end
 
-function Entities.snowFore(estore,res)
-  Snow.newSnowField(estore, {name="snowfield1", seed=3, small=3, big=4, dy=120,dx=-40})
+function Entities.snowFore(parent,res)
+  Snow.newSnowField(parent, {name="snowfield1", seed=3, small=3, big=4, dy=120,dx=-40})
 end
 
-function Entities.snowman(estore,res)
+function Entities.snowman(parent,res)
   local motor = -1000
   local maxForce = 1000
 	local debugDraw = false
+	local drawPicBounds = false
 
-  local parent = estore:newEntity({
+  local parent = parent:newEntity({
     {'name', {name='snowman'}},
     {'tag', {name='snowman'}},
     {'health', {hp=5,maxhp=5}},
@@ -59,7 +60,7 @@ function Entities.snowman(estore,res)
     {'name', {name='snowman_head'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=25}},
-    {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5}}, 
+    {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=400}},
     {'vel', {}},
     {'force', {}},
@@ -70,7 +71,7 @@ function Entities.snowman(estore,res)
     {'tag', {name='cannon_target'}},
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=50}},
-    {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5}}, 
+    {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=500}},
     {'vel', {}},
     {'force', {}},
@@ -82,7 +83,7 @@ function Entities.snowman(estore,res)
     {'tag', {name='upright_snowman'}}, -- signals the "upright" system to operate on this object
     {'body', {debugDraw=debugDraw}},
 		{'circleShape', {radius=80}},
-    {'pic', {id="snowman_ball_1", sx=0.7, sy=0.7, centerx=0.5, centery=0.5}}, 
+    {'pic', {id="snowman_ball_1", sx=0.7, sy=0.7, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=600}},
     {'vel', {}},
     {'force', {}},
@@ -90,7 +91,7 @@ function Entities.snowman(estore,res)
   })
 
   -- Hat
-  local hat = parent:newEntity({
+  local hat = head:newEntity({
     {'name', {name='snowman_hat'}},
     {'body', {debugDraw=debugDraw}},
 		{'rectangleShape', {w=60,h=40}},
@@ -101,7 +102,7 @@ function Entities.snowman(estore,res)
     {'joint', {kind='prismatic', toEntity=head.eid, lowerlimit=50, upperlimit=60, motorspeed=0, maxmotorforce=0}},
   })
   -- Eyes
-  local rightEye = parent:newEntity({
+  local rightEye = head:newEntity({
     {'name', {name='righteye'}},
     {'pic', {id="coal3", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
@@ -111,7 +112,7 @@ function Entities.snowman(estore,res)
     {'vel', {}},
     {'force', {}},
   })
-  local leftEye = parent:newEntity({
+  local leftEye = head:newEntity({
     {'name', {name='lefteye'}},
     {'pic', {id="coal1", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'body', {debugDraw=debugDraw}},
@@ -129,9 +130,9 @@ function Entities.snowman(estore,res)
   }
   local anchX=591
   local anchY=415
-  for _,xy in ipairs(mouthCoals) do
-    parent:newEntity({
-      {'name',{name="mouthcoal"}},
+  for i,xy in ipairs(mouthCoals) do
+    head:newEntity({
+      {'name',{name="mouthcoal_"..i}},
       {'pic', {id="coal2", sx=0.3, sy=0.3, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
       {'body', {debugDraw=debugDraw}},
       {'circleShape', {radius=2}},
@@ -156,14 +157,14 @@ function Entities.snowman(estore,res)
 
 end
 
-function Entities.gift(estore,res,name)
+function Entities.gift(parent,res,name)
   local g = res.gifts[name]
   if not g then error("No gift resource named "..tostring(name)) end
   local scale = g.scale
   local w = scale
   local cx = g.centerx or 0.5
   local cy = g.centery or 0.5
-  return estore:newEntity({
+  local e =  parent:newEntity({
     {'name',{name="gift"}},
     {'tag', {name='gift'}},
     {'tag', {name='self_destruct'}},
@@ -175,6 +176,8 @@ function Entities.gift(estore,res,name)
     {'force', {}},
     {'timer', {t=4, name='self_destruct'}},
   })
+  e.parent.order = 1000
+  return e
 end
 
 return Entities

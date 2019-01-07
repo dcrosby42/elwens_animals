@@ -1,12 +1,16 @@
--- local Estore = require 'ecs.estore'
+--
+-- ECS module adapter
+--
+-- A function that converts an "ECS Module" into a "crozeng Module"
+-- 
+
 require 'ecs.ecshelpers'
-local Resources = require 'modules.snowman2.resources'
 local Debug = require('mydebug').sub("EcsDev2",true,true)
-local Editor = require('modules.ecsadapter.editor')
+local Editor = require('ecs.editorgui')
 local G = love.graphics
 
 local function newWorld(ecsMod)
-  local res = Resources.load()
+  local res = ecsMod.loadResources()
   local world={
     estore = ecsMod.create(res),
     input = {
@@ -103,10 +107,17 @@ local function drawWorld(ecsMod, world)
   end
 end
 
+--
+-- ecsMod is an "ECS Module" which is a Table with three keys to functions:
+--   loadResources() -> resources
+--   create(resources) -> estore
+--   update(estore, action, resources) -> estore,sidefx
+--   draw(estore,resources) -> nil
+--  
 return function(ecsMod)
   return {
-  newWorld=   function()             return newWorld(ecsMod)                 end,
-  updateWorld=function(world,action) return updateWorld(ecsMod,world,action) end,
-  drawWorld=  function(world)        return drawWorld(ecsMod,world)          end,
-}
+    newWorld=   function()             return newWorld(ecsMod)                 end,
+    updateWorld=function(world,action) return updateWorld(ecsMod,world,action) end,
+    drawWorld=  function(world)        return drawWorld(ecsMod,world)          end,
+  }
 end

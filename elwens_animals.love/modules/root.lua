@@ -3,11 +3,7 @@ local AnimalScreen = require 'modules/animalscreen'
 local FishBowl = require 'modules/fishbowl'
 local Christmas = require 'modules/christmas'
 local Snowman = require 'modules/snowman'
-local EcsDev = require 'modules/ecsdev'
 local SnowScratch = require 'modules/snowscratch'
--- local EcsDev = require 'modules/ecsdev'
--- local ImgScratch = require 'modules/imgscratch'
--- local PhysicsScratch = require 'modules/physicsscratch'
 local GC = require 'garbagecollect'
 
 local M = {}
@@ -18,20 +14,18 @@ M.newWorld = function()
   Debug.setup()
   local w = {}
   w.modes={}
-  w.modes["f2"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
-  w.modes["f3"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
-  w.modes["f4"] = function() return { module=Christmas, state=Christmas.newWorld() } end
-  w.modes["f5"] = function() return { module=EcsDev, state=EcsDev.newWorld({module=Snowman}) } end
-  -- w.modes["f5"] = function() return { module=EcsDev, state=EcsDev.newWorld({module=FishBowl}) } end
-  -- w.modes["f6"] = function() return { module=PhysicsScratch, state=PhysicsScratch.newWorld() } end
-  w.modes["f6"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
-  w.cycle = {"f2","f3","f4","f5"}
-  w.current = "f5"
+  w.modes["f1"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
+  w.modes["f2"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
+  w.modes["f3"] = function() return { module=Christmas, state=Christmas.newWorld() } end
+  w.modes["f4"] = function() return { module=Snowman, state=Snowman.newWorld() } end
+  -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
+  w.cycle = {"f1","f2","f3","f4"}
+  w.current = "f1"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
   else
-    w.showLog = true
+    w.showLog = false
   end
 
   return w
@@ -58,15 +52,15 @@ end
 M.updateWorld = function(w,action)
   if action.type == "keyboard" and action.state == "pressed" then
     -- Reload game?
-    if action.key == 'r' then
+    if action.key == 'r' and action.gui then
       stopCurrentMode(w)
       return w, {{type="crozeng.reloadRootModule"}}
     end
 
     -- toggle log?
-    if action.key == 'f1' then
-      w.showLog = not w.showLog
-    end
+    -- if action.key == 'f1' then
+    --   w.showLog = not w.showLog
+    -- end
     
     -- Switch modes?
     local mode = w.modes[action.key]

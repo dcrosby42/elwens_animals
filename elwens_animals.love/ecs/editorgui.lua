@@ -1,4 +1,4 @@
-local History = require('modules.ecsadapter.estorehistory')
+local History = require('rollinghistory')
 local Debug = require('mydebug')
 local suit = require 'SUIT'
 local G = love.graphics
@@ -35,7 +35,7 @@ local function getEstore(editor)
   if editor.historyIndex > 0 then
     local es = editor.history:get(editor.historyIndex)
     if es == nil then
-      -- print("DANG: editor.historyIndex="..editor.historyIndex.." but len is "..editor.history:length())
+      print("!! DANG: editor.historyIndex="..editor.historyIndex.." but len is "..editor.history:length())
       return editor.estore
     end
     return es
