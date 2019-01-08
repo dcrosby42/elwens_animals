@@ -57,11 +57,6 @@ M.updateWorld = function(w,action)
       return w, {{type="crozeng.reloadRootModule"}}
     end
 
-    -- toggle log?
-    -- if action.key == 'f1' then
-    --   w.showLog = not w.showLog
-    -- end
-    
     -- Switch modes?
     local mode = w.modes[action.key]
     if mode then
@@ -69,14 +64,6 @@ M.updateWorld = function(w,action)
         stopCurrentMode(w)
         w.current = action.key
       end
-    end
-  end
-
-  -- toggle debug log?
-  if action.type == "mouse" and action.state == "pressed" then
-    if action.x < 75 and action.y > Debug.d.bounds.y then
-      w.showLog = not w.showLog
-      return w
     end
   end
 
@@ -107,6 +94,9 @@ function handleSidefx(world,sidefx)
         -- Debug.println("Exit game.")
         -- love.event.quit()
 
+      elseif sf.type == 'TOGGLE_DEBUG' then
+				world.showLog = not world.showLog
+				print("toggled")
       elseif sf.type == 'SKIP' then
         local nextI = 1
         for i=1,#world.cycle do

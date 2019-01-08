@@ -10,11 +10,7 @@ function Entities.initialEntities(res)
 
   Entities.floor(estore,res)
 
-  Entities.nextModeButton(estore,res)
-  Entities.quitButton(estore,res)
-  -- local lion = Entities.animal(sp,"lion")
-  -- lion.pos.x = 100
-  -- lion.pos.y = 200
+  Entities.buttons(estore,res)
 
   return estore
 end
@@ -51,6 +47,12 @@ function Entities.floor(estore,res)
 	})
 end
 
+function Entities.buttons(parent, res)
+  Entities.nextModeButton(parent,res)
+  Entities.quitButton(parent,res)
+  Entities.toggleDebugButton(parent,res)
+end
+
 function Entities.quitButton(estore, res)
   return estore:newEntity({
     {'name', {name="power_button"}},
@@ -66,6 +68,15 @@ function Entities.nextModeButton(estore, res)
     {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
     {'pos', {x=900,y=50}},
     {'button', {kind='hold', eventtype='SKIP', holdtime=0.5, radius=40}},
+  })
+end
+
+function Entities.toggleDebugButton(estore, res)
+  return estore:newEntity({
+    {'name', {name="toggle_debug_button"}},
+    -- {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+    {'pos', {x=500,y=50}},
+    {'button', {kind='hold', eventtype='TOGGLE_DEBUG', holdtime=0.5, radius=40}},
   })
 end
 

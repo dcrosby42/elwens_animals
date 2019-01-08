@@ -22,7 +22,7 @@ local UPDATE = composeSystems({
 
 local DRAW = composeDrawSystems({
   DrawStuff.drawSystem,
-  -- 'systems.physicsdraw',
+  'systems.physicsdraw',
 })
 
 soundmgr=SoundManager:new() -- TODO FIXME THIS IS NO GOOD

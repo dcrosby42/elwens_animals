@@ -12,8 +12,7 @@ function Entities.initialEntities(res)
 
   AnimalEnts.floor(estore,res)
 
-  AnimalEnts.nextModeButton(estore,res)
-  AnimalEnts.quitButton(estore,res)
+  AnimalEnts.buttons(estore,res)
   
   return estore
 end

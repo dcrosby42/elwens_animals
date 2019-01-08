@@ -16,8 +16,7 @@ function Entities.initialEntities(res)
 
   Entities.snowFore(bg,res)
 
-  AnimalEnts.nextModeButton(bg,res)
-  AnimalEnts.quitButton(bg,res)
+	AnimalEnts.buttons(bg,res)
 
   local floor = AnimalEnts.floor(bg,res)
   
@@ -46,7 +45,7 @@ end
 function Entities.snowman(parent,res)
   local motor = -1000
   local maxForce = 1000
-	local debugDraw = false
+	local physicsDebug = false
 	local drawPicBounds = false
 
   local parent = parent:newEntity({
@@ -58,7 +57,7 @@ function Entities.snowman(parent,res)
   -- head:
   local head = parent:newEntity({
     {'name', {name='snowman_head'}},
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'circleShape', {radius=25}},
     {'pic', {id="snowman_ball_1", sx=0.25, sy=0.25, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=400}},
@@ -69,7 +68,7 @@ function Entities.snowman(parent,res)
   local body = parent:newEntity({
     {'name', {name='snowman_body'}},
     {'tag', {name='cannon_target'}},
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'circleShape', {radius=50}},
     {'pic', {id="snowman_ball_1", sx=0.43, sy=0.43, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=500}},
@@ -81,7 +80,7 @@ function Entities.snowman(parent,res)
   local base = parent:newEntity({
     {'name', {name='snowman_base'}},
     {'tag', {name='upright_snowman'}}, -- signals the "upright" system to operate on this object
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'circleShape', {radius=80}},
     {'pic', {id="snowman_ball_1", sx=0.7, sy=0.7, centerx=0.5, centery=0.5, drawbounds=drawPicBounds}}, 
     {'pos', {x=600,y=600}},
@@ -93,7 +92,7 @@ function Entities.snowman(parent,res)
   -- Hat
   local hat = head:newEntity({
     {'name', {name='snowman_hat'}},
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'rectangleShape', {w=60,h=40}},
     {'pic', {id="hat", sx=0.55, sy=0.55, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
     {'pos', {x=600,y=376}},
@@ -105,7 +104,7 @@ function Entities.snowman(parent,res)
   local rightEye = head:newEntity({
     {'name', {name='righteye'}},
     {'pic', {id="coal3", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'circleShape', {radius=5}},
     {'pos', {x=602,y=388}},
     {'joint', {kind='weld', toEntity=head.eid}},
@@ -115,7 +114,7 @@ function Entities.snowman(parent,res)
   local leftEye = head:newEntity({
     {'name', {name='lefteye'}},
     {'pic', {id="coal1", sx=0.35, sy=0.35, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'circleShape', {radius=5}},
     {'pos', {x=580,y=388}},
     {'joint', {kind='weld', toEntity=head.eid}},
@@ -134,7 +133,7 @@ function Entities.snowman(parent,res)
     head:newEntity({
       {'name',{name="mouthcoal_"..i}},
       {'pic', {id="coal2", sx=0.3, sy=0.3, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
-      {'body', {debugDraw=debugDraw}},
+      {'body', {debugDrawphysicsDebug}},
       {'circleShape', {radius=2}},
       {'pos', {x=anchX+(xy[1]*1.5), y=anchY+(xy[2]*1.5)}},
       {'joint', {kind='weld', toEntity=head.eid}},
@@ -147,7 +146,7 @@ function Entities.snowman(parent,res)
   local nose = parent:newEntity({
       {'name',{name="nose"}},
     {'pic', {id="carrot", sx=0.28, sy=0.28, r=0.0, centerx=0.5, centery=0.5,drawbounds=false}}, 
-    {'body', {debugDraw=debugDraw}},
+    {'body', {debugDrawphysicsDebug}},
 		{'rectangleShape', {w=45,h=7}},
     {'pos', {x=567,y=402}},
     {'joint', {kind='weld', toEntity=head.eid}},

@@ -11,13 +11,7 @@ function Entities.initialEntities(res)
 
   AnimalEnts.floor(estore,res)
 
-  AnimalEnts.nextModeButton(estore,res)
-  AnimalEnts.quitButton(estore,res)
-  
-  -- local lion = Entities.animal(sp,"fish")
-  --
-  -- lion.pos.x = 100
-  -- lion.pos.y = 200
+  AnimalEnts.buttons(estore,res)
 
   return estore
 end
