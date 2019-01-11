@@ -8,6 +8,7 @@ require 'ecs.ecshelpers'
 local Debug = require('mydebug').sub("EcsDev2",true,true)
 local Editor = require('ecs.editorgui')
 local G = love.graphics
+local soundmanager = require('crozeng.soundmanager')
 
 local function newWorld(ecsMod)
   local res = ecsMod.loadResources()
@@ -96,7 +97,8 @@ local function drawEditor(ecsMod,world)
 end
 
 local function drawWorld(ecsMod, world)
-  if world.editor.ui.pausedCheckbox.checked and world.editor.historyIndex > 0 then
+  local paused = world.editor.ui.pausedCheckbox.checked
+  if paused and world.editor.historyIndex > 0 then
     ecsMod.draw(Editor.getEstore(world.editor), world.resources)
   else
     ecsMod.draw(world.estore, world.resources)
@@ -104,6 +106,12 @@ local function drawWorld(ecsMod, world)
 
   if world.editor.on then
     drawEditor(ecsMod,world)
+  end
+
+  if paused then
+    soundmanager.pause()
+  else
+    soundmanager.unpause()
   end
 end
 

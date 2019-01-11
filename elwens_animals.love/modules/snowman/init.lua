@@ -6,7 +6,7 @@ local Resources = require 'modules.snowman.resources'
 local Entities = require 'modules.snowman.entities'
 local Snow = require 'modules.snowman.snow'
 local DrawStuff = require 'systems.drawstuff'
-local SoundManager = require 'soundmanager'
+local DrawSound = require 'systems.drawsound'
 
 DrawStuff.addPlugin(Snow.drawingPlugin, "drawSnow")
 
@@ -22,12 +22,9 @@ local UPDATE = composeSystems({
 
 local DRAW = composeDrawSystems({
   DrawStuff.drawSystem,
+  DrawSound.new("snowman"),
   'systems.physicsdraw',
 })
-
-soundmgr=SoundManager:new() -- TODO FIXME THIS IS NO GOOD
-
--- FIXME HOW ? soundmgr:clear()
 
 return EcsAdapter({
   loadResources=Resources.load,

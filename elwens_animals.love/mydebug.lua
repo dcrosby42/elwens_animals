@@ -102,7 +102,7 @@ local function makeSub(name,printToScreen,printToConsole,doNotes)
           D.d.notes[name] = n
         end
         if val == nil then
-          n[val] = nil
+          n[key] = nil
         else
           if type(val) == "number" then
             n[key] = tostring(math.round(val,3))

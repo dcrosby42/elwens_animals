@@ -4,6 +4,8 @@ package.path = package.path .. ";./?/init.lua"
 require 'crozeng.helpers'
 local ModuleLoader = require 'crozeng.moduleloader'
 
+local soundmanager = require 'crozeng.soundmanager'
+
 local DefaultConfig = {
   width = love.graphics.getWidth(),
   height = love.graphics.getHeight(),
@@ -85,7 +87,7 @@ end
 local function updateWorld(action)
   if errWorld then
     if action.type == "keyboard" and action.state == "pressed" then
-      if action.key == 'r' then
+      if action.key == 'r' and action.gui then
         reloadRootModule()
       end
     end
@@ -110,10 +112,12 @@ local function updateWorld(action)
   end
 end
 
-local dtAction = {type="tick", dt=0}
+local tickAction = {type="tick", dt=0}
 function love.update(dt)
-  dtAction.dt = dt
-  updateWorld(dtAction)
+  tickAction.dt = dt
+  updateWorld(tickAction)
+  soundmanager.update(dt)
+  tickAction.dt = 0
 end
 
 function drawErrorScreen(w)
