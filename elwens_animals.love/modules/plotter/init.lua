@@ -19,22 +19,18 @@ function rebuildAxes(w)
   local y = 0
   local xpts = {}
   local i = 1
-  print("xaxis")
   for x=left,right,intx do
     xpts[i] = x
     xpts[i+1] = y
-    print(tostring(i)..": "..xpts[i]..", "..xpts[i+1])
     i = i + 2
   end
 
   local x = 0
   local ypts = {}
   i = 1
-  print("yaxis")
   for y=bottom,top,inty do
     ypts[i] = x
     ypts[i+1] = y
-    print(tostring(i)..": "..ypts[i]..", "..ypts[i+1])
     i = i + 2
   end
 
@@ -50,6 +46,7 @@ function M.newWorld()
     viewport=vp,
     drawables={
       xaxis={
+        type="series",
         kind="pointsAndLines",
         pts={},
         style={
@@ -58,11 +55,29 @@ function M.newWorld()
         },
       },
       yaxis={
+        type="series",
         kind="pointsAndLines",
         pts={},
         style={
           pointSize=4,
           color={1,0,0},
+        },
+      },
+      f1={
+        type="fn",
+        kind="points",
+        fn=math.sin,
+        style={
+          color={1,1,1},
+        },
+      },
+      f2={
+        type="fn",
+        kind="points",
+        fn=math.cos,
+        style={
+          color={.6,.6,1},
+          pointSize=1,
         },
       },
     },
@@ -75,8 +90,8 @@ function M.updateWorld(w,action)
   local sidefx = nil
 
   if action.type == "tick" then
-    w.viewport.focus.x = w.viewport.focus.x + 0.01
-    w.viewport.focus.y = w.viewport.focus.y + 0.1
+    -- w.viewport.focus.x = w.viewport.focus.x + 0.01
+    -- w.viewport.focus.y = w.viewport.focus.y + 0.1
     rebuildAxes(w)
   end
 
