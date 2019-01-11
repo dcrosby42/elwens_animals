@@ -20,7 +20,7 @@ M.newWorld = function()
   w.modes["f4"] = function() return { module=Snowman, state=Snowman.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f1","f2","f3","f4"}
-  w.current = "f4"
+  w.current = "f1"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
