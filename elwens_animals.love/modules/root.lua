@@ -3,7 +3,7 @@ local AnimalScreen = require 'modules/animalscreen'
 local FishBowl = require 'modules/fishbowl'
 local Christmas = require 'modules/christmas'
 local Snowman = require 'modules/snowman'
-local SnowScratch = require 'modules/snowscratch'
+local Plotter = require 'modules/plotter'
 local GC = require 'garbagecollect'
 
 local M = {}
@@ -18,9 +18,10 @@ M.newWorld = function()
   w.modes["f2"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
   w.modes["f3"] = function() return { module=Christmas, state=Christmas.newWorld() } end
   w.modes["f4"] = function() return { module=Snowman, state=Snowman.newWorld() } end
+  w.modes["f5"] = function() return { module=Plotter, state=Plotter.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
-  w.cycle = {"f1","f2","f3","f4"}
-  w.current = "f1"
+  w.cycle = {"f1","f2","f3","f4","f5"}
+  w.current = "f5"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
