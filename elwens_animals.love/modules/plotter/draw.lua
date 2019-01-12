@@ -6,7 +6,7 @@ local function draw(d, viewport)
     pts = viewport:transformPointsToScreen(d.pts)
   elseif d.type == "fn" then
     local top,left,bottom,right = viewport:getSpaceExtents()
-    local int = 0.1
+    local int = d.step or 0.1
     left = math.floor(left / int) * int
     right = math.ceil(right / int) * int
     local i = 1
