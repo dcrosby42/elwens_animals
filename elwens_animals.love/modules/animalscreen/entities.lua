@@ -80,5 +80,21 @@ function Entities.toggleDebugButton(estore, res)
   })
 end
 
+function Entities.addSound(e, name, res)
+  if not name then return end
+  local cfg = res.sounds[name]
+  if cfg then
+    return e:newComp('sound', {
+      sound=name,
+      state='playing',
+      duration=cfg.duration,
+      volume=cfg.volume or 1,
+    })
+  else
+    Debug.println("(No sound for "..tostring(name)..")")
+    return nil
+  end
+end
 
 return Entities
+

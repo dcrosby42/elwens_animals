@@ -5,25 +5,6 @@ local Entities = require 'modules.animalscreen.entities'
 local FlingFactorX=10
 local FlingFactorY=10
 
--- Helper
-function addSound(e, name, res)
-  if not name then return end
-  local cfg = res.sounds[name]
-  if cfg then
-    return e:newComp('sound', {
-      sound=name,
-      state='playing',
-      duration=cfg.duration,
-      volume=cfg.volume or 1,
-    })
-  else
-    Debug.println("(No sound for "..tostring(name)..")")
-    return nil
-  end
-end
-
-function setScale(e,sx,sy)
-end
 
 return function(estore, input, res)
   EventHelpers.handle(input.events, 'touch', {
@@ -60,7 +41,7 @@ return function(estore, input, res)
       e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE?
 
       -- Try to add a sound for this animal
-      addSound(e, animalName, res)
+      Entities.addSound(e, animalName, res)
 
     end,
 
