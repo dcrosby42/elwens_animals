@@ -21,7 +21,7 @@ M.newWorld = function()
   w.modes["f5"] = function() return { module=Plotter, state=Plotter.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f1","f2","f3","f4","f5"}
-  w.current = "f5"
+  w.current = "f1"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false

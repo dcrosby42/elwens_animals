@@ -32,57 +32,58 @@ local function addDrawables(w)
   --   },
   -- }
 
-  -- w.drawables.f3 = {
-  --   type="fn",
-  --   kind="points",
-  --   fn=F.constant(1),
-  --   style={
-  --     color={1,1,1},
-  --     -- pointSize=1,
-  --   },
-  -- }
-  -- w.drawables.f4 = {
-  --   type="fn",
-  --   kind="line",
-  --   fn=F.sigmoid,
-  --   style={
-  --     color={1,1,0},
-  --     -- pointSize=1,
-  --   },
-  -- }
-  -- w.drawables.f5 = {
-  --   type="fn",
-  --   kind="line",
-  --   fn=F.sigmoid1,
-  --   style={
-  --     color={1,1,0.5},
-  --     -- pointSize=1,
-  --   },
-  -- }
-  -- w.drawables.f6 = {
-  --   type="fn",
-  --   kind="line",
-  --   fn=function(x)
-  --     return love.math.noise(x)
-  --   end,
-  --   style={
-  --     color={0,0,1},
-  --     -- pointSize=1,
-  --   },
-  -- }
-  -- w.drawables.f7 = {
-  --   type="fn",
-  --   kind="line",
-  --   step=0.01,
-  --   fn=function(x)
-  --     -- return N.octaveNoise(x, 1, 0, 1, 0, 1)
-  --     return N.octaveNoise(x, 4, 0.8, 1, 0, 1)
-  --   end,
-  --   style={
-  --     color={0.5,0.5,1},
-  --     -- pointSize=1,
-  --   },
-  -- }
+  w.drawables.f3 = {
+    type="fn",
+    kind="points",
+    fn=F.constant(1),
+    style={
+      color={1,1,1},
+      -- pointSize=1,
+    },
+  }
+  w.drawables.f4 = {
+    type="fn",
+    kind="line",
+    fn=F.sigmoid,
+    style={
+      color={1,1,0},
+      -- pointSize=1,
+    },
+  }
+  w.drawables.f5 = {
+    type="fn",
+    kind="line",
+    fn=F.sigmoid1,
+    style={
+      color={1,1,0.5},
+      -- pointSize=1,
+    },
+  }
+  w.drawables.f6 = {
+    type="fn",
+    kind="line",
+    fn=function(x)
+      return love.math.noise(x)
+    end,
+    style={
+      color={0,0,1},
+      -- pointSize=1,
+    },
+  }
+  w.drawables.f7 = {
+    type="fn",
+    kind="line",
+    step=0.01,
+    fn=function(x)
+      -- return N.octaveNoise(x, 1, 0, 1, 0, 1)
+      return N.octaveNoise(x, 4, 0.8, 1, 0, 1)
+    end,
+    style={
+      color={0.5,0.5,1},
+      -- pointSize=1,
+    },
+  }
+
   w.drawables.f8 = {
     type="fn",
     kind="line",
