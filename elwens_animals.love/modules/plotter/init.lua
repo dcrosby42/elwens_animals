@@ -2,6 +2,7 @@
 local Debug = require('mydebug').sub("plotter",true,true)
 local G = love.graphics
 local Viewport = require('modules.plotter.viewport')
+local Axes = require('modules.plotter.axes')
 local draw = require('modules.plotter.draw')
 
 local DefaultScaleW = 50
@@ -9,34 +10,29 @@ local DefaultScaleH = 50
 
 local M = {}
 
-function rebuildAxes(w)
-  local top,left,bottom,right = w.viewport:getSpaceExtents()
 
-  local intx = 1
-  left = math.floor(left / intx) * intx
-  right = math.ceil(right / intx) * intx
-  local inty = 1
-  top= math.ceil(top / inty) * inty
-  bottom = math.floor(bottom / inty) * inty
+local function addDrawables(w)
+  w.drawables.f1 = {
+    type="fn",
+    kind="points",
+    fn=math.sin,
+    style={
+      color={1,1,1},
+    },
+  }
+  w.drawables.f2 = {
+    type="fn",
+    kind="pointsAndLines",
+    fn=math.cos,
+    style={
+      color={.6,.6,1},
+      pointSize=1,
+    },
+  }
+end
 
-  local y = 0
-  local xpts = {}
-  local i = 1
-  for x=left,right,intx do
-    xpts[i] = x
-    xpts[i+1] = y
-    i = i + 2
-  end
-
-  local x = 0
-  local ypts = {}
-  i = 1
-  for y=bottom,top,inty do
-    ypts[i] = x
-    ypts[i+1] = y
-    i = i + 2
-  end
-
+local function rebuildAxes(w)
+  local xpts,ypts = Axes.generateXYAxes(w.viewport:getSpaceExtents())
   w.drawables.xaxis.pts = xpts
   w.drawables.yaxis.pts = ypts
 end
@@ -69,25 +65,9 @@ function M.newWorld()
           color={1,0,0},
         },
       },
-      f1={
-        type="fn",
-        kind="points",
-        fn=math.sin,
-        style={
-          color={1,1,1},
-        },
-      },
-      f2={
-        type="fn",
-        kind="points",
-        fn=math.cos,
-        style={
-          color={.6,.6,1},
-          pointSize=1,
-        },
-      },
     },
   }
+  addDrawables(world)
   rebuildAxes(world)
   return world
 end
@@ -96,8 +76,6 @@ function M.updateWorld(w,action)
   local sidefx = nil
 
   if action.type == "tick" then
-    -- w.viewport.focus.x = w.viewport.focus.x + 0.01
-    -- w.viewport.focus.y = w.viewport.focus.y + 0.1
     rebuildAxes(w)
 
   elseif action.type == "mouse" then
