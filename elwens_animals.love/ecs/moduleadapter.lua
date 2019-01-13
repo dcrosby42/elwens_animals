@@ -55,6 +55,7 @@ local function updateWorld(ecsMod, world, action)
   -- toggle editor?
   elseif action.state == 'pressed' and action.key == 'escape' then
     world.editor.on = not world.editor.on
+    if world.editor.on then world.editor.ui.pausedCheckbox.checked = true end
 
   -- time passed?
   elseif action.type == "tick" then
