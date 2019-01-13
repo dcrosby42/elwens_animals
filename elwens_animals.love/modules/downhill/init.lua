@@ -6,6 +6,7 @@ local Resources = require 'modules.downhill.resources'
 local Entities = require 'modules.downhill.entities'
 local DrawStuff = require 'systems.drawstuff'
 local DrawSound = require 'systems.drawsound'
+local Viewport = require 'systems.drawviewport'
 
 -- DrawStuff.addPlugin(Snow.drawingPlugin, "drawSnow")
 
@@ -15,12 +16,15 @@ local UPDATE = composeSystems({
   'systems.physics',
   'systems.sound',
   'systems.touchbutton',
+  Viewport.update,
 })
 
 local DRAW = composeDrawSystems({
+  Viewport.drawIn,
   DrawStuff.drawSystem,
   DrawSound.new("downhill"),
   'systems.physicsdraw',
+  Viewport.drawOut,
 })
 
 return EcsAdapter({
