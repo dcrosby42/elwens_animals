@@ -50,6 +50,16 @@ function Entities.ground(parent,res)
 		{'chainShape', {vertices=verts}},
     {'pos', {x=0,y=0}},
   })
+
+  local verts2 = F.genSeries(1020, 2048, 10, function(x)
+    return x/2 + math.sin(x/50)*50
+  end)
+  parent:newEntity({
+    {'name',{name="ground2"}},
+    {'body', {dynamic=false, debugDraw=debugDraw}},
+		{'chainShape', {vertices=verts2}},
+    {'pos', {x=0,y=0}},
+  })
 end
 
 function Entities.ball(estore, res, kind)
