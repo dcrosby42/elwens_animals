@@ -42,7 +42,7 @@ local function createSlice(parent, n)
   parent:newEntity({
     {'name',{name="slice-"..n}},
     {'slice',{number=n}},
-    {'body', {dynamic=false, debugDraw=true}},
+    {'body', {dynamic=false, debugDraw=false}},
 		{'chainShape', {vertices=verts}},
     {'pos', {x=0,y=0}},
   })

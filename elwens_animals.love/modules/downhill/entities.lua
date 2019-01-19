@@ -87,7 +87,7 @@ function Entities.ball(estore, res, kind)
     {'force', {}},
     {'body', {debugDraw=debugDraw}},
     {'circleShape', {radius=25}},
-    {'viewportTarget', {offx=-love.graphics.getWidth()/2, offy=-love.graphics.getHeight()/2}},
+    {'viewportTarget', {offx=-love.graphics.getWidth()/2, offy=-love.graphics.getHeight()/2 - 200}},
   })
 end
 -- function Entities.background(parent,res)

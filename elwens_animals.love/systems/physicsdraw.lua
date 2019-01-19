@@ -1,27 +1,45 @@
 require 'ecs.ecshelpers'
 
-return defineDrawSystem({'physicsWorld'}, function(physWorldE,estore,res)
-  love.graphics.setColor(255,255,255)
-  -- estore:walkEntity(physWorldE, hasComps('body'), function(e)
-  estore:walkEntities(hasComps('body'), function(e)
-    if e.body.debugDraw then
-      local obj = estore:getCache('physics')[e.body.cid]
-      if obj then
-        for _,shape in ipairs(obj.shapes) do
-          if shape:type() == "CircleShape" then
-            local x,y = obj.body:getWorldPoints(shape:getPoint())
-            local r = shape:getRadius()
-            love.graphics.circle("line", x,y,r)
-          elseif shape:type() == "ChainShape" then
-            love.graphics.line(obj.body:getWorldPoints(shape:getPoints()))
-          else
-            love.graphics.polygon("line", obj.body:getWorldPoints(shape:getPoints()))
-          end
-          love.graphics.points(obj.body:getWorldPoint(0,0))
+local G = love.graphics
+
+local function drawEntity(e,cache)
+  if e.body.debugDraw then
+    local obj = cache[e.body.cid]
+    if obj then
+      G.setColor(255,255,255)
+      G.setLineWidth(1)
+      for _,shape in ipairs(obj.shapes) do
+        if shape:type() == "CircleShape" then
+          local x,y = obj.body:getWorldPoints(shape:getPoint())
+          local r = shape:getRadius()
+          G.circle("line", x,y,r)
+        elseif shape:type() == "ChainShape" then
+          G.line(obj.body:getWorldPoints(shape:getPoints()))
+        else
+          G.polygon("line", obj.body:getWorldPoints(shape:getPoints()))
         end
-      else
-        print("!! physicsdraw: No physics object in cache for body.cid="..e.body.cid.." .kind=".. e.body.kind .." in entity eid="..e.eid)
+        G.points(obj.body:getWorldPoint(0,0))
       end
+    else
+      print("!! physicsdraw: No physics object in cache for body.cid="..e.body.cid.." .kind=".. e.body.kind .." in entity eid="..e.eid)
     end
+  end
+end
+
+local function drawEntities(estore)
+  local cache = estore:getCache('physics')
+  estore:walkEntities(hasComps('body'), function(e)
+    drawEntity(e,cache)
   end)
+end
+
+local system =  defineDrawSystem({'physicsWorld'}, function(physWorldE,estore,res)
+  -- estore:walkEntity(physWorldE, hasComps('body'), function(e)
+  drawEntities(estore)
 end)
+
+return {
+  drawSystem=system,
+  drawEntity=drawEntity,
+  drawEntities=drawEntities,
+}

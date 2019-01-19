@@ -8,8 +8,6 @@ local DrawStuff = require 'systems.drawstuff'
 local DrawSound = require 'systems.drawsound'
 local Viewport = require 'systems.drawviewport'
 
--- DrawStuff.addPlugin(Snow.drawingPlugin, "drawSnow")
-
 local UPDATE = composeSystems({
   'systems.timer',
   'modules.downhill.mapsystem',
@@ -22,11 +20,15 @@ local UPDATE = composeSystems({
 })
 
 local DRAW = composeDrawSystems({
-  Viewport.drawIn,
-  DrawStuff.drawSystem,
+  -- Viewport.drawIn, -- FIXME this isn't likely to extend well, this drawIn/drawOut trickery for bookending transforms
+  
+  'modules.downhill.drawsystem',
+  -- DrawStuff.drawSystem,
+  -- 'systems.physicsdraw',
+
+  -- Viewport.drawOut, -- FIXME 
+
   DrawSound.new("downhill"),
-  'systems.physicsdraw',
-  Viewport.drawOut,
 })
 
 return EcsAdapter({
