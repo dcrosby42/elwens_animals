@@ -12,10 +12,12 @@ local Viewport = require 'systems.drawviewport'
 
 local UPDATE = composeSystems({
   'systems.timer',
+  'modules.downhill.mapsystem',
   'systems.selfdestruct',
   'systems.physics',
   'systems.sound',
   'systems.touchbutton',
+  'modules.downhill.ballcontrollersystem', -- XXX ?
   Viewport.update,
 })
 

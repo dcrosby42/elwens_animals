@@ -92,6 +92,12 @@ function hasTag(tagname)
   end
 end
 
+function hasName(name)
+  return function(e)
+    return e.name and e.name.name==name
+  end
+end
+
 function allOf(...)
   local matchers = {...}
   return function(e)

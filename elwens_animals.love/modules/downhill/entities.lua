@@ -3,6 +3,7 @@ local Estore = require 'ecs.estore'
 local AnimalEnts = require 'modules.animalscreen.entities'
 local Snow = require 'modules.snowman.snow'
 local F = require 'modules.plotter.funcs'
+local G = love.graphics
 
 local Entities={}
 
@@ -11,7 +12,8 @@ function Entities.initialEntities(res)
 
   local bg = Entities.background(estore,res)
 
-  Entities.ground(estore)
+  -- Entities.ground(estore)
+  Entities.map(estore)
   Entities.ball(estore)
   Entities.viewport(estore)
 
@@ -26,7 +28,7 @@ local debugDraw = true
 function Entities.viewport(estore,res)
   return estore:newEntity({
     {'name',{name="viewport"}},
-    {'viewport',{}},
+    {'viewport',{x=0,y=0,sx=1,sy=1, w=G.getWidth(),h=G.getHeight()}},
   })
 end
 
@@ -37,6 +39,20 @@ function Entities.background(estore,res)
     {'pos', {}},
     -- {'sound', {sound='bgmusic',loop=true,duration=res.sounds.bgmusic.duration}},
     {'physicsWorld', {gy=9.8*64,allowSleep=false}},
+  })
+end
+
+function Entities.map(parent,res)
+  parent:newEntity({
+    {'name',{name="map"}},
+    {'map',{slices={}}},
+  })
+end
+
+function Entities.slice(parent,res,num)
+  parent:newEntity({
+    {'name',{name="slice-"..num}},
+    {'slice',{number=num}},
   })
 end
 
@@ -68,6 +84,7 @@ function Entities.ball(estore, res, kind)
     -- {'pic', {id=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
     {'pos', {x=10,y=0}},
     {'vel', {}},
+    {'force', {}},
     {'body', {debugDraw=debugDraw}},
     {'circleShape', {radius=25}},
     {'viewportTarget', {offx=-love.graphics.getWidth()/2, offy=-love.graphics.getHeight()/2}},

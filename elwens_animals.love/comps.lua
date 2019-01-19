@@ -10,7 +10,7 @@ Comp.define("timer", {'t',0, 'reset',0, 'countDown',true, 'loop',false, 'alarm',
 
 Comp.define("controller", {'id','','leftx',0,'lefty',0,})
 
-Comp.define("viewport", {'x',0,'y',0,'sx',1,'sy',1})
+Comp.define("viewport", {'x',0,'y',0,'sx',1,'sy',1,'w',1024,'h',768})
 Comp.define("viewportTarget", {'offx',0,'offy',0})
 
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
@@ -46,3 +46,6 @@ Comp.define("fishspawner", {})
 Comp.define("fish", {'kind','black','state','idle','targetspeed',0})
 
 Comp.define("health", {'hp',10,'maxhp',10})
+
+Comp.define("map", {'slices',{}})
+Comp.define("slice", {'number',0})

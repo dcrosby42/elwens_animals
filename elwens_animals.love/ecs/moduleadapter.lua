@@ -67,8 +67,14 @@ local function updateWorld(ecsMod, world, action)
       Editor.update(world.editor)
     end
 
-  elseif action.type == 'keyboard' and action.state == "pressed" then
-    Editor.keypressed(action.key)
+  elseif action.type == 'keyboard' then
+    if action.state == "pressed" then
+      Editor.keypressed(action.key)
+    end
+    if not editing then
+      table.insert(world.input.events, shallowclone(action))
+    end
+
   elseif action.type == 'textinput' then
     Editor.textinput(action.text)
 
@@ -82,7 +88,7 @@ local function updateWorld(ecsMod, world, action)
     end
 
   -- pass touch and keyboard events through:
-  elseif action.type == 'touch' or action.type == 'keyboard' then
+  elseif action.type == 'touch' then
     if not editing then
       table.insert(world.input.events, shallowclone(action))
     end
