@@ -63,14 +63,14 @@ end
 local cached
 function Res.load()
   if not cached then
-    local r = {}
+    local r = AnimalRes.load()
 
-    r.pics = loadPics()
-    tmerge(r.pics, AnimalRes.loadButtonPics())
+    tmerge(r.pics, loadPics())
 
-    r.anims = loadAnims()
+    r.anims = r.anims or {}
+    tmerge(r.anims, loadAnims())
 
-    r.sounds = loadSounds()
+    tconcat(r.sounds, loadSounds())
 
     cached = r
   end

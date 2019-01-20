@@ -16,18 +16,15 @@ local UPDATE = composeSystems({
   'systems.sound',
   'systems.touchbutton',
   'modules.downhill.ballcontrollersystem', -- XXX ?
+  'modules.downhill.manipsystem',
+  'modules.downhill.trackersystem',
+  -- 'modules.animalscreen.boundarysystem',
   Viewport.update,
 })
 
 local DRAW = composeDrawSystems({
-  -- Viewport.drawIn, -- FIXME this isn't likely to extend well, this drawIn/drawOut trickery for bookending transforms
-  
   'modules.downhill.drawsystem',
   -- DrawStuff.drawSystem,
-  -- 'systems.physicsdraw',
-
-  -- Viewport.drawOut, -- FIXME 
-
   DrawSound.new("downhill"),
 })
 

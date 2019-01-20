@@ -26,6 +26,8 @@ local function terrain_3(x)
   -- return x/2 + N.octaveNoise(x/mag, 2, 0.3, 1.2, 0, 2) * mag
 end
 
+local terrainFunc = terrain_3
+
 local function findViewport(estore)
   local viewport
   estore:seekEntity(hasComps('viewport'),function(e)
@@ -38,7 +40,7 @@ end
 local function createSlice(parent, n)
   local left = n * SliceWidth
   local right = left + SliceWidth
-  local verts = F.genSeries(left, right, TerrainRes, terrain_3)
+  local verts = F.genSeries(left, right, TerrainRes, terrainFunc)
   parent:newEntity({
     {'name',{name="slice-"..n}},
     {'slice',{number=n}},
@@ -84,4 +86,7 @@ local mapSystem = defineUpdateSystem({'map'},function(mapE,estore,input,res)
 
 end)
 
-return mapSystem
+return {
+  system=mapSystem,
+  terrain=terrainFunc,
+}

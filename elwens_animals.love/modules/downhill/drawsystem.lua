@@ -1,6 +1,7 @@
 local G = love.graphics
 
 local PhysicsDraw = require 'systems.physicsdraw'
+local DrawPic = require 'systems.drawpic'
 
 local topColor = {.5, .6, .7}
 local groundColor = {1,1,1}
@@ -46,6 +47,10 @@ local function draw(estore,res)
     G.setLineWidth(4)
     G.setColor(topColor)
     G.line(e.chainShape.vertices)
+  end)
+
+  estore:walkEntities(hasComps('pic','pos'), function(e)
+    DrawPic.drawEntity(e,res)
   end)
 
   PhysicsDraw.drawEntities(estore)

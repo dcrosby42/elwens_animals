@@ -14,8 +14,9 @@ function Entities.initialEntities(res)
 
   -- Entities.ground(estore)
   Entities.map(estore)
-  Entities.ball(estore)
+  -- Entities.ball(estore)
   Entities.viewport(estore)
+  Entities.tracker(estore)
 
 	-- TODO AnimalEnts.buttons(bg,res)
 	AnimalEnts.buttons(estore,res)
@@ -46,6 +47,15 @@ function Entities.map(parent,res)
   parent:newEntity({
     {'name',{name="map"}},
     {'map',{slices={}}},
+  })
+end
+
+function Entities.tracker(parent,res)
+  parent:newEntity({
+    {'name',{name="tracker"}},
+    {'viewportTarget', {offx=-love.graphics.getWidth()/2, offy=-love.graphics.getHeight()/2 - 000}},
+    {'pos', {x=0,y=0}},
+    -- {'vel', {dx=0,dy=0}},
   })
 end
 
@@ -87,7 +97,7 @@ function Entities.ball(estore, res, kind)
     {'force', {}},
     {'body', {debugDraw=debugDraw}},
     {'circleShape', {radius=25}},
-    {'viewportTarget', {offx=-love.graphics.getWidth()/2, offy=-love.graphics.getHeight()/2 - 200}},
+    -- {'viewportTarget', {offx=-love.graphics.getWidth()/2, offy=-love.graphics.getHeight()/2 - 200}},
   })
 end
 -- function Entities.background(parent,res)
