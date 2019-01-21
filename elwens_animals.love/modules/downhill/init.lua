@@ -6,7 +6,6 @@ local Resources = require 'modules.downhill.resources'
 local Entities = require 'modules.downhill.entities'
 local DrawStuff = require 'systems.drawstuff'
 local DrawSound = require 'systems.drawsound'
-local Viewport = require 'systems.drawviewport'
 
 local UPDATE = composeSystems({
   'systems.timer',
@@ -19,7 +18,7 @@ local UPDATE = composeSystems({
   'modules.downhill.manipsystem',
   'modules.downhill.trackersystem',
   -- 'modules.animalscreen.boundarysystem',
-  Viewport.update,
+  'systems.viewport',
 })
 
 local DRAW = composeDrawSystems({
