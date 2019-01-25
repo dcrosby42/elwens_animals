@@ -10,21 +10,25 @@ local Entities={}
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
-  local bg = Entities.background(estore,res)
+  local vp = Entities.viewport(estore)
+  local bg = Entities.background(vp,res)
+  Entities.map(vp)
+  Entities.tracker(vp)
 
-  -- Entities.ground(estore)
-  Entities.map(estore)
-  -- Entities.ball(estore)
-  Entities.viewport(estore)
-  Entities.tracker(estore)
+  local ui = Entities.ui(estore,res)
 
-	-- TODO AnimalEnts.buttons(bg,res)
-	AnimalEnts.buttons(estore,res)
+	AnimalEnts.buttons(ui,res)
 
   return estore
 end
 
 local debugDraw = true
+
+function Entities.ui(parent,res)
+  return parent:newEntity({
+    {'name',{name="ui"}},
+  })
+end
 
 function Entities.viewport(estore,res)
   return estore:newEntity({

@@ -1,18 +1,10 @@
 require 'ecs.ecshelpers'
 local G = love.graphics
 
-local M = {}
-
-function M.drawEntity(e,res)
-  local pic = e.pic
-  local x,y = getPos(e)
-  local r = 0
-  if pic.r then 
-    r = r + pic.r
-  end
-  if e.pos.r then 
-    r = r + e.pos.r
-  end
+local function drawPic(e,pic,res)
+  local x,y = e.pos.x,e.pos.y
+  local r = e.pos.r
+  if pic.r then r = r + pic.r end
   local picRes = res.pics[pic.id]
   if not picRes then
     error("No pic resource '".. pic.id .."'")
@@ -33,7 +25,7 @@ function M.drawEntity(e,res)
     offy = pic.offy
   end
 
-  G.setColor(unpack(pic.color))
+  G.setColor(pic.color)
 
   G.draw(
     picRes.image,
@@ -49,11 +41,15 @@ function M.drawEntity(e,res)
       x-(pic.sx*offx), y-(pic.sy*offy),
       picRes.rect.w * pic.sx, picRes.rect.h * pic.sy)
   end
-
-  if e.names and e.names.mouthcoal_1 then
-    Debug.noteObj({e.eid,'mouth1'},{picRes=tostring(picRes), x=x,y=y,r=r,sx=picsx,sy=pic.sy,offx=offx,offy=offy,color=colorstring(pic.color)})
-  end
-
 end
 
-return M
+local function drawPics(e,res)
+  if not e.pics then return end
+  for _,pic in pairs(e.pics) do
+    drawPic(e,pic,res)
+  end
+end
+
+return {
+  drawPics=drawPics,
+}

@@ -10,7 +10,8 @@ local FlingFactorY=10
 return function(estore, input, res)
   local offx = 0
   local offy = 0
-  local viewport = estore:getComponentOfNamedEntity("viewport","viewport")
+  local viewportE = estore:getEntityByName("viewport")
+  local viewport = viewportE.viewport
   if viewport then
     offx = viewport.x
     offy = viewport.y
@@ -40,7 +41,7 @@ return function(estore, input, res)
       if not e then
         -- Nothing.  Let's generate a random animal
         animalName = pickRandom(res.animalNames)
-        e = Entities.animal(estore, res, animalName)
+        e = Entities.animal(viewportE, res, animalName)
       else
         if e.pic then
           animalName = e.pic.id

@@ -26,16 +26,15 @@ local function drawEntity(e,cache)
   end
 end
 
-local function drawEntities(estore)
-  local cache = estore:getCache('physics')
-  estore:walkEntities(hasComps('body'), function(e)
+local function drawEntities(parent,cache)
+  parent:walkEntities(hasComps('body'), function(e)
     drawEntity(e,cache)
   end)
 end
 
 local system =  defineDrawSystem({'physicsWorld'}, function(physWorldE,estore,res)
   -- estore:walkEntity(physWorldE, hasComps('body'), function(e)
-  drawEntities(estore)
+  drawEntities(estore,estore:getCache('physics'))
 end)
 
 return {
