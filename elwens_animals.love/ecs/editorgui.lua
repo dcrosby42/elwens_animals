@@ -131,9 +131,10 @@ end
 local function updateEstoreGui(ui, estore)
   local h = 15
 
-  suit.Input(ui.entityFilterInput ,suit.layout:row(130,h))
+  suit.Label("Filter",suit.layout:row(35,h))
+  suit.Input(ui.entityFilterInput ,suit.layout:col(90,h))
+  suit.layout:returnLeft()
   local filterTxt = ui.entityFilterInput.text
-
   local ents = getFilteredEntities(estore.ents, makeFilter(filterTxt,ui.pinnedEnts))
 	-- For each Entity (sorted ascend by numeric eid)
   -- for eid,e in pairsByKeys(estore.ents, compareEids) do
@@ -142,6 +143,7 @@ local function updateEstoreGui(ui, estore)
 		-- Entity name button
     local name = eid
     if e.name then name = name.."."..e.name.name end
+    if #name > 17 then name = name:sub(1,17)..">" end
     if suit.Button(name, {id=eid, align='left'}, suit.layout:row(130,h)).hit then
       if ui.ents[eid] then
         ui.ents[eid] = nil

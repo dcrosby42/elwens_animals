@@ -2,7 +2,7 @@ local R = require 'resourceloader'
 
 local Res = {}
 
-local animalNames = {
+Res.animalNames = {
   "bear",
   "bee",
   "bunny",
@@ -45,20 +45,20 @@ local animalsWithSounds = {
 
 local function loadAnimalImages(images)
   images["background1"] = R.getImage("data/images/zoo_keeper.png")
-  for _,name in ipairs(animalNames) do
+  for _,name in ipairs(Res.animalNames) do
     images[name] = R.getImage("data/images/"..name..".png")
   end
 end
 
 local function loadAnimalPics()
   local pics = {}
-  for _,name in ipairs(animalNames) do
+  for _,name in ipairs(Res.animalNames) do
     pics[name] = R.makePic("data/images/"..name..".png")
   end
   return pics
 end
 
-local function loadAnimalSounds()
+function Res.loadSounds()
   local sounds = {}
   for _,name in ipairs(animalsWithSounds) do
     sounds[name] ={
@@ -87,13 +87,13 @@ local cached
 function Res.load()
   if not cached then
     local r = {}
-    r.animalNames = animalNames
+    r.animalNames = Res.animalNames
 
     r.pics = loadAnimalPics()
     r.pics.background1 = R.makePic("data/images/zoo_keeper.png")
     tmerge(r.pics, Res.loadButtonPics())
 
-    r.sounds = loadAnimalSounds()
+    r.sounds = Res.loadSounds()
     -- r.physics = {
     --   newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
     --   caches={},                  -- map cid -> {world,objectCache,collisionBuffer}

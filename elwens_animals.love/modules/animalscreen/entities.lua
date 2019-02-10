@@ -33,6 +33,7 @@ function Entities.animal(estore, res, kind)
     {'pos', {}},
     {'vel', {}},
     {'body', {}},
+    {'force', {}},
     {'circleShape', {radius=50}},
   })
 end

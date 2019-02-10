@@ -210,6 +210,30 @@ local function drawSystem(estore,res)
       love.graphics.setColor(unpack(rect.color))
       love.graphics.rectangle(rect.style, x-rect.offx, y-rect.offy, rect.w, rect.h)
     end
+
+    --
+    -- POLYGON
+    --
+    if e.polygonShape then
+      local st = e.lineStyle
+      local pol = e.polygonShape
+      if st and st.draw then
+        love.graphics.setColor(unpack(st.color))
+        love.graphics.setLineWidth(st.linewidth)
+        love.graphics.setLineStyle(st.linestyle)
+        local verts = {}
+        local x,y=e.pos.x,e.pos.y
+        for i=1,#pol.vertices,2 do
+          verts[i] = x + pol.vertices[i]
+          verts[i+1] = y + pol.vertices[i+1]
+        end
+        if st.closepolygon then
+          table.insert(verts,x+pol.vertices[1])
+          table.insert(verts,y+pol.vertices[2])
+        end
+        love.graphics.line(verts)
+      end
+    end
     
 
 

@@ -311,6 +311,25 @@ function Estore:_seekEntity(e, matchFn, doFn)
   end
 end
 
+function Estore:getEntityByName(name)
+  local ent
+  self:seekEntity(hasName(name),function(e)
+    ent = e
+    return true
+  end)
+  return ent
+end
+
+function Estore:getComponentOfNamedEntity(entName,compName)
+  local comp
+  self:seekEntity(hasName(entName),function(e)
+    comp = e[compName]
+    if comp then
+      return true
+    end
+  end)
+  return comp
+end
 
 function Estore:_deparent(e)
   if e._parent then

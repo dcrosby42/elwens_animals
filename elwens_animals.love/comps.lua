@@ -10,6 +10,9 @@ Comp.define("timer", {'t',0, 'reset',0, 'countDown',true, 'loop',false, 'alarm',
 
 Comp.define("controller", {'id','','leftx',0,'lefty',0,})
 
+Comp.define("viewport", {'targetName','','x',0,'y',0,'sx',1,'sy',1,'w',1024,'h',768})
+Comp.define("viewportTarget", {'offx',0,'offy',0})
+
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 Comp.define("anim", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 
@@ -25,7 +28,9 @@ Comp.define('joint', {'kind','', 'toEntity','','lowerlimit','','upperlimit','','
 Comp.define("rectangleShape", {'x',0,'y',0,'w',0,'h',0,'angle',0})
 Comp.define("polygonShape", {'vertices',{}})
 Comp.define("circleShape", {'x',0,'y',0,'radius',0})
+Comp.define("chainShape", {'vertices',{},'loop',false})
 
+Comp.define("lineStyle", {'draw',true, 'color',{1,1,1}, 'linewidth',1,'linestyle','smooth','closepolygon',true})
 
 Comp.define("debug", {'value',''})
 
@@ -41,3 +46,6 @@ Comp.define("fishspawner", {})
 Comp.define("fish", {'kind','black','state','idle','targetspeed',0})
 
 Comp.define("health", {'hp',10,'maxhp',10})
+
+Comp.define("map", {'slices',{}})
+Comp.define("slice", {'number',0})

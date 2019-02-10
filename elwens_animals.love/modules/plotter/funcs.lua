@@ -53,6 +53,15 @@ function F.genRange(from,to,step)
   return l
 end
 
+function F.genSeries(from,to,step,fn)
+  step = step or 1
+  local ser = {}
+  for x=from,to,step do
+    table.insert(ser,x)
+    table.insert(ser,fn(x))
+  end
+  return ser
+end
 
 --
 -- BASIC FUNCS

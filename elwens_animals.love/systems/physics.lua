@@ -293,8 +293,8 @@ function newJoint(pw, jointComp, e, estore, objCache)
 end
 
 function newBody(pw,e)
-  if not (e.rectangleShape or e.polygonShape or e.circleShape) then
-    Debug.println("newGeneric() requires the Entity have rectangleShape, polygonShape or circleShape component(s)")
+  if not (e.rectangleShape or e.polygonShape or e.circleShape or e.chainShape) then
+    Debug.println("newGeneric() requires the Entity have rectangleShape, polygonShape, chainShape or circleShape component(s)")
     return nil
     -- error("newGeneric() requires the Entity have rectangleShape, polygonShape or circleShape component(s)")
   end
@@ -324,6 +324,10 @@ function newBody(pw,e)
   end
   for _,c in pairs(e.circleShapes or {}) do
     local s = P.newCircleShape(c.x,c.y, c.radius)
+    addShape(s)
+  end
+  for _,ch in pairs(e.chainShapes or {}) do
+    local s = P.newChainShape(ch.loop, ch.vertices)
     addShape(s)
   end
 
