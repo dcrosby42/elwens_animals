@@ -45,10 +45,8 @@ S.standing = {
   dash = function(evt,mario,e,estore,input,res)
     if evt.value > 0 then
       mario.dash = true
-      print("dash")
     else
       mario.dash = false
-      print("undash")
     end
   end,
 }
@@ -57,24 +55,18 @@ S.running = {
   leftx = function(evt,mario,e,estore,input,res)
     if evt.value < 0 then
       mario.dir = "left"
-      -- mario.mode = "running"
-
     elseif evt.value > 0 then
       mario.dir = "right"
-      -- mario.mode = "running"
     else
       mario.mode = "standing"
-      
     end
   end,
 
   dash = function(evt,mario,e,estore,input,res)
     if evt.value > 0 then
       mario.dash = true
-      print("dash")
     else
       mario.dash = false
-      print("undash")
     end
   end,
 }
@@ -90,16 +82,17 @@ local function update(estore,input,res)
 
     -- Update animation
     local motion = "stand"
-    local speed = 0
+    local speed = 0 -- XXX
     if e.mario.mode == "running" then
       if e.mario.dash then
         motion = "run"
-        speed = 300 
+        speed = 300  -- XXX
       else
         motion = "walk"
-        speed = 175 
+        speed = 175  -- XXX
       end
     end
+    -- XXX:
     if e.mario.dir == "left" then
       speed = -speed
     end
@@ -110,6 +103,7 @@ local function update(estore,input,res)
       e.timers[e.anim.name].t = 0
     end
 
+    -- XXX:
     e.pos.x = e.pos.x + (input.dt * speed)
 
   end)
