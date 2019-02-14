@@ -8,7 +8,8 @@ Comp.define("tag", {})
 
 Comp.define("timer", {'t',0, 'reset',0, 'countDown',true, 'loop',false, 'alarm',false,'event',''})
 
-Comp.define("controller", {'id','','leftx',0,'lefty',0,})
+-- Comp.define("controller", {'id','','leftx',0,'lefty',0,})
+Comp.define("controller", {'id',''})
 
 Comp.define("viewport", {'targetName','','x',0,'y',0,'sx',1,'sy',1,'w',1024,'h',768})
 Comp.define("viewportTarget", {'offx',0,'offy',0})
@@ -49,3 +50,5 @@ Comp.define("health", {'hp',10,'maxhp',10})
 
 Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
+
+Comp.define("mario", {'mode','','dir','','dash',false})

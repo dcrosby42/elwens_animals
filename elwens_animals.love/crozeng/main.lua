@@ -227,6 +227,30 @@ function love.touchreleased(id, x,y, dx,dy, pressure)
   updateWorld(toTouchAction("released",id,x,y,dx,dy))
 end
 
+local _joystickAxisCache = {}
+local _joystickAxisThresh = 0.016
+local function dedupeJoystickAxis(joystick,axis,value)
+  local id,inst = joystick:getID()
+  local key = (id*1000)+(10*inst)+axis
+  local state = _joystickAxisCache[key]
+  if not state then 
+    state = {
+      -- last=love.timer.getTime(),
+      value=value,
+    } 
+    _joystickAxisCache[key] = state 
+    return false
+  end
+  -- state.last = love.timer.getTime()
+  if state.value == value then
+    return true
+  elseif math.abs(value - state.value) < _joystickAxisThresh then
+    return true
+  end
+  state.value = value
+  return false
+end
+
 local joystickAction = {type="joystick", joystickId=0, instanceId=0, controlType='', control='', value=0}
 function toJoystickAction(joystick, controlType, control, value)
   joystickAction.joystickId, joystickAction.instanceId = joystick:getID()
@@ -238,11 +262,11 @@ function toJoystickAction(joystick, controlType, control, value)
 end
 
 function love.joystickaxis( joystick, axis, value )
+  if dedupeJoystickAxis(joystick,axis,value) then return end
   updateWorld(toJoystickAction(joystick, "axis", axis, value))
 end
 
 function love.joystickpressed( joystick, button )
-  local id,inst = joystick:getID()
   updateWorld(toJoystickAction(joystick, "button",button,1))
 end
 

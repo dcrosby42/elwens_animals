@@ -7,6 +7,7 @@
 require 'ecs.ecshelpers'
 local Debug = require('mydebug').sub("EcsDev2",true,true)
 local Editor = require('ecs.editorgui')
+local JoystickAdapter = require('ecs.joystickadapter')
 local G = love.graphics
 local soundmanager = require('crozeng.soundmanager')
 
@@ -91,6 +92,10 @@ local function updateWorld(ecsMod, world, action)
   elseif action.type == 'touch' then
     if not editing then
       table.insert(world.input.events, shallowclone(action))
+    end
+  elseif action.type == 'joystick' then
+    if not editing then
+      JoystickAdapter.appendControllerEvents(world.input.events, action, "joystick1")
     end
   end
   

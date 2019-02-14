@@ -46,16 +46,32 @@ end
 
 function Anim.makeSimpleAnim(pics, frameDur)
   local anim = {
-    pics=shallowclone(pics),
+    pics={},
     duration=(#pics * frameDur),
   }
-  -- stamp each frame w duration
-  for i=1,#anim.pics do
+  for i=1,#pics do
+    table.insert(anim.pics, shallowclone(pics[i]))
+    -- stamp each frame w duration and frame#
     anim.pics[i].frameNum = i
     anim.pics[i].duration = frameDur
   end
   -- make a frame getter func for this anim
   anim.getFrame = Anim.makeFrameLookup(anim) 
+
+  return anim
+end
+
+function Anim.makeSinglePicAnim(pic,framwDur)
+  frameDur=frameDur or 1 
+  pic=shallowclone(pic)
+  pic.frameNum = 1
+  pic.duration=frameDur
+  local anim = {
+    pics={pic},
+    duration=pic.duration,
+  }
+  -- make a frame getter func for this anim
+  anim.getFrame = function(t) return pic end
 
   return anim
 end

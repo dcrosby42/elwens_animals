@@ -37,6 +37,8 @@ end
 --   quad   Quad
 --   rect   {x,y,w,h}
 --   duration
+--   sx
+--   sy
 function R.makePic(fname, img, rect,opts)
   rect=rect or {}
   opts=opts or {}
@@ -73,6 +75,8 @@ function R.makePic(fname, img, rect,opts)
     image=img,
     quad=quad,
     duration=(opts.duration or 1/60),
+    sx=(opts.sx or 1),
+    sy=(opts.sy or 1),
   }
   return pic
 end
