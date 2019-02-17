@@ -6,7 +6,7 @@ Comp.define("vel", {'dx',0,'dy',0,'angularvelocity',0,'lineardamping',0,'angular
 
 Comp.define("tag", {})
 
-Comp.define("timer", {'t',0, 'reset',0, 'countDown',true, 'loop',false, 'alarm',false,'event',''})
+Comp.define("timer", {'t',0, 'factor',1,'reset',0, 'countDown',true, 'loop',false, 'alarm',false,'event',''})
 
 -- Comp.define("controller", {'id','','leftx',0,'lefty',0,})
 Comp.define("controller", {'id',''})
@@ -15,7 +15,7 @@ Comp.define("viewport", {'targetName','','x',0,'y',0,'sx',1,'sy',1,'w',1024,'h',
 Comp.define("viewportTarget", {'offx',0,'offy',0})
 
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
-Comp.define("anim", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
+Comp.define("anim", {'id','','timescale',1,'centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 
 Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil})
 
@@ -51,4 +51,4 @@ Comp.define("health", {'hp',10,'maxhp',10})
 Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
 
-Comp.define("mario", {'mode','','dir','','dash',false})
+Comp.define("mario", {'mode','standing','value',0,'facing','right','dashbutton',false,'jumpbutton',false})

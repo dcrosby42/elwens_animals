@@ -58,7 +58,7 @@ local function drawAnims(e,res)
       if not animRes then error("No anim resource '".. anim.id .."'") end
       local timer = e.timers[anim.name]
       if timer then
-        local picRes = animRes.getFrame(timer.t)
+        local picRes = animRes.getFrame(anim.timescale * timer.t)
         if picRes == nil then
           error("anim id="..anim.id.." t="..timer.t.." NIL PIC? "..tdebug(animRes))
         end
