@@ -40,8 +40,6 @@ local function makeMarioAnims()
   anims.mario_big_run_right = Anim.makeSimpleAnim({pics[2],pics[3],pics[1]}, runFrameDur)
   anims.mario_big_run_right.sx = -1
 
-  print(tdebug(anims))
-
   return anims
 end
 

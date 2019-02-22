@@ -6,7 +6,7 @@ local function drawEntity(e,cache)
   if e.body.debugDraw then
     local obj = cache[e.body.cid]
     if obj then
-      G.setColor(255,255,255)
+      G.setColor(e.body.debugDrawColor)
       G.setLineWidth(1)
       for _,shape in ipairs(obj.shapes) do
         if shape:type() == "CircleShape" then
@@ -33,7 +33,6 @@ local function drawEntities(parent,cache)
 end
 
 local system =  defineDrawSystem({'physicsWorld'}, function(physWorldE,estore,res)
-  -- estore:walkEntity(physWorldE, hasComps('body'), function(e)
   drawEntities(estore,estore:getCache('physics'))
 end)
 

@@ -70,6 +70,10 @@ local physicsSystem = defineUpdateSystem({'physicsWorld'},function(physEnt,estor
       f.impy=0
       f.angimp=0
     end
+    -- local fixtures = b:getFixtureList()
+    -- for i=1,#fixtures do
+    --   fixtures[i]:setFriction(e.body.friction)
+    -- end
   end)
   -- Sync joint comps to phys bodies:
   estore:walkEntities(hasComps('joint'), function(e)
@@ -303,6 +307,7 @@ function newBody(pw,e)
   if not e.body.dynamic then dyn="static" end
   local b = P.newBody(pw,x,y,dyn)
   b:setBullet(e.body.bullet)
+  b:setFixedRotation(e.body.fixedrotation)
 
   local shapes={}
   local fixtures={}
@@ -310,6 +315,8 @@ function newBody(pw,e)
   local function addShape(s) 
     local f = P.newFixture(b,s)
     f:setUserData(e.body.cid)
+    f:setFriction(e.body.friction) -- TODO someday allow this to be set per-shape instead of whole body instead of whole body.  If needed
+    print(f:getFriction())
     table.insert(shapes,s)
     table.insert(fixtures,f)
   end

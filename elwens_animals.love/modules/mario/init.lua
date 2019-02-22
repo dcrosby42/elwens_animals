@@ -44,6 +44,7 @@ local DRAW = composeDrawSystems({
   'modules.mario.drawsystem',
   -- DrawStuff.drawSystem,
   DrawSound.new("mario"),
+  'systems.physicsdraw',
 })
 
 return EcsAdapter({

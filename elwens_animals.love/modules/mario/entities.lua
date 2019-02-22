@@ -9,7 +9,9 @@ local Entities={}
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
+  Entities.background(estore)
   Entities.mario(estore)
+  Entities.floor(estore)
 
   -- local vp = Entities.viewport(estore)
   -- local bg = Entities.background(vp,res)
@@ -26,13 +28,27 @@ end
 function Entities.mario(parent,res)
   return parent:newEntity({
     {'name',{name="mario"}},
-    {'mario',{mode="standing",dir="right"}},
+    {'mario',{mode="standing",facing="right"}},
     {'controller',{id="joystick1"}},
-    {'anim', {name="mario", id="mario_big_stand_right", offx=12, offy=32, drawbounds=false}}, 
+    {'anim', {name="mario", id="mario_big_stand_right", centerx=0.5, centery=0.5, drawbounds=false}}, 
     {'timer', {name="mario", countDown=false}},
     {'pos', {x=100,y=love.graphics.getHeight()-50}},
+    -- {'pos', {x=100,y=}},
     {'vel', {}},
+    {'body', {fixedrotation=true, debugDraw=false, friction=0, debugDrawColor={1,.5,.5}}},
+    {'force', {}},
+    {'rectangleShape', {x=0,y=8,w=45,h=80}},
   })
+end
+
+function Entities.floor(estore,res)
+  return estore:newEntity({
+    {'name', {name="floor"}},
+    {'tag', {name='floor'}},
+    {'body', {debugDraw=true, dynamic=false,friction=1}},
+		{'rectangleShape', {w=1024,h=50}},
+    {'pos', {x=512,y=743}},
+	})
 end
 
 -- function Entities.ui(parent,res)
