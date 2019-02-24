@@ -51,4 +51,4 @@ Comp.define("health", {'hp',10,'maxhp',10})
 Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
 
-Comp.define("mario", {'mode','standing','value',0,'facing','right','dashbutton',false,'jumpbutton',false})
+Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false})
