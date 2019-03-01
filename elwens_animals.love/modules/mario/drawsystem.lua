@@ -25,6 +25,9 @@ local function draw(estore,res)
   end)
   viewportE:walkEntities(hasComps('anim','pos'), function(e)
     DrawPic.drawAnims(e,res)
+    if e.mario then
+      love.graphics.print(e.mario.mode,e.pos.x+15,e.pos.y+30)
+    end
   end)
 
   -- PhysicsDraw.drawEntities(viewportE, estore:getCache('physics'))

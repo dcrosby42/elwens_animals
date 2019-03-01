@@ -316,7 +316,6 @@ function newBody(pw,e)
     local f = P.newFixture(b,s)
     f:setUserData(e.body.cid)
     f:setFriction(e.body.friction) -- TODO someday allow this to be set per-shape instead of whole body instead of whole body.  If needed
-    print(f:getFriction())
     table.insert(shapes,s)
     table.insert(fixtures,f)
   end

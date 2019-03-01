@@ -39,6 +39,14 @@ local function makeMarioAnims()
   anims.mario_big_run_left = Anim.makeSimpleAnim({pics[2],pics[3],pics[1]}, runFrameDur)
   anims.mario_big_run_right = Anim.makeSimpleAnim({pics[2],pics[3],pics[1]}, runFrameDur)
   anims.mario_big_run_right.sx = -1
+  -- jumping
+  anims.mario_big_jump_left = Anim.makeSinglePicAnim(pics[4])
+  anims.mario_big_jump_right = Anim.makeSinglePicAnim(pics[4])
+  anims.mario_big_jump_right.sx = -1 
+  -- falling
+  anims.mario_big_fall_left = Anim.makeSinglePicAnim(pics[2])
+  anims.mario_big_fall_right = Anim.makeSinglePicAnim(pics[2])
+  anims.mario_big_fall_right.sx = -1 
 
   return anims
 end
