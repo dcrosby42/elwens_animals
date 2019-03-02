@@ -169,35 +169,55 @@ local function tryGetUserData(obj)
 end
 
 function beginContact(a,b,contact)
-  local cidA = tryGetUserData(a)
-  local cidB = tryGetUserData(b)
-  if not cidA or not cidB then return end -- sometimes we get stale fixtures, abort
+  local a_cid = tryGetUserData(a)
+  local b_cid = tryGetUserData(b)
+  if not a_cid or not b_cid then return end -- sometimes we get stale fixtures, abort
 
-  -- XXX local af,bf = contact:getFixtures()
-  local x,y,_,_ = contact:getPositions()
-  local dxA,dyA = a:getBody():getLinearVelocityFromWorldPoint(x,y)
-  local dxB,dyB = b:getBody():getLinearVelocityFromWorldPoint(x,y)
+  -- contact points
+  local a_x,a_y, b_x,b_y = contact:getPositions()
+  -- contact normal... vector from a->b
+  local nx,ny = contact:getNormal()
+  -- velocities
+  local a_dx,a_dy = a:getBody():getLinearVelocityFromWorldPoint(a_x,a_y)
+  local dxB,dyB = b:getBody():getLinearVelocityFromWorldPoint(a_x,a_y) -- FIXME? should this be b_x b_y?
 
-  local velA = {a:getBody():getLinearVelocity()}
-  local velB = {b:getBody():getLinearVelocity()}
-  Debug.println("beginContact cidA="..cidA.." velA={"..velA[1]..","..velA[2].."} cidB="..cidB.." velB={"..velB[1]..","..velB[2].."}")
-  Debug.println("   dxA="..dxA.." dyA="..dyA.."  dxB="..dxB.." dyB="..dyB)
-  -- table.insert(_CollisionBuffer, {"begin",a,b,cidA,cidB,velA,velB})
-  table.insert(_CollisionBuffer, {"begin",a,b,cidA,cidB,dxA,dyA,dxB,dyB})
-  contact=nil
+  table.insert(_CollisionBuffer, {
+    "begin", a,b,
+     a_cid, b_cid,
+     nx,ny,
+     a_x,a_y,  b_x,b_y,
+     a_dx,a_dy, b_dx,b_dy,
+  })
+  -- delete the contact object. something about mem mgmt bugs in the physics engine regarding Contact objects
+  contact=nil 
   GC.request()
 end
 
-function endContact(a,b,_contact)
-  local cidA = tryGetUserData(a)
-  local cidB = tryGetUserData(b)
-  if not cidA or not cidB then return end -- sometimes we get stale fixtures, abort
-  Debug.println("endContact cidA="..cidA.." cidB="..cidB)
-  table.insert(_CollisionBuffer, {"end",a,b,cidA,cidB})
-  _contact = nil
-  GC.request()
+function endContact(a,b,contact)
+  local a_cid = tryGetUserData(a)
+  local b_cid = tryGetUserData(b)
+  if not a_cid or not b_cid then return end -- sometimes we get stale fixtures, abort
+
+  table.insert(_CollisionBuffer, {"end",a,b,a_cid,b_cid})
 end
 
+-- Removes all the contact components from 'from' 
+-- whose otherEid field equals matching.eid
+local function removeContactComps(from,matching)
+  local rem = {}
+  if not from.contacts then
+    print("no contacts? "..tflatten(from))
+    return
+  end
+  for _,contact in pairs(from.contacts) do
+    if contact.otherEid == matching.eid then
+      rem[#rem+1] = contact
+    end
+  end
+  for i=1,#rem do
+    from:removeComp(rem[i])
+  end
+end
 
 -- For each collision notes in physWorld._secret_collision_buffer,
 -- Create a "collision event" object and append to the given events list.
@@ -205,24 +225,52 @@ function generateCollisionEvents(collbuf, estore, events)
   if #collbuf > 0 then
     Debug.println("generateCollisionEvents: num items:"..#collbuf)
     for _,c in ipairs(collbuf) do
-      local state,a,b,cidA,cidB,dxA,dyA,dxB,dyB = unpack(c)
-      local compA, entA = estore:getCompAndEntityForCid(cidA)
-      local compB, entB = estore:getCompAndEntityForCid(cidB)
-      if entA and entB then
-        local evt = {
-          type="collision",
-          state=state,
-          entA=entA,
-          compA=compA,
-          entB=entB,
-          compB=compB,
-          dxA=dxA, dyA=dyA,
-          dxB=dxB, dyB=dyB,
-        }
-        table.insert(events, evt)
-      
+      local state,a,b,a_cid,b_cid,nx,ny,a_x,a_y,b_x,b_y,a_dx,a_dy,b_dx,b_dy = unpack(c)
+      local a_comp, a_ent = estore:getCompAndEntityForCid(a_cid)
+      local b_comp, b_ent = estore:getCompAndEntityForCid(b_cid)
+      if a_ent and b_ent then
+        if state == "begin" then
+          -- Emit a "begin collision" event 
+          table.insert(events, {
+            type="collision", state="begin",
+            normX=nx,normY=ny,
+            entA=a_ent, compA=a_comp,
+            entB=b_ent, compB=b_comp,
+            xA=a_x,yA=a_y, xB=b_x,yB=b_y,
+            dxA=a_dx,dyA=a_dy, dxB=b_dx,dyB=b_dy,
+          })
+          -- Add a contact for entity A
+          a_ent:newComp('contact', {
+            name=b_ent.eid,
+            otherEid=b_ent.eid, otherCid=b_comp.cid,
+            myCid=a_comp.cid,
+            nx=nx,ny=ny,
+            x=a_x,y=a_y,
+            dx=a_dx,y=a_dy,
+          })
+          -- Add a contact for entity B
+          b_ent:newComp('contact', {
+            name=a_ent.eid,
+            otherEid=a_ent.eid, otherCid=a_comp.cid,
+            myCid=b_comp.cid,
+            nx=nx,ny=ny,
+            x=a_x,y=a_y,
+            dx=a_dx,y=a_dy,
+          })
+        else 
+          -- Emit a "begin collision" event 
+          table.insert(events, {
+            type="collision", state="end",
+            normX=nx,normY=ny,
+            entA=a_ent, compA=a_comp,
+            entB=b_ent, compB=b_comp,
+          })
+          -- remove old contact components
+          removeContactComps(a_ent, b_ent)
+          removeContactComps(b_ent, a_ent)
+        end
       else
-        logError("!! Unable to register collision between '".. aCid .."' and '".. bCid .."'")
+        logError("!! Unable to register collision between '".. a_cid .."' and '".. b_cid .."'")
       end
     end
   end

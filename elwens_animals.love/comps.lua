@@ -52,3 +52,8 @@ Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
 
 Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false})
+
+Comp.define("touchable", {'touching',false,'up',false,'down',false,'left',false,'right',false})
+
+Comp.define("contact", {'otherEid','','nx',0,'ny',0,'myCid','','otherCid','','x',0,'y',0,'dx',0,'dy',0})
+
