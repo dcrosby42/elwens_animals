@@ -62,30 +62,37 @@ local function adjSliderValue(sl,x)
   end
 end
 
+local function nameBlurb(c)
+  if c.name ~= '' then return "[" .. c.name .. "] " else return "" end
+end
+local function coordStrParen(x,y)
+  return "("..round(x,3)..", "..round(y,3)..")"
+end
+
 local function updateCompGui(c)
-  local function name()
-    local str = c.type
-    str = string.sub(str,1,13)
-    suit.Label("  ", suit.layout:row(10,h))
-    suit.Button(str, {id=c.cid,align='right'}, suit.layout:col(100,h))
+  if c.type == "name" then
+    return
   end
+
+  local str = c.type
+  str = string.sub(str,1,13)
+  suit.Label("  ", suit.layout:row(10,h))
+  suit.Button(str, {id=c.cid,align='right'}, suit.layout:col(100,h))
+  
   local h = 15
   local w = 1000
   if c.type == "pos" then
-    name()
-    
-    local str = "("..round(c.x,3)..", "..round(c.y,3)..") r: "..round(c.r,3)
+    local str = nameBlurb(c) .. "("..round(c.x,3)..", "..round(c.y,3)..") r: "..round(c.r,3)
+    suit.Label(str, {align='left'}, suit.layout:col(w,h))
+
+  elseif c.type == "contact" then
+    local str = c.otherEid .. " N"..coordStrParen(c.nx,c.ny)
     suit.Label(str, {align='left'}, suit.layout:col(w,h))
 
   elseif c.type == "tag" then
-    name()
     suit.Label(c.name, {align='left'}, suit.layout:col(w,h))
-  elseif c.type == "name" then
-    -- name()
-    -- suit.Label(c.name, {align='left'}, suit.layout:col(w,h))
   else
-    name()
-    local str=""
+    local str=nameBlurb(c)
     for key,val in pairs(c) do
       if key ~= "name" and key ~= "cid" and key ~= "eid" and key ~= "type" then
         if type(val) == "number" then
@@ -172,6 +179,12 @@ local function updateEstoreGui(ui, estore)
           table.insert(comps, comp)
         end
       end
+
+      table.sort(comps, function(a,b)
+        -- return a.type < b.type
+        return tonumber(a.cid:sub(2)) < tonumber(b.cid:sub(2))
+      end)
+
       for _,comp in ipairs(comps) do
         updateCompGui(comp)
       end
