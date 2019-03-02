@@ -33,7 +33,6 @@ function Entities.mario(parent,res)
     {'anim', {name="mario", id="mario_big_stand_right", centerx=0.5, centery=0.5, drawbounds=false}}, 
     {'timer', {name="mario", countDown=false}},
     {'pos', {x=100,y=love.graphics.getHeight()-50}},
-    -- {'pos', {x=100,y=}},
     {'vel', {}},
     {'body', {fixedrotation=true, debugDraw=false, friction=0, debugDrawColor={1,.5,.5}}},
     {'force', {}},
@@ -42,13 +41,30 @@ function Entities.mario(parent,res)
 end
 
 function Entities.floor(estore,res)
-  return estore:newEntity({
+  local floor =  estore:newEntity({
     {'name', {name="floor"}},
     {'tag', {name='floor'}},
     {'body', {debugDraw=true, dynamic=false,friction=1}},
 		{'rectangleShape', {w=1024,h=50}},
     {'pos', {x=512,y=743}},
 	})
+
+  estore:newEntity({
+    {'name', {name="block1"}},
+    {'tag', {name='block'}},
+    {'body', {debugDraw=true, dynamic=false,friction=1}},
+		{'rectangleShape', {w=42,h=42}},
+    {'pos', {x=512,y=600}},
+	})
+  estore:newEntity({
+    {'name', {name="block2"}},
+    {'tag', {name='block'}},
+    {'body', {debugDraw=true, dynamic=false,friction=1}},
+		{'rectangleShape', {w=42,h=42}},
+    {'pos', {x=554,y=600}},
+	})
+
+  return floor
 end
 
 -- function Entities.ui(parent,res)

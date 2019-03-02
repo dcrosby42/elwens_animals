@@ -66,11 +66,25 @@ local function setAnim(anim,id)
   end
 end
 
+local function touchingDown(e)
+  if not e.contacts then return false end
+  for _,contact in pairs(e.contacts) do
+    if contact.ny > 0 then return true end
+  end
+  return false
+end
+
 S.jumping = {
   dash = setDash,
 
   leftx = function(evt,mario,e,estore,input,res)
     updateFacingValue(evt,mario)
+    if e.mario.value == 0 then
+      e.force.fx = 0
+      e.vel.dx = 0
+    else
+      e.force.fx = e.mario.value * 200
+    end
   end,
 
   jump = function(evt,mario,e,estore,input,res)
@@ -100,8 +114,7 @@ S.falling = {
   end,
 
   _update = function(mario,e,estore,input,res)
-    -- FIXME FIXME FIXME
-    if e.pos.y >= 668 then
+    if touchingDown(e) then
       e.vel.dy = 0
       brake(e,input.dt)
       if mario.value == 0 then
@@ -208,6 +221,7 @@ local function update(estore,input,res)
 
     if S[mode]._update then S[mode]._update(e.mario,e,estore,input,res) end
   end)
+  
 end
 
 return {
