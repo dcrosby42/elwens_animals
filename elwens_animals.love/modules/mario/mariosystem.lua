@@ -1,6 +1,7 @@
 local Events = require('eventhelpers')
 
 local JoystickActionMapping = {
+  leftx="moveX",
   face3="jump",
   face4="dash",
 }
@@ -77,14 +78,8 @@ end
 S.jumping = {
   dash = setDash,
 
-  leftx = function(evt,mario,e,estore,input,res)
+  moveX = function(evt,mario,e,estore,input,res)
     updateFacingValue(evt,mario)
-    if e.mario.value == 0 then
-      e.force.fx = 0
-      e.vel.dx = 0
-    else
-      e.force.fx = e.mario.value * 200
-    end
   end,
 
   jump = function(evt,mario,e,estore,input,res)
@@ -98,10 +93,17 @@ S.jumping = {
       e.force.fy = 0
       e.force.impy = 0 
       mario.mode = "falling"
-    -- else
-    --   e.force.fy = -1000 
+      setAnim(e.anims.mario,"mario_big_fall_"..e.mario.facing)
+    else
+      if e.mario.value == 0 then
+        brake(e,input.dt)
+        -- e.force.fx = 0
+        -- e.vel.dx = 0
+      else
+        e.force.fx = e.mario.value * 400
+      end
+      setAnim(e.anims.mario,"mario_big_jump_"..e.mario.facing)
     end
-    setAnim(e.anims.mario,"mario_big_jump_"..e.mario.facing)
   end
 
 }
@@ -109,7 +111,7 @@ S.jumping = {
 S.falling = {
   dash = setDash,
 
-  leftx = function(evt,mario,e,estore,input,res)
+  moveX = function(evt,mario,e,estore,input,res)
     updateFacingValue(evt,mario)
   end,
 
@@ -128,6 +130,14 @@ S.falling = {
       e.force.fy = 1000
     end
 
+    if e.mario.value == 0 then
+      brake(e,input.dt)
+      -- e.force.fx = 0
+      -- e.vel.dx = 0
+    else
+      e.force.fx = e.mario.value * 400
+    end
+
     setAnim(e.anims.mario,"mario_big_fall_"..e.mario.facing)
   end
 }
@@ -135,7 +145,7 @@ S.falling = {
 S.standing = {
   dash = setDash,
 
-  leftx = function(evt,mario,e,estore,input,res)
+  moveX = function(evt,mario,e,estore,input,res)
     updateFacingValue(evt,mario)
     if e.mario.value ~= 0 then
       mario.mode = "running"
@@ -163,7 +173,7 @@ S.running = {
     end
   end,
 
-  leftx = function(evt,mario,e,estore,input,res)
+  moveX = function(evt,mario,e,estore,input,res)
     updateFacingValue(evt,mario)
     if e.mario.value == 0 then
       mario.mode = "standing"
