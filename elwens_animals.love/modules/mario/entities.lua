@@ -3,6 +3,8 @@ local Estore = require 'ecs.estore'
 -- local AnimalEnts = require 'modules.animalscreen.entities'
 local F = require 'modules.plotter.funcs'
 local G = love.graphics
+local Res = require 'modules.mario.resources'
+local Scale = Res.Scale
 
 local Entities={}
 
@@ -32,37 +34,53 @@ function Entities.mario(parent,res)
     {'controller',{id="joystick1"}},
     {'anim', {name="mario", id="mario_big_stand_right", centerx=0.5, centery=0.5, drawbounds=false}}, 
     {'timer', {name="mario", countDown=false}},
-    {'pos', {x=100,y=love.graphics.getHeight()-50}},
-    {'vel', {}},
-    {'body', {fixedrotation=true, debugDraw=false, friction=0, debugDrawColor={1,.5,.5}}},
-    {'force', {}},
+    {'body', {fixedrotation=true, debugDraw=true, friction=0, debugDrawColor={1,.5,.5}}},
     {'rectangleShape', {x=0,y=8,w=45,h=80}},
+    {'force', {}},
+    {'pos', {x=100,y=love.graphics.getHeight()-90}},
+    {'vel', {}},
+  })
+end
+
+local BlockW = 16 * Scale
+function newBlock(parent,opts)
+  return parent:newEntity({
+    {'body', {debugDraw=true,dynamic=false,friction=1}},
+		{'rectangleShape', {w=BlockW,h=BlockW}},
+    {'pos', {x=(opts.col*BlockW) + (BlockW/2),y=(opts.row*BlockW) + (BlockW/2)}},
   })
 end
 
 function Entities.floor(estore,res)
-  local floor =  estore:newEntity({
-    {'name', {name="floor"}},
-    {'tag', {name='floor'}},
-    {'body', {debugDraw=true, dynamic=false,friction=1}},
-		{'rectangleShape', {w=1024,h=50}},
-    {'pos', {x=512,y=743}},
-	})
+  -- local floor =  estore:newEntity({
+  --   {'name', {name="floor"}},
+  --   {'tag', {name='floor'}},
+  --   {'body', {debugDraw=true, dynamic=false,friction=1}},
+	-- 	{'rectangleShape', {w=1024,h=50}},
+  --   {'pos', {x=512,y=743}},
+	-- })
 
-  estore:newEntity({
-    {'name', {name="block1"}},
-    {'tag', {name='block'}},
-    {'body', {debugDraw=true, dynamic=false,friction=1}},
-		{'rectangleShape', {w=42,h=42}},
-    {'pos', {x=512,y=600}},
-	})
-  estore:newEntity({
-    {'name', {name="block2"}},
-    {'tag', {name='block'}},
-    {'body', {debugDraw=true, dynamic=false,friction=1}},
-		{'rectangleShape', {w=42,h=42}},
-    {'pos', {x=554,y=600}},
-	})
+  -- estore:newEntity({
+  --   {'name', {name="block1"}},
+  --   {'tag', {name='block'}},
+  --   {'body', {debugDraw=true, dynamic=false,friction=1}},
+	-- 	{'rectangleShape', {w=48,h=48}},
+  --   {'pos', {x=512,y=600}},
+	-- })
+  -- estore:newEntity({
+  --   {'name', {name="block2"}},
+  --   {'tag', {name='block'}},
+  --   {'body', {debugDraw=true, dynamic=false,friction=1}},
+	-- 	{'rectangleShape', {w=48,h=48}},
+  --   {'pos', {x=554,y=600}},
+	-- })
+  for c=0,20 do
+    newBlock(estore, {row=15,col=c})
+  end
+  for c=10,12 do
+    newBlock(estore, {row=12,col=c})
+  end
+  newBlock(estore, {row=9,col=11})
 
   return floor
 end
