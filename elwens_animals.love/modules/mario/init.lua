@@ -36,7 +36,7 @@ local UPDATE = composeSystems({
   'systems.sound',
   'systems.touchbutton',
   'modules.mario.mariosystem',
-  'modules.mario.playertrackersystem',
+  -- 'modules.mario.playertrackersystem',
   'systems.viewport',
 })
 
