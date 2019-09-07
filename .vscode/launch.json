@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Game",
+            "type": "lua",
+            "request": "launch",
+            "mode": "debug",
+            "program": "/Applications/love.app/Contents/MacOS/love ${workspaceFolder}/elwens_animals.love"
+        }
+    ]
+}
