@@ -1,6 +1,7 @@
 
 numberlua = require 'vendor/numberlua' -- intentionally global
 bit32 = numberlua.bit32 -- intentionally global
+inspect = require 'inspect' -- intentionally global
 
 function flattenTable(t)
   s = ""
@@ -188,4 +189,25 @@ function offsetBounds(t, w,h, wr, hr)
   t.offx = wr * w
   t.offy = hr * h
   return t
+end
+
+function string:split(sep)
+  local sep, fields = sep or ":", {}
+  local pattern = string.format("([^%s]+)", sep)
+  self:gsub(pattern, function(c)
+    fields[#fields + 1] = c
+  end)
+  return fields
+end
+
+function map(array, func)
+  local new_array = {}
+  for i, v in ipairs(array) do
+    new_array[i] = func(v)
+  end
+  return new_array
+end
+
+function lmod(x, n)
+  return 1 + (x - 1) % n
 end
