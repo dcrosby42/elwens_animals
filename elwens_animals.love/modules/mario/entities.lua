@@ -14,10 +14,9 @@ function Entities.initialEntities(res)
 
   Entities.background(estore)
   Entities.mario(estore)
-  Entities.floor(estore)
+  Entities.platforms(estore)
   Entities.viewport(estore, res)
 
-  -- local vp = Entities.viewport(estore)
   -- local bg = Entities.background(vp,res)
   -- Entities.map(vp)
   -- Entities.tracker(vp)
@@ -29,16 +28,11 @@ function Entities.initialEntities(res)
   return estore
 end
 
-local function verts_forRect(w, h)
+local function rectToVerts(w, h)
   return {0, 0, w, 0, w, h, 0, h}
 end
-local function verts_forCorneredRect(w, h, s)
-  local hs = s
-  local vs = s
-  return {hs, 0, w - hs, 0, w, vs, w, h - vs, w - hs, h, hs, h, 0, h - vs, 0, vs}
-end
 
-local function verts_move(verts, x, y)
+local function translateVerts(verts, x, y)
   for i = 1, #verts, 2 do
     verts[i] = verts[i] + x
     verts[i + 1] = verts[i + 1] + y
@@ -48,10 +42,9 @@ end
 function Entities.mario(parent, res)
   local w = 45
   local h = 80
-  -- local verts = verts_forCorneredRect(w,h,10)
-  local verts = verts_forRect(w, h)
-  verts_move(verts, -w / 2, -h / 2)
-  verts_move(verts, 0, 8)
+  local verts = rectToVerts(w, h)
+  translateVerts(verts, -w / 2, -h / 2)
+  translateVerts(verts, 0, 8)
 
   return parent:newEntity(
     {
@@ -65,24 +58,15 @@ function Entities.mario(parent, res)
       -- {'polygonShape', {vertices={0,0, 45,0, 45,80, 0,80}}},
       {"polygonShape", {vertices = verts}},
       {"force", {}},
-      {"pos", {x = 100, y = love.graphics.getHeight() - 90}},
+      -- {"pos", {x = 100, y = love.graphics.getHeight() - 90}},
+      {"pos", {x = 30, y = 30}},
       {"vel", {}},
-      -- {"viewportTarget", {offx = -love.graphics.getWidth() / 2, offy = -love.graphics.getHeight() / 2 - 000}}
       {"followable", {targetname = "ViewFocus"}}
     }
   )
 end
 
 local BlockW = 16 * Scale
-function newBlock(parent, opts)
-  return parent:newEntity(
-    {
-      {"body", {debugDraw = true, dynamic = false, friction = 1}},
-      {"rectangleShape", {w = BlockW, h = BlockW}},
-      {"pos", {x = ((opts.col - 1) * BlockW) + (BlockW / 2), y = ((opts.row - 1) * BlockW) + (BlockW / 2)}}
-    }
-  )
-end
 
 function newPoly(parent, verts)
   return parent:newEntity(
@@ -100,53 +84,48 @@ function emptyGrid(w, c)
 end
 
 local stackup
-function Entities.floor(estore, res)
-  -- local floor =  estore:newEntity({
-  --   {'name', {name="floor"}},
-  --   {'tag', {name='floor'}},
-  --   {'body', {debugDraw=true, dynamic=false,friction=1}},
-  -- 	{'rectangleShape', {w=1024,h=50}},
-  --   {'pos', {x=512,y=743}},
-  -- })
+function Entities.platforms(estore, res)
+  local fname = "data/images/mario/testmap1.png"
+  local map = love.image.newImageData(fname)
+  local w, h = map:getDimensions()
+  print("Map " .. fname .. " w: " .. w .. " h: " .. h)
+  local detect = function(r, g, b)
+    if r == 1 and g == 1 and b == 1 then
+      return 1
+    end
+    return 0
+  end
+  local grid = {}
+  for y = 0, h - 1 do
+    local row = y + 1
+    grid[y + 1] = {}
+    for x = 0, w - 1 do
+      grid[y + 1][x + 1] = detect(map:getPixel(x, y))
+    end
+  end
 
-  -- estore:newEntity({
-  --   {'name', {name="block1"}},
-  --   {'tag', {name='block'}},
-  --   {'body', {debugDraw=true, dynamic=false,friction=1}},
-  -- 	{'rectangleShape', {w=48,h=48}},
-  --   {'pos', {x=512,y=600}},
-  -- })
-  -- estore:newEntity({
-  --   {'name', {name="block2"}},
-  --   {'tag', {name='block'}},
-  --   {'body', {debugDraw=true, dynamic=false,friction=1}},
-  -- 	{'rectangleShape', {w=48,h=48}},
-  --   {'pos', {x=554,y=600}},
-  -- })
-
-  local grid = {
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 1
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 2
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 3
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 4
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 5
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 6
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 7
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 8
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 9
-    {1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 10
-    {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 11
-    {1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 12
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 13
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 14
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 15
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} -- 16
-  }
+  -- local grid = {
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 1
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 2
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 3
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 4
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 5
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 6
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 7
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 8
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 9
+  --   {1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 10
+  --   {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 11
+  --   {1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 12
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 13
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 14
+  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 15
+  --   {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} -- 16
+  -- }
   for r = 1, #grid do
     for c = 1, #grid[r] do
       if grid[r][c] == 1 then
         grid[r][c] = {r = r, c = c}
-      -- newBlock(estore, {row = r, col = c})
       end
     end
   end
@@ -240,19 +219,7 @@ function stackup(grid)
   return rects
 end
 
--- function Entities.ui(parent,res)
---   return parent:newEntity({
---     {'name',{name="ui"}},
---   })
--- end
-
 function Entities.viewport(estore)
-  -- return estore:newEntity(
-  --   {
-  --     {"name", {name = "viewport"}},
-  --     {"viewport", {x = 0, y = 0, sx = 1, sy = 1, w = G.getWidth(), h = G.getHeight()}}
-  --   }
-  -- )
   local w = G.getWidth()
   local h = G.getHeight()
   local offx = -w / 2
