@@ -1,38 +1,46 @@
+local PhysicsDraw = require "systems.physicsdraw"
+local DrawPic = require "systems.drawpic"
+local DrawButton = require "systems.drawbutton"
+
 local G = love.graphics
 
-local PhysicsDraw = require 'systems.physicsdraw'
-local DrawPic = require 'systems.drawpic'
-local DrawButton = require 'systems.drawbutton'
+local SkyColor = {.6, .8, 1} -- TODO move to viewport?
 
-local skyColor = {.6, .8, 1} -- TODO move to viewport?
-
-local function draw(estore,res)
+local function draw(estore, res)
   -- Find the viewport
-  -- local viewportE = estore:getEntityByName("viewport")
-  -- if not viewportE then return end
-  -- local viewport = viewportE.viewport
-  --
-  -- -- Transform the view 
-  -- G.push()
-  -- G.translate(-viewport.x, -viewport.y)
-  -- G.scale(viewport.sx, viewport.sy)
+  local viewport = estore:getEntityByName("viewport")
+  if not viewport then
+    return
+  end
 
-  G.setBackgroundColor(skyColor)
+  -- Transform the view
+  G.push()
+  G.translate(-viewport.pos.x - viewport.rect.offx, -viewport.pos.y - viewport.rect.offy)
+  -- TODO: fix scale? G.scale(viewport.sx, viewport.sy)
+
+  G.setBackgroundColor(SkyColor)
 
   local viewportE = estore
-  viewportE:walkEntities(hasComps('pic','pos'), function(e)
-    DrawPic.drawPics(e,res)
-  end)
-  viewportE:walkEntities(hasComps('anim','pos'), function(e)
-    DrawPic.drawAnims(e,res)
-    if e.mario then
-      love.graphics.print(e.mario.mode,e.pos.x+15,e.pos.y+30)
+  viewportE:walkEntities(
+    hasComps("pic", "pos"),
+    function(e)
+      DrawPic.drawPics(e, res)
     end
-  end)
+  )
+  viewportE:walkEntities(
+    hasComps("anim", "pos"),
+    function(e)
+      DrawPic.drawAnims(e, res)
+      -- (print mario's "mode" string near his sprite for debugging)
+      -- if e.mario then
+      --   love.graphics.print(e.mario.mode,e.pos.x+15,e.pos.y+30)
+      -- end
+    end
+  )
 
-  -- PhysicsDraw.drawEntities(viewportE, estore:getCache('physics'))
+  PhysicsDraw.drawEntities(viewportE, estore:getCache("physics"))
+  G.pop()
 
-  -- G.pop()
   --
   -- local uiE = estore:getEntityByName("ui")
   -- if uiE then
@@ -42,6 +50,5 @@ local function draw(estore,res)
   --   end)
   -- end
 end
-
 
 return draw

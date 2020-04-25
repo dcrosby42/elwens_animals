@@ -2,8 +2,9 @@ require "helpers"
 local Comps = require "comps"
 local Estore = require "ecs.estore"
 local F = require "modules.plotter.funcs"
-local G = love.graphics
 local Res = require "modules.mario.resources"
+
+local G = love.graphics
 local Scale = Res.Scale
 
 local Entities = {}
@@ -59,14 +60,15 @@ function Entities.mario(parent, res)
       {"controller", {id = "joystick1"}},
       {"anim", {name = "mario", id = "mario_big_stand_right", centerx = 0.5, centery = 0.5, drawbounds = false}},
       {"timer", {name = "mario", countDown = false}},
-      {"body", {fixedrotation = true, debugDraw = true, friction = 0, debugDrawColor = {1, .5, .5}}},
+      {"body", {fixedrotation = true, debugDraw = false, friction = 0, debugDrawColor = {1, .5, .5}}},
       -- {'rectangleShape', {x=0,y=8,w=45,h=80}},
       -- {'polygonShape', {vertices={0,0, 45,0, 45,80, 0,80}}},
       {"polygonShape", {vertices = verts}},
       {"force", {}},
       {"pos", {x = 100, y = love.graphics.getHeight() - 90}},
       {"vel", {}},
-      {"viewportTarget", {offx = -love.graphics.getWidth() / 2, offy = -love.graphics.getHeight() / 2 - 000}}
+      -- {"viewportTarget", {offx = -love.graphics.getWidth() / 2, offy = -love.graphics.getHeight() / 2 - 000}}
+      {"followable", {targetname = "ViewFocus"}}
     }
   )
 end
@@ -165,7 +167,7 @@ function Entities.floor(estore, res)
     local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
     estore:newEntity(
       {
-        {"body", {debugDraw = true, debugDrawColor = {1, 0, 0}, dynamic = false, friction = 1}},
+        {"body", {debugDraw = true, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
         {"rectangleShape", {w = w, h = h}},
         {"pos", {x = x, y = y}}
       }
@@ -245,10 +247,23 @@ end
 -- end
 
 function Entities.viewport(estore)
+  -- return estore:newEntity(
+  --   {
+  --     {"name", {name = "viewport"}},
+  --     {"viewport", {x = 0, y = 0, sx = 1, sy = 1, w = G.getWidth(), h = G.getHeight()}}
+  --   }
+  -- )
+  local w = G.getWidth()
+  local h = G.getHeight()
+  local offx = -w / 2
+  local offy = -h / 2
   return estore:newEntity(
     {
       {"name", {name = "viewport"}},
-      {"viewport", {x = 0, y = 0, sx = 1, sy = 1, w = G.getWidth(), h = G.getHeight()}}
+      {"viewport", {}},
+      {"pos", {}},
+      {"rect", {draw = false, w = w, h = h, offx = offx, offy = offy}},
+      {"follower", {targetname = "ViewFocus"}}
     }
   )
 end

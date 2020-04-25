@@ -13,6 +13,8 @@ Comp.define("controller", {'id',''})
 
 Comp.define("viewport", {'targetName','','x',0,'y',0,'sx',1,'sy',1,'w',1024,'h',768})
 Comp.define("viewportTarget", {'offx',0,'offy',0})
+Comp.define("followable", {'targetname',''})
+Comp.define("follower", {'targetname',''})
 
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 Comp.define("anim", {'id','','timescale',1,'centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
