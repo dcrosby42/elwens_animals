@@ -1,4 +1,3 @@
-require "helpers"
 local Comps = require "comps"
 local Estore = require "ecs.estore"
 local F = require "modules.plotter.funcs"
@@ -14,6 +13,7 @@ function Entities.initialEntities(res)
 
   Entities.background(estore)
   Entities.mario(estore)
+  Entities.locus(estore)
   Entities.platforms(estore)
   Entities.viewport(estore, res)
 
@@ -39,6 +39,21 @@ local function translateVerts(verts, x, y)
   end
 end
 
+function Entities.locus(parent, res)
+  -- a thing that follows mario
+  local follW = 600
+  local follH = 400
+  parent:newEntity(
+    {
+      {"name", {name = "thinger"}},
+      {"pos", {}},
+      {"debugDraw", {}},
+      {"rect", {style = "line", color = {0, 0, 1}, w = follW, h = follH, offx = follW / 2, offy = follH / 2}},
+      {"label", {text = "LOCUS", color = {0, 0, 1}, offx = follW / 2, offy = follH / 2}},
+      {"follower", {targetname = "ViewFocus"}}
+    }
+  )
+end
 function Entities.mario(parent, res)
   local w = 45
   local h = 80
@@ -103,25 +118,6 @@ function Entities.platforms(estore, res)
       grid[y + 1][x + 1] = detect(map:getPixel(x, y))
     end
   end
-
-  -- local grid = {
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 1
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 2
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 3
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 4
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 5
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 6
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 7
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 8
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 9
-  --   {1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 10
-  --   {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 11
-  --   {1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 12
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 13
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 14
-  --   {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- 15
-  --   {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} -- 16
-  -- }
   for r = 1, #grid do
     for c = 1, #grid[r] do
       if grid[r][c] == 1 then

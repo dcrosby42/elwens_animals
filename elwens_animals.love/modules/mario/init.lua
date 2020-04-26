@@ -45,11 +45,15 @@ local UPDATE =
 )
 
 local DRAW =
+  require("systems.viewportdraw").construct(
   composeDrawSystems(
-  {
-    "modules.mario.drawsystem"
-    -- DrawSound.new("mario")
-  }
+    {
+      "modules.mario.drawsystem",
+      "systems.physicsdraw",
+      "systems.debugdraw"
+      -- DrawSound.new("mario")
+    }
+  )
 )
 
 return EcsAdapter(

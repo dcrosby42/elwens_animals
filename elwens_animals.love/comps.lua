@@ -22,10 +22,10 @@ Comp.define("anim", {'id','','timescale',1,'centerx','','centery','','offx',0,'o
 Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil})
 
 Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'fill',true, 'color',{0,0,0}})
-Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{0,0,0}, 'style','fill','draw',true})
+Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{1,1,1}, 'style','fill','draw',true})
 
 Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
-Comp.define('body', {'kind','', 'group',0,'dynamic',true,'mass','','bullet',false,'fixedrotation',false,'friction',0.2,'debugDraw',false,'debugDrawColor',{1,1,1}})
+Comp.define('body', {'kind','', 'group',0,'dynamic',true,'mass','','bullet',false,'fixedrotation',false,'friction',0.2,'debugDraw',false,'debugDrawColor',{0.8,0.8,1}})
 Comp.define("force", {'fx',0,'fy',0,'torque',0,'impx',0,'impy',0,'angimp',0})
 Comp.define('joint', {'kind','', 'toEntity','','lowerlimit','','upperlimit','','motorspeed','','maxmotorforce','','docollide',false})
 Comp.define("rectangleShape", {'x',0,'y',0,'w',0,'h',0,'angle',0})
@@ -36,6 +36,7 @@ Comp.define("chainShape", {'vertices',{},'loop',false})
 Comp.define("lineStyle", {'draw',true, 'color',{1,1,1}, 'linewidth',1,'linestyle','smooth','closepolygon',true})
 
 Comp.define("debug", {'value',''})
+Comp.define("debugDraw", {'on',true,'color',{1,1,1}})
 
 Comp.define("manipulator", {'id','','mode','','x',0,'y',0,'dx',0,'dy',0})
 
