@@ -19,7 +19,7 @@ Comp.define("follower", {'targetname',''})
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 Comp.define("anim", {'id','','timescale',1,'centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 
-Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil})
+Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil,'offx',0,'offy',0})
 
 Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'fill',true, 'color',{0,0,0}})
 Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{1,1,1}, 'style','fill','draw',true})
@@ -60,3 +60,4 @@ Comp.define("touchable", {'touching',false,'up',false,'down',false,'left',false,
 
 Comp.define("contact", {'otherEid','','nx',0,'ny',0,'myCid','','otherCid','','x',0,'y',0,'dx',0,'dy',0})
 
+return Comp

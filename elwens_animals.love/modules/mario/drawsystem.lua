@@ -2,24 +2,33 @@ local PhysicsDraw = require "systems.physicsdraw"
 local DrawPic = require "systems.drawpic"
 local DebugDraw = require "systems.debugdraw"
 local DrawButton = require "systems.drawbutton"
+local MarioMapSystem = require "modules.mario.mariomapsystem"
+local SW = MarioMapSystem.SectorW
+local SH = MarioMapSystem.SectorH
+local Res = require "modules.mario.resources"
 
 local G = love.graphics
 
 local SkyColor = {.6, .8, 1} -- TODO move to viewport?
 
 local function draw(estore, res)
-  -- -- Find the viewport
-  -- local viewport = estore:getEntityByName("viewport")
-  -- if not viewport then
-  --   return
-  -- end
-
-  -- -- Transform the view
-  -- G.push()
-  -- G.translate(-viewport.pos.x - viewport.rect.offx, -viewport.pos.y - viewport.rect.offy)
-  -- -- TODO: fix scale? G.scale(viewport.sx, viewport.sy)
-
   G.setBackgroundColor(SkyColor)
+
+  estore:walkEntities(
+    hasComps("mariomap"),
+    function(e)
+      G.setColor(1, 0.8, 0.8)
+      for i = 1, #e.mariomap.sectors do
+        local s = e.mariomap.sectors[i]
+        local x = s[1] * SW
+        local y = s[2] * SH
+        G.setColor(1, 0.7, 0.7)
+        G.rectangle("line", x, y, SW, SH)
+        G.setColor(0.8, 0.5, 0.5)
+        G.print("(" .. s[1] .. "," .. s[2] .. ")", x, y)
+      end
+    end
+  )
 
   estore:walkEntities(
     hasComps("pic", "pos"),
@@ -37,9 +46,6 @@ local function draw(estore, res)
       -- end
     end
   )
-
-  -- PhysicsDraw.drawEntities(viewportE, estore:getCache("physics"))
-  -- G.pop()
 
   --
   -- local uiE = estore:getEntityByName("ui")

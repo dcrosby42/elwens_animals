@@ -1,4 +1,4 @@
-local Comps = require "comps"
+local Comp = require "comps"
 local Estore = require "ecs.estore"
 local F = require "modules.plotter.funcs"
 local Res = require "modules.mario.resources"
@@ -39,13 +39,15 @@ local function translateVerts(verts, x, y)
   end
 end
 
+Comp.define("mariomap", {"sectors", {}})
+
 function Entities.locus(parent, res)
   -- a thing that follows mario
   local follW = 600
   local follH = 400
   parent:newEntity(
     {
-      {"name", {name = "thinger"}},
+      {"name", {name = "locus"}},
       {"pos", {}},
       {"debugDraw", {}},
       {"rect", {style = "line", color = {0, 0, 1}, w = follW, h = follH, offx = follW / 2, offy = follH / 2}},
@@ -53,7 +55,15 @@ function Entities.locus(parent, res)
       {"follower", {targetname = "ViewFocus"}}
     }
   )
+
+  parent:newEntity(
+    {
+      {"name", {name = "mariomap"}},
+      {"mariomap", {}}
+    }
+  )
 end
+
 function Entities.mario(parent, res)
   local w = 45
   local h = 80
