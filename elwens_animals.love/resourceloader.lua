@@ -41,13 +41,15 @@ end
 --   fname:(optional) filename. If omitted, img MUST be given.
 --   img: (optional) image object.  If nil, R.getImage will be used w fname param to get it.
 --   rect: (optional) {x=,y=,w=,h=} rectangle defining a Quad. If omitted, Quad will be the whole img dimensions.
+--   opts: (optional) {sx, sy, duration, frameNum}
 --
 -- Returned 'pic' structure:
 --   filename string
 --   image Image
 --   quad   Quad
 --   rect   {x,y,w,h}
---   duration
+--   duration (default 1/60) (cheating a bit, this is for using Pic inside an Anim)
+--   frameNum (default 1) (cheating a bit, this is for using Pic inside an Anim)
 --   sx
 --   sy
 function R.makePic(fname, img, rect, opts)
@@ -86,6 +88,7 @@ function R.makePic(fname, img, rect, opts)
     image = img,
     quad = quad,
     duration = (opts.duration or 1 / 60),
+    frameNum = (opts.frameNum or 1),
     sx = (opts.sx or 1),
     sy = (opts.sy or 1)
   }

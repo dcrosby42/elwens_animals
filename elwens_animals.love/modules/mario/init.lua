@@ -45,8 +45,9 @@ local UPDATE =
   }
 )
 
+-- Wrap the Viewport drawing system around all the others:
 local DRAW =
-  require("systems.viewportdraw").construct(
+  require("systems.viewportdraw").wrap(
   composeDrawSystems(
     {
       "modules.mario.drawsystem",

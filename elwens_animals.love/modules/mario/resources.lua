@@ -14,15 +14,21 @@ end
 
 local MarioFrameW = 24
 local MarioFrameH = 32
-Res.Scale = 3
+local ImgScale = 3 -- boosts mario's "block size" from 16 to 48.
 local function makeMarioAnims()
   local anims = {}
-  local pics = Anim.simpleSheetToPics(R.getImage("data/images/mario/mario.png"), MarioFrameW, MarioFrameH)
+  local pics =
+    Anim.simpleSheetToPics(
+    R.getImage("data/images/mario/mario.png"),
+    MarioFrameW,
+    MarioFrameH,
+    {sx = ImgScale, sy = ImgScale}
+  )
 
-  for i = 1, #pics do
-    pics[i].sx = Res.Scale
-    pics[i].sy = Res.Scale
-  end
+  -- for i = 1, #pics do
+  --   pics[i].sx = ImgScale
+  --   pics[i].sy = ImgScale
+  -- end
 
   -- standing
   anims.mario_big_stand_left = Anim.makeSinglePicAnim(pics[1])
@@ -87,7 +93,6 @@ end
 
 local function doLoad()
   local r = AnimalRes.load()
-  r.scale = Res.Scale
 
   tmerge(r.pics, loadPics())
 

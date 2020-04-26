@@ -4,7 +4,6 @@ local F = require "modules.plotter.funcs"
 local Res = require "modules.mario.resources"
 
 local G = love.graphics
-local Scale = Res.Scale
 
 local Entities = {}
 
@@ -91,7 +90,7 @@ function Entities.mario(parent, res)
   )
 end
 
-local BlockW = 16 * Scale
+local BlockW = 48 -- 16 * 3.  16 is the "mario block size" but his image is scaled 3x.
 
 function newPoly(parent, verts)
   return parent:newEntity(
