@@ -68,11 +68,6 @@ local function moveMario(e, dt)
     -- so provide assistive brake.
     brake(e, dt)
   end
-  if e.vel.dx < 0 then
-    e.mario.facing = "left"
-  elseif e.vel.dx > 0 then
-    e.mario.facing = "right"
-  end
   e.force.fx = e.mario.value * WalkForce * dt
 end
 
@@ -80,13 +75,6 @@ local function moveMarioInAir(e, dt)
   -- if e.mario.value / e.vel.dx < 0 then
   -- Desired move direction is counter to actual current velocity,
   -- so provide assistive brake.
-  -- brake(e, dt)
-  -- end
-  if e.vel.dx < 0 and e.mario.value < 0 then
-    e.mario.facing = "left"
-  elseif e.vel.dx > 0 and e.mario.value > 0 then
-    e.mario.facing = "right"
-  end
   e.force.fx = e.mario.value * LateralAirForce * dt
 end
 
@@ -181,6 +169,11 @@ local function update(estore, input, res)
       if math.abs(e.vel.dx) > WalkTopSpeed then
         -- speed up the running anim
         e.timers.mario.factor = 2
+      end
+      if e.vel.dx < 0 and e.mario.value < 0 then
+        e.mario.facing = "left"
+      elseif e.vel.dx > 0 and e.mario.value > 0 then
+        e.mario.facing = "right"
       end
     end
   )
