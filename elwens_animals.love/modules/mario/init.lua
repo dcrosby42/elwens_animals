@@ -39,7 +39,8 @@ local UPDATE =
     -- 'modules.mario.playertrackersystem',
     -- "systems.viewport"
     "systems.follower",
-    "modules.mario.mariomapsystem"
+    "modules.mario.mariomapsystem",
+    "modules.mario.viewportdebug"
   }
 )
 

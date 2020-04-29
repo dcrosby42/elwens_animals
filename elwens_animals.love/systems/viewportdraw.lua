@@ -26,8 +26,8 @@ local function wrap(mainDrawFunc)
     local viewport = estore:getEntityByName("viewport")
     if viewport then
       -- Transform the view
-      local sx = 3
-      local sy = 3
+      local sx = viewport.viewport.sx
+      local sy = viewport.viewport.sy
 
       G.push()
       -- G.translate((d-viewport.pos.x - viewport.rect.offx), (-viewport.pos.y - viewport.rect.offy))

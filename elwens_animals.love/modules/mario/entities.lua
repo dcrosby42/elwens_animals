@@ -253,7 +253,7 @@ function Entities.viewport(estore)
   return estore:newEntity(
     {
       {"name", {name = "viewport"}},
-      {"viewport", {}},
+      {"viewport", {sx = 3, sy = 3}},
       {"pos", {}},
       {"rect", {draw = false, w = w, h = h, offx = offx, offy = offy}},
       {"follower", {targetname = "ViewFocus"}}

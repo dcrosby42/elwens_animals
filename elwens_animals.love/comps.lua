@@ -11,7 +11,7 @@ Comp.define("timer", {'t',0, 'factor',1,'reset',0, 'countDown',true, 'loop',fals
 -- Comp.define("controller", {'id','','leftx',0,'lefty',0,})
 Comp.define("controller", {'id',''})
 
-Comp.define("viewport", {'targetName','','x',0,'y',0,'sx',1,'sy',1,'w',1024,'h',768})
+Comp.define("viewport", {'sx',1,'sy',1})
 Comp.define("viewportTarget", {'offx',0,'offy',0})
 Comp.define("followable", {'targetname',''})
 Comp.define("follower", {'targetname',''})
