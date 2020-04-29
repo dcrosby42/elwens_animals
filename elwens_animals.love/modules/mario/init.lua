@@ -40,7 +40,7 @@ local UPDATE =
     -- "systems.viewport"
     "systems.follower",
     "modules.mario.mariomapsystem",
-    "modules.mario.viewportdebug"
+    "modules.mario.devsystem"
   }
 )
 
@@ -50,7 +50,7 @@ local DRAW =
   composeDrawSystems(
     {
       "modules.mario.drawsystem",
-      -- "systems.physicsdraw",
+      "systems.physicsdraw",
       "systems.debugdraw"
       -- DrawSound.new("mario")
     }

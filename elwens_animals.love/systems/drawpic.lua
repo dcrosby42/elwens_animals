@@ -64,8 +64,8 @@ local function drawAnims(e, res)
         if anim.r then
           r = r + anim.r
         end
-        if e.pos.r then
-          r = r + e.anim.r
+        if e.pos.r ~= 0 then
+          r = r + e.pos.r
         end
 
         local offy = 0

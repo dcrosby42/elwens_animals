@@ -1,3 +1,5 @@
+local Entities = require("modules.mario.entities")
+
 local ZoomDefault = 3
 local ZoomInc = 0.25
 local MaxZoom = 7
@@ -22,7 +24,7 @@ local function zoomOut(e)
   e.viewport.sy = s
 end
 local function zoomReset(e)
-  e.viewport.sx = ZoomDefault
+  e.viewport.sx = ZoomDefaultasd
   e.viewport.sy = ZoomDefault
 end
 
@@ -38,6 +40,9 @@ return function(estore, input, res)
       elseif evt.key == "-" then
         local e = estore:getEntityByName("viewport")
         zoomOut(e)
+      elseif evt.key == "space" then
+        local blockE = Entities.kerblock(estore)
+        blockE.vel.dx = 300
       end
     end
   end

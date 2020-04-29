@@ -20,6 +20,8 @@ function Entities.initialEntities(res)
   Entities.platforms(estore)
   Entities.viewport(estore, res)
 
+  Entities.kerblock(estore)
+
   -- mkBrick(estore, 0, 0)
   -- mkBrick(estore, 15, 0)
   -- mkBrick(estore, 30, 0)
@@ -121,6 +123,46 @@ function Entities.mario(parent, res)
   )
 end
 
+function Entities.kerblock(parent, res)
+  local w = 14
+  local h = 14
+  local left = -w / 2
+  local right = left + w
+  local top = -h / 2
+  local bottom = top + h
+  local verts = {left, top, right, top, right, bottom, left, bottom}
+
+  local picCx = 0.5
+  local picCy = 0.5
+  local startX = 50
+  local startY = 0
+
+  return parent:newEntity(
+    {
+      {"name", {name = "kerblock"}},
+      {
+        "anim",
+        {
+          name = "shine",
+          id = "brick_standard_shimmer",
+          sx = 1.06,
+          sy = 1.06,
+          centerx = picCx,
+          centery = picCy,
+          drawbounds = false
+        }
+      },
+      {"timer", {name = "shine", countDown = false}},
+      {"body", {fixedrotation = false, mass = 0.1, debugDraw = false, debugDrawColor = {1, .5, .5}}},
+      {"polygonShape", {vertices = verts}},
+      {"force", {}},
+      {"pos", {x = startX, y = startY, r = 0.7}},
+      {"vel", {}},
+      {"debugDraw", {on = false, pos = true, bounds = false, color = {0.8, 1, 0.8, 0.5}}}
+    }
+  )
+end
+
 function newPoly(parent, verts)
   return parent:newEntity(
     {
@@ -183,7 +225,7 @@ function Entities.platforms(parent, res)
     local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
     parent:newEntity(
       {
-        {"body", {debugDraw = true, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
+        {"body", {debugDraw = false, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
         {"rectangleShape", {w = w, h = h}},
         {"pos", {x = x, y = y}}
       }
