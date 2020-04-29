@@ -19,10 +19,10 @@ Comp.define("follower", {'targetname',''})
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 Comp.define("anim", {'id','','timescale',1,'centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 
-Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil,'offx',0,'offy',0})
+Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nilj, 'height',nil,'valign',nil,'offx',0,'offy',0,'debugonly',false})
 
 Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'fill',true, 'color',{0,0,0}})
-Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{1,1,1}, 'style','fill','draw',true})
+Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{1,1,1}, 'style','fill','draw',true,'debugonly',false})
 
 Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
 Comp.define('body', {'kind','', 'group',0,'dynamic',true,'mass','','bullet',false,'fixedrotation',false,'friction',0.2,'debugDraw',false,'debugDrawColor',{0.8,0.8,1}})
@@ -36,7 +36,7 @@ Comp.define("chainShape", {'vertices',{},'loop',false})
 Comp.define("lineStyle", {'draw',true, 'color',{1,1,1}, 'linewidth',1,'linestyle','smooth','closepolygon',true})
 
 Comp.define("debug", {'value',''})
-Comp.define("debugDraw", {'on',true,'color',{1,1,1}})
+Comp.define("debugDraw", {'on',true, 'pos',true,'bounds',false,'rects',false,'circles',false,'labels',false,'color',{1,1,1}})
 
 Comp.define("manipulator", {'id','','mode','','x',0,'y',0,'dx',0,'dy',0})
 
@@ -54,7 +54,7 @@ Comp.define("health", {'hp',10,'maxhp',10})
 Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
 
-Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false})
+Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false,'touchingdown',false})
 
 Comp.define("touchable", {'touching',false,'up',false,'down',false,'left',false,'right',false})
 

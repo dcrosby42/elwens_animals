@@ -14,7 +14,7 @@ end
 
 local MarioFrameW = 24
 local MarioFrameH = 32
-local ImgScale = 3 -- boosts mario's "block size" from 16 to 48.
+local ImgScale = 1 -- boosts mario's "block size" from 16 to 48.
 local function makeMarioAnims()
   local anims = {}
   local pics =

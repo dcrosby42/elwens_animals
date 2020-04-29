@@ -26,18 +26,16 @@ local kbd_state = {
   controllerId = "joystick1"
 }
 
-local keyboardJoystickSystem = KeyboardJoystick.construct(kbd_mapping, kbd_state)
-
 local UPDATE =
   composeSystems(
   {
     "systems.timer",
-    keyboardJoystickSystem,
+    KeyboardJoystick.construct(kbd_mapping, kbd_state),
     "systems.selfdestruct",
     "systems.physics",
     "systems.sound",
     "systems.touchbutton",
-    "modules.mario.mariosystem",
+    "modules.mario.mariosystem2",
     -- 'modules.mario.playertrackersystem',
     -- "systems.viewport"
     "systems.follower",

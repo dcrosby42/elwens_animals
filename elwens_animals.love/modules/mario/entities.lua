@@ -7,6 +7,11 @@ local G = love.graphics
 
 local Entities = {}
 
+-- 3x:
+-- local BlockW = 48 -- 16 * 3.  16 is the "mario block size" but his image is scaled 3x.
+-- local MarioW = 45
+-- local MarioH = 80
+
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
@@ -48,9 +53,12 @@ function Entities.locus(parent, res)
     {
       {"name", {name = "locus"}},
       {"pos", {}},
-      {"debugDraw", {}},
-      {"rect", {style = "line", color = {0, 0, 1}, w = follW, h = follH, offx = follW / 2, offy = follH / 2}},
-      {"label", {text = "LOCUS", color = {0, 0, 1}, offx = follW / 2, offy = follH / 2}},
+      {"debugDraw", {on = false, color = {0, 1, 1, 0.5}, pos = true, rects = true, labels = true}},
+      {
+        "rect",
+        {debugonly = true, style = "line", color = {0, 0, 1}, w = follW, h = follH, offx = follW / 2, offy = follH / 2}
+      },
+      {"label", {debugonly = true, text = "LOCUS", color = {0, 0, 1}, offx = follW / 2, offy = follH / 2}},
       {"follower", {targetname = "ViewFocus"}}
     }
   )
@@ -63,34 +71,45 @@ function Entities.locus(parent, res)
   )
 end
 
+local MarioW = 15
+local MarioH = 27 -- 26.66666
+local MarioCx = 0 -- 7.5
+local MarioCy = 0 -- 12
 function Entities.mario(parent, res)
-  local w = 45
-  local h = 80
-  local verts = rectToVerts(w, h)
-  translateVerts(verts, -w / 2, -h / 2)
-  translateVerts(verts, 0, 8)
+  local w = 15
+  local h = 27
+  local left = -w / 2
+  local right = left + w
+  local bottom = 27 / 2
+  local top = bottom - h
+  local verts = {left, top, right, top, right, bottom, left, bottom}
+
+  local picCx = 0.5
+  local picCy = 0.55
+  -- local verts = rectToVerts(w, h)
+  -- translateVerts(verts, -MarioCx, -MarioCy)
+  -- translateVerts(verts, -w / 2, (-h / 2) + 2)
+  -- translateVerts(verts, 0, 2)
+  local startX = 30
+  local startY = 30
 
   return parent:newEntity(
     {
       {"name", {name = "mario"}},
       {"mario", {mode = "standing", facing = "right"}},
       {"controller", {id = "joystick1"}},
-      {"anim", {name = "mario", id = "mario_big_stand_right", centerx = 0.5, centery = 0.5, drawbounds = false}},
+      {"anim", {name = "mario", id = "mario_big_stand_right", centerx = picCx, centery = picCy, drawbounds = false}},
       {"timer", {name = "mario", countDown = false}},
       {"body", {fixedrotation = true, debugDraw = false, friction = 0, debugDrawColor = {1, .5, .5}}},
-      -- {'rectangleShape', {x=0,y=8,w=45,h=80}},
-      -- {'polygonShape', {vertices={0,0, 45,0, 45,80, 0,80}}},
       {"polygonShape", {vertices = verts}},
       {"force", {}},
-      -- {"pos", {x = 100, y = love.graphics.getHeight() - 90}},
-      {"pos", {x = 30, y = 30}},
+      {"pos", {x = startX, y = startY}},
       {"vel", {}},
-      {"followable", {targetname = "ViewFocus"}}
+      {"followable", {targetname = "ViewFocus"}},
+      {"debugDraw", {on = false, pos = true, bounds = false, color = {0.8, 1, 0.8, 0.5}}}
     }
   )
 end
-
-local BlockW = 48 -- 16 * 3.  16 is the "mario block size" but his image is scaled 3x.
 
 function newPoly(parent, verts)
   return parent:newEntity(
@@ -106,6 +125,8 @@ end
 
 function emptyGrid(w, c)
 end
+
+local BlockW = 16
 
 local stackup
 function Entities.platforms(estore, res)

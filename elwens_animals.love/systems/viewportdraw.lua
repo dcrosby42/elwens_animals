@@ -1,6 +1,19 @@
 require("ecs.ecshelpers")
 local G = love.graphics
 
+local function getScaledRect(sx, sy, r)
+  return {
+    x = r.x * sx,
+    y = r.y * sy,
+    w = r.w * sx,
+    h = r.h * sy
+  }
+end
+
+-- local function getViewportRect(viewport)
+--   viewport.pos.x
+-- end
+
 -- wrap() returns a draw function that:
 -- 1. Uses the "viewport" entity to transform the view (push, translate etc)
 -- 2. Invokes the given mainDrawFunc
@@ -13,8 +26,17 @@ local function wrap(mainDrawFunc)
     local viewport = estore:getEntityByName("viewport")
     if viewport then
       -- Transform the view
+      local sx = 3
+      local sy = 3
+
       G.push()
-      G.translate(-viewport.pos.x - viewport.rect.offx, -viewport.pos.y - viewport.rect.offy)
+      -- G.translate((d-viewport.pos.x - viewport.rect.offx), (-viewport.pos.y - viewport.rect.offy))
+      G.scale(sx, sy)
+
+      -- (viewport rect offsets were calc'd based on actual window size, they need to be manually accounted for here as we pretend to use a viewport rect that counts the scaled pixes)
+      local tx = -viewport.pos.x - (viewport.rect.offx / sx)
+      local ty = -viewport.pos.y - (viewport.rect.offy / sy)
+      G.translate(tx, ty)
     end
 
     mainDrawFunc(estore, res)
