@@ -81,8 +81,8 @@ local function drawAnims(e, res)
           offy = anim.offy
         end
 
-        local sx = (picRes.sx or 1) * (animRes.sx or 1)
-        local sy = (picRes.sy or 1) * (animRes.sy or 1)
+        local sx = (picRes.sx or 1) * (animRes.sx or 1) * (anim.sx or 1)
+        local sy = (picRes.sy or 1) * (animRes.sy or 1) * (anim.sy or 1)
 
         love.graphics.setColor(anim.color)
         love.graphics.draw(picRes.image, picRes.quad, x, y, r, sx, sy, offx, offy)

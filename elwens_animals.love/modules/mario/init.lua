@@ -50,7 +50,7 @@ local DRAW =
   composeDrawSystems(
     {
       "modules.mario.drawsystem",
-      "systems.physicsdraw",
+      -- "systems.physicsdraw",
       "systems.debugdraw"
       -- DrawSound.new("mario")
     }

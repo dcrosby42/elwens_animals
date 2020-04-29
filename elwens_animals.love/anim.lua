@@ -46,6 +46,14 @@ function Anim.makeFrameLookup(anim, opts)
   end
 end
 
+function Anim.recalcDuration(anim)
+  local d = 0
+  for i = 1, #anim.pics do
+    d = d + anim.pics[i].duration
+  end
+  anim.duration = d
+end
+
 function Anim.makeSimpleAnim(pics, frameDur)
   local anim = {
     pics = {},

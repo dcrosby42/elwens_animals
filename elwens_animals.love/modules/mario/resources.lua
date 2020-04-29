@@ -14,7 +14,7 @@ end
 
 local MarioFrameW = 24
 local MarioFrameH = 32
-local ImgScale = 1 -- boosts mario's "block size" from 16 to 48.
+local ImgScale = 1
 local function makeMarioAnims()
   local anims = {}
   local pics =
@@ -52,6 +52,29 @@ local function makeMarioAnims()
   anims.mario_big_fall_left = Anim.makeSinglePicAnim(pics[2])
   anims.mario_big_fall_right = Anim.makeSinglePicAnim(pics[2])
   anims.mario_big_fall_right.sx = -1
+  -- skidding
+  anims.mario_big_skid_left = Anim.makeSinglePicAnim(pics[6])
+  anims.mario_big_skid_right = Anim.makeSinglePicAnim(pics[6])
+  anims.mario_big_skid_right.sx = -1
+
+  return anims
+end
+
+local function makeBrickAnims()
+  local anims = {}
+  local pics = Anim.simpleSheetToPics(R.getImage("data/images/mario/map_objects.png"), 16, 16, {sx = 1, sy = 1})
+
+  anims.brick_standard_matte = Anim.makeSinglePicAnim(pics[9])
+
+  local shimmerFrameDur = 0.1
+  anims.brick_standard_shimmer = Anim.makeSimpleAnim({pics[9], pics[6], pics[7], pics[8]}, shimmerFrameDur)
+  anims.brick_standard_shimmer.pics[1].duration = 2
+  Anim.recalcDuration(anims.brick_standard_shimmer)
+
+  local qblockDur = 0.1
+  anims.qblock_standard = Anim.makeSimpleAnim({pics[5], pics[1], pics[2], pics[3], pics[4]}, qblockDur)
+  anims.qblock_standard.pics[1].duration = 2
+  Anim.recalcDuration(anims.qblock_standard)
 
   return anims
 end
@@ -59,6 +82,7 @@ end
 local function loadAnims()
   local anims = {}
   tmerge(anims, makeMarioAnims())
+  tmerge(anims, makeBrickAnims())
   return anims
 end
 

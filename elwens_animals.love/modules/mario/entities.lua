@@ -5,12 +5,11 @@ local Res = require "modules.mario.resources"
 
 local G = love.graphics
 
+local DefaultZoom = 4
+
 local Entities = {}
 
--- 3x:
--- local BlockW = 48 -- 16 * 3.  16 is the "mario block size" but his image is scaled 3x.
--- local MarioW = 45
--- local MarioH = 80
+local mkBrick
 
 function Entities.initialEntities(res)
   local estore = Estore:new()
@@ -21,6 +20,10 @@ function Entities.initialEntities(res)
   Entities.platforms(estore)
   Entities.viewport(estore, res)
 
+  -- mkBrick(estore, 0, 0)
+  -- mkBrick(estore, 15, 0)
+  -- mkBrick(estore, 30, 0)
+  -- mkBrick(estore, 0, 15)
   -- local bg = Entities.background(vp,res)
   -- Entities.map(vp)
   -- Entities.tracker(vp)
@@ -32,15 +35,30 @@ function Entities.initialEntities(res)
   return estore
 end
 
-local function rectToVerts(w, h)
-  return {0, 0, w, 0, w, h, 0, h}
-end
-
-local function translateVerts(verts, x, y)
-  for i = 1, #verts, 2 do
-    verts[i] = verts[i] + x
-    verts[i + 1] = verts[i + 1] + y
+function mkBrick(parent, x, y)
+  local id = "brick_standard_shimmer"
+  if x % 64 == 0 then
+    id = "qblock_standard"
   end
+  return parent:newEntity(
+    {
+      {
+        "anim",
+        {
+          name = "shine",
+          id = id,
+          -- id = "brick_standard_shimmer",
+          sx = 1.06,
+          sy = 1.06,
+          centerx = 0,
+          centery = 0,
+          drawbounds = false
+        }
+      },
+      {"timer", {name = "shine", countDown = false}},
+      {"pos", {x = x, y = y}}
+    }
+  )
 end
 
 Comp.define("mariomap", {"sectors", {}})
@@ -71,13 +89,9 @@ function Entities.locus(parent, res)
   )
 end
 
-local MarioW = 15
-local MarioH = 27 -- 26.66666
-local MarioCx = 0 -- 7.5
-local MarioCy = 0 -- 12
 function Entities.mario(parent, res)
-  local w = 15
-  local h = 27
+  local w = 10
+  local h = 22
   local left = -w / 2
   local right = left + w
   local bottom = 27 / 2
@@ -86,10 +100,6 @@ function Entities.mario(parent, res)
 
   local picCx = 0.5
   local picCy = 0.55
-  -- local verts = rectToVerts(w, h)
-  -- translateVerts(verts, -MarioCx, -MarioCy)
-  -- translateVerts(verts, -w / 2, (-h / 2) + 2)
-  -- translateVerts(verts, 0, 2)
   local startX = 30
   local startY = 30
 
@@ -100,7 +110,7 @@ function Entities.mario(parent, res)
       {"controller", {id = "joystick1"}},
       {"anim", {name = "mario", id = "mario_big_stand_right", centerx = picCx, centery = picCy, drawbounds = false}},
       {"timer", {name = "mario", countDown = false}},
-      {"body", {fixedrotation = true, debugDraw = false, friction = 0, debugDrawColor = {1, .5, .5}}},
+      {"body", {fixedrotation = true, debugDraw = false, mass = 0.1, friction = 0, debugDrawColor = {1, .5, .5}}},
       {"polygonShape", {vertices = verts}},
       {"force", {}},
       {"pos", {x = startX, y = startY}},
@@ -129,7 +139,7 @@ end
 local BlockW = 16
 
 local stackup
-function Entities.platforms(estore, res)
+function Entities.platforms(parent, res)
   local fname = "data/images/mario/testmap1.png"
   local map = love.image.newImageData(fname)
   local w, h = map:getDimensions()
@@ -152,6 +162,7 @@ function Entities.platforms(estore, res)
     for c = 1, #grid[r] do
       if grid[r][c] == 1 then
         grid[r][c] = {r = r, c = c}
+        mkBrick(parent, (c - 1) * 16, (r - 1) * 16)
       end
     end
   end
@@ -170,7 +181,7 @@ function Entities.platforms(estore, res)
     end
     local x = (w / 2) + ((slabs[i].c - 1) * BlockW)
     local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
-    estore:newEntity(
+    parent:newEntity(
       {
         {"body", {debugDraw = true, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
         {"rectangleShape", {w = w, h = h}},
@@ -253,7 +264,7 @@ function Entities.viewport(estore)
   return estore:newEntity(
     {
       {"name", {name = "viewport"}},
-      {"viewport", {sx = 3, sy = 3}},
+      {"viewport", {sx = DefaultZoom, sy = DefaultZoom}},
       {"pos", {}},
       {"rect", {draw = false, w = w, h = h, offx = offx, offy = offy}},
       {"follower", {targetname = "ViewFocus"}}
