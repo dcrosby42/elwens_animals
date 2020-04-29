@@ -35,7 +35,7 @@ local UPDATE =
     "systems.physics",
     "systems.sound",
     "systems.touchbutton",
-    "modules.mario.mariosystem2",
+    "modules.mario.mariosystem",
     -- 'modules.mario.playertrackersystem',
     -- "systems.viewport"
     "systems.follower",
