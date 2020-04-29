@@ -66,6 +66,9 @@ local function moveMario(e, dt)
   if e.mario.value / e.vel.dx < 0 then
     -- Desired move direction is counter to actual current velocity,
     -- so provide assistive brake.
+    if math.abs(e.vel.dx) > 180 then
+      e.mario.skid = true
+    end
     brake(e, dt)
   end
   e.force.fx = e.mario.value * WalkForce * dt
@@ -129,10 +132,14 @@ local function update(estore, input, res)
         end
         if math.abs(e.vel.dx) < 8 then
           setMarioAnim(e, "stand")
+          e.mario.skid = false
+        elseif e.mario.skid then
+          setMarioAnim(e, "skid")
         else
           setMarioAnim(e, "walk")
         end
       else
+        e.mario.skid = false
         if e.mario.value ~= 0 then
           moveMarioInAir(e, input.dt)
         else
