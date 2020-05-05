@@ -1,6 +1,7 @@
 local R = require "resourceloader"
 local AnimalRes = require "modules.animalscreen.resources"
 local Anim = require "anim"
+local SoundPool = require "soundpool"
 
 local Debug = require "mydebug"
 Debug = Debug.sub("Snowman res", true, true)
@@ -96,14 +97,17 @@ end
 local function expandConfigs(configs)
   for name, cfg in pairs(configs) do
     if cfg.type == "music" then
+      -- cfg.duration = cfg.duration or cfg.source:getDuration()
       -- Music sounds are loaded as a streaming Source and reused
-      cfg.source = R.getMusicSource(cfg.file)
-      cfg.duration = cfg.duration or cfg.source:getDuration()
+      -- cfg.source = R.getMusicSource(cfg.file)
+      cfg.pool = SoundPool.music({file = cfg.file})
     else
+      -- cfg.duration = cfg.duration or cfg.data:getDuration()
       -- Regular soundfx load and store SoundData for creating many Sources later on
-      cfg.data = R.getSoundData(cfg.file)
-      cfg.duration = cfg.duration or cfg.data:getDuration()
+      -- cfg.data = R.getSoundData(cfg.file)
+      cfg.pool = SoundPool.soundEffect({data = R.getSoundData(cfg.file)})
     end
+    cfg.duration = cfg.duration or cfg.pool:getSourceDuration()
     cfg.volume = cfg.volume or 1
   end
   return configs

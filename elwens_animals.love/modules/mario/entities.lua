@@ -83,10 +83,12 @@ function Entities.locus(parent, res)
     }
   )
 
+  -- MAP
   parent:newEntity(
     {
       {"name", {name = "mariomap"}},
-      {"mariomap", {}}
+      {"mariomap", {}},
+      {"sound", {sound = "bgmusic"}}
     }
   )
 end

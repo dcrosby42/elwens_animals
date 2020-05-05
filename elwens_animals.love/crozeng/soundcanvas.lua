@@ -1,4 +1,4 @@
-local Debug = require("mydebug").sub("soundmanager", true, true, true)
+local Debug = require("mydebug").sub("SoundCanvas", true, true, true)
 local GC = require("garbagecollect")
 
 local function getDuration(config, state)
@@ -12,22 +12,23 @@ end
 local SoundInfo = {}
 
 -- Key string
--- Config{volume, source, data, duration}
+-- Config{pool, volume, duration}
 -- State{volume, playTime, duration, isLooping}
 function SoundInfo:new(key, config, sound)
   local o = {
     key = key,
     config = config
   }
-  -- and init the Source:
-  if config.source then
-    -- Source already provided, probably music
-    o.source = config.source
-    o.source:stop() -- reset, just in case
-  elseif config.data then
-    -- A SoundData is provided, probably a sound effect.
-    o.source = love.audio.newSource(config.data)
-  end
+  -- -- and init the Source:
+  -- if config.source then
+  --   -- Source already provided, probably music
+  --   o.source = config.source
+  --   o.source:stop() -- reset, just in case
+  -- elseif config.data then
+  --   -- A SoundData is provided, probably a sound effect.
+  --   o.source = love.audio.newSource(config.data)
+  -- end
+  o.source = config.pool:getSource()
   setmetatable(o, self)
   self.__index = self
   return o
@@ -61,7 +62,10 @@ function SoundInfo:init(state)
   end
 end
 
-local PlayTimeLagTolerance = 2 / 60
+local PlayTimeLagTolerance = {
+  music = 30 / 60,
+  sound = 3 / 60
+}
 
 -- Update already-existing sound based on given state
 -- State{volume, playTime, duration, isLooping}
@@ -73,20 +77,33 @@ function SoundInfo:sync(state)
     if state.volume ~= self.lastState.volume then
       self.source:setVolume(self.config.volume * state.volume)
     end
+
     if state.playTime == self.lastState.playTime then
       -- sound component has not progressed since last time... assume circumstantial pause
       if self.source:isPlaying() then
         Debug.println("Circumstantial pause " .. self.key)
         self.source:pause()
       end
-    elseif math.abs(state.playTime - self.source:tell("seconds")) > PlayTimeLagTolerance then
-      Debug.println(
-        self.key .. " state.playTime " .. state.playTime .. " < source:tell " .. self.source:tell("seconds")
-      )
-      local pos = state.playTime % getDuration(self.config, state)
-      self.source:seek(pos)
-      if not self.source:isPlaying() then
-        self.source:play()
+    elseif math.abs(state.playTime - self.source:tell("seconds")) > PlayTimeLagTolerance[self.config.type] then
+      local dur = getDuration(self.config, state)
+      if dur - state.playTime > 1 / 60 then -- don't get picky about end-of-sound sub-frame dif
+        local diff = state.playTime - self.source:tell("seconds")
+        Debug.println(
+          self.key ..
+            " TIME DIFF " ..
+              diff ..
+                " (tol for " ..
+                  self.config.type ..
+                    " is " ..
+                      PlayTimeLagTolerance[self.config.type] ..
+                        ") state.playTime=" ..
+                          state.playTime .. " != source:tell()=" .. self.source:tell("seconds") .. " duration=" .. dur
+        )
+        local pos = state.playTime % dur
+        self.source:seek(pos)
+        if not self.source:isPlaying() then
+          self.source:play()
+        end
       end
     end
   else
@@ -96,6 +113,11 @@ function SoundInfo:sync(state)
       self.source:pause()
     end
   end
+end
+
+function SoundInfo:release()
+  self.source:stop()
+  self.config.pool:releaseSource(self.source)
 end
 
 local SoundCanvas = {}
@@ -126,7 +148,7 @@ function SoundCanvas:endFrame()
   local keysToRemove = {}
   for key, soundInfo in pairs(self.sounds) do
     if soundInfo.lastTick < self.tick then
-      soundInfo.source:stop()
+      soundInfo:release()
       table.insert(keysToRemove, key)
     end
   end
@@ -140,7 +162,7 @@ end
 -- Given info about a sound and its state, synchronize the reality to the desired state.
 -- Should add,update,remove underlying sound Souce objects.
 -- Key: string
--- Config: {volume, source, data, duration}
+-- Config: {pool, volume, duration}
 -- State: {volume, playTime, duration, isLooping}
 function SoundCanvas:drawSound(key, config, state)
   local sound = self.sounds[key]

@@ -24,7 +24,7 @@ local function zoomOut(e)
   e.viewport.sy = s
 end
 local function zoomReset(e)
-  e.viewport.sx = ZoomDefaultasd
+  e.viewport.sx = ZoomDefault
   e.viewport.sy = ZoomDefault
 end
 
