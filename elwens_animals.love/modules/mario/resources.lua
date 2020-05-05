@@ -86,59 +86,56 @@ local function loadAnims()
   return anims
 end
 
-local function fetchSoundDatas(sounds)
-  for name, cfg in pairs(sounds) do
-    if not cfg.data then
+-- Config  {
+--   file = '...mp3',
+--   type='music' | 'sound',
+--   data
+--   source
+--   duration
+-- }
+local function expandConfigs(configs)
+  for name, cfg in pairs(configs) do
+    if cfg.type == "music" then
+      -- Music sounds are loaded as a streaming Source and reused
+      cfg.source = R.getMusicSource(cfg.file)
+      cfg.duration = cfg.duration or cfg.source:getDuration()
+    else
+      -- Regular soundfx load and store SoundData for creating many Sources later on
       cfg.data = R.getSoundData(cfg.file)
+      cfg.duration = cfg.duration or cfg.data:getDuration()
     end
-    if not cfg.duration or cfg.duration == "" then
-      cfg.duration = cfg.data:getDuration()
-    end
+    cfg.volume = cfg.volume or 1
   end
+  return configs
 end
 
 local function loadSounds()
-  local sounds = {}
-
-  -- sounds["bgmusic"] = {
-  --   file="data/sounds/music/Into-Battle_v001.mp3",
-  --   mode="stream",
-  --   volume=0.6,
-  -- }
-  -- sounds["woosh1"] = {
-  --   file="data/sounds/fx/woosh.wav",
-  --   mode="static",
-  --   volume=1,
-  -- }
-
-  fetchSoundDatas(sounds)
-  return sounds
+  return expandConfigs(
+    {
+      bgmusic = {
+        type = "music",
+        file = "data/mario/sounds/smb3_overworld_music.mp3"
+      },
+      jump = {
+        type = "sound",
+        file = "data/mario/sounds/smb_jump-super.wav"
+      }
+    }
+  )
 end
-
-local function doLoad()
-  local r = AnimalRes.load()
-
-  tmerge(r.pics, loadPics())
-
-  r.anims = r.anims or {}
-  tmerge(r.anims, loadAnims())
-
-  tconcat(r.sounds, loadSounds())
-  return r
-end
-
--- local _loaded
--- function Res.load()
---   if not _loaded then
---     _loaded = doLoad()
---   end
---   return _loaded
--- end
 
 Res.load =
   lazyThunk(
   function()
-    return doLoad()
+    local r = AnimalRes.load()
+
+    tmerge(r.pics, loadPics())
+
+    r.anims = r.anims or {}
+    tmerge(r.anims, loadAnims())
+
+    tmerge(r.sounds, loadSounds())
+    return r
   end
 )
 

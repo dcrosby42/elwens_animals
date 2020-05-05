@@ -540,3 +540,13 @@ function lazyThunk(fn)
     return result
   end
 end
+
+function memoize1(fn)
+  local cache = {}
+  return function(arg)
+    if not cache[arg] then
+      cache[arg] = fn(arg)
+    end
+    return cache[arg]
+  end
+end

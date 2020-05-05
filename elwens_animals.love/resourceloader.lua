@@ -2,40 +2,30 @@ local R = {}
 
 local Images = {}
 local ImageDatas = {}
-local Sounds = {}
 
-function R.getImageData(fname)
-  local imgdata = ImageDatas[fname]
-  if not imgdata then
-    imgdata = love.image.newImageData(fname)
-    ImageDatas[fname] = imgdata
-  end
-  return imgdata
-end
+R.getImageData = memoize1(love.image.newImageData)
 
-function R.getImage(fname)
-  local img = Images[fname]
-  if not img then
-    local imgdata = R.getImageData(fname)
-    img = love.graphics.newImage(imgdata)
-    Images[fname] = img
+R.getImage =
+  memoize1(
+  function(fname)
+    return love.graphics.newImage(R.getImageData(fname))
   end
-  return img
-end
+)
 
 function R.getFont(fname, size)
   -- TODO
   return nil
 end
 
-function R.getSoundData(fname)
-  local sdata = Sounds[fname]
-  if not sdata then
-    sdata = love.sound.newSoundData(fname)
-    Sounds[fname] = sdata
+R.getSoundData = memoize1(love.sound.newSoundData)
+
+-- Returns a streaming Source
+R.getMusicSource =
+  memoize1(
+  function(fname)
+    return love.audio.newSource(fname, "stream")
   end
-  return sdata
-end
+)
 
 -- Args:
 --   fname:(optional) filename. If omitted, img MUST be given.

@@ -81,7 +81,7 @@ local function moveMarioInAir(e, dt)
   e.force.fx = e.mario.value * LateralAirForce * dt
 end
 
-local function handleEvent(evt, e, _estore, input, _res)
+local function handleEvent(evt, e, _estore, input, res)
   local action, value = translateEvent(evt)
   if action == MoveX then
     e.mario.value = value
@@ -96,6 +96,13 @@ local function handleEvent(evt, e, _estore, input, _res)
       e.mario.jump = true
       local boost = (math.abs(e.vel.dx) / RunTopSpeed) * -50
       e.vel.dy = JumpVel + boost
+      e:newComp(
+        "sound",
+        {
+          sound = "jump",
+          duration = res.sounds["jump"].duration
+        }
+      )
     -- ? needed? e.force.fx = 0
     end
     if value == 0 then

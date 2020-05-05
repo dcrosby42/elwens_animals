@@ -5,7 +5,8 @@ local Debug = require("mydebug").sub("Mario", true, true)
 local Resources = require "modules.mario.resources"
 local Entities = require "modules.mario.entities"
 local DrawStuff = require "systems.drawstuff"
-local DrawSound = require "systems.drawsound"
+-- local DrawSound = require "systems.drawsound"
+local DrawSound2 = require "systems.drawsound2"
 local KeyboardJoystick = require "modules.mario.keyboardjoystick"
 
 -- FIXME this is a non-great hackup to map wasd keys etc. to pretend to be "joystick1":
@@ -51,8 +52,8 @@ local DRAW =
     {
       "modules.mario.drawsystem",
       "systems.physicsdraw",
-      "systems.debugdraw"
-      -- DrawSound.new("mario")
+      "systems.debugdraw",
+      DrawSound2.new("mario")
     }
   )
 )
