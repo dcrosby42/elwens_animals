@@ -17,7 +17,8 @@ local SoundInfo = {}
 function SoundInfo:new(key, config, sound)
   local o = {
     key = key,
-    config = config
+    config = config,
+    lastTick = 0
   }
   -- -- and init the Source:
   -- if config.source then
