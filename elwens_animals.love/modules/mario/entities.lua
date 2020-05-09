@@ -9,6 +9,12 @@ local DefaultZoom = 4
 
 local Entities = {}
 
+local dbg_drawLocus = false
+local dbg_drawMarioBody = false
+local dbg_drawMario = false
+local dbg_drawBrickBody = false
+local dbg_drawSlabBody = false
+
 local mkBrick
 
 function Entities.initialEntities(res)
@@ -49,7 +55,7 @@ function Entities.locus(parent, res)
     {
       "debugDraw",
       {
-        on = false,
+        on = dbg_drawLocus,
         color = {0, 1, 1, 0.5},
         pos = true,
         rects = true,
@@ -125,7 +131,7 @@ function Entities.mario(parent, res)
       "body",
       {
         fixedrotation = true,
-        debugDraw = false,
+        debugDraw = dbg_drawMarioBody,
         mass = 0.1,
         friction = 0,
         debugDrawColor = {1, .5, .5},
@@ -138,7 +144,12 @@ function Entities.mario(parent, res)
     {"followable", {targetname = "ViewFocus"}},
     {
       "debugDraw",
-      {on = false, pos = true, bounds = false, color = {0.8, 1, 0.8, 0.5}},
+      {
+        on = dbg_drawMario,
+        pos = true,
+        bounds = false,
+        color = {0.8, 1, 0.8, 0.5},
+      },
     },
   })
 end
@@ -176,13 +187,11 @@ function mkBrick(parent, x, y)
         dynamic = false,
         fixedrotation = true,
         mass = 0.1,
-        debugDraw = false,
+        debugDraw = dbg_drawBrickBody,
         debugDrawColor = {1, 1, .8},
       },
     },
     {"polygonShape", {vertices = verts}},
-    -- {"force", {}},
-    {"vel", {}},
   })
 end
 
@@ -235,16 +244,6 @@ function Entities.kerblock(parent, res)
   })
 end
 
-function newPoly(parent, verts)
-  return parent:newEntity({
-    {"body", {debugDraw = true, dynamic = false, friction = 1}},
-    -- {"rectangleShape", {w = BlockW, h = BlockW}},
-    {"polygonShape", {vertices = verts}},
-    -- {"pos", {x = ((opts.col - 1) * BlockW) + (BlockW / 2), y = ((opts.row - 1) * BlockW) + (BlockW / 2)}}
-    {"pos", {x = 0, y = 0}},
-  })
-end
-
 function emptyGrid(w, c) end
 
 function Entities.slab(parent, orient, x, y, w, h)
@@ -253,7 +252,7 @@ function Entities.slab(parent, orient, x, y, w, h)
     {
       "body",
       {
-        debugDraw = false,
+        debugDraw = dbg_drawSlabBody,
         debugDrawColor = {1, 1, 1},
         dynamic = false,
         friction = 1,

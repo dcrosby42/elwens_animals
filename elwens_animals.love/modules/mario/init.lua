@@ -15,54 +15,41 @@ local kbd_mapping = {
     w = {"lefty", -1, "s"},
     s = {"lefty", 1, "w"},
     a = {"leftx", -1, "d"},
-    d = {"leftx", 1, "a"}
+    d = {"leftx", 1, "a"},
   },
-  buttons = {
-    [","] = "face4",
-    ["."] = "face3"
-  }
+  buttons = {[","] = "face4", ["."] = "face3"},
 }
 
-local kbd_state = {
-  controllerId = "joystick1"
-}
+local kbd_state = {controllerId = "joystick1"}
 
-local UPDATE =
-  composeSystems(
-  {
-    "systems.timer",
-    KeyboardJoystick.construct(kbd_mapping, kbd_state),
-    "systems.selfdestruct",
-    "systems.physics",
-    "systems.sound",
-    "systems.touchbutton",
-    "modules.mario.mariosystem",
-    -- 'modules.mario.playertrackersystem',
-    -- "systems.viewport"
-    "systems.follower",
-    "modules.mario.mariomapsystem",
-    "modules.mario.devsystem"
-  }
-)
+local UPDATE = composeSystems({
+  "systems.timer",
+  KeyboardJoystick.construct(kbd_mapping, kbd_state),
+  "systems.selfdestruct",
+  "systems.physics",
+  "systems.sound",
+  "systems.touchbutton",
+  "modules.mario.mariosystem",
+  -- 'modules.mario.playertrackersystem',
+  -- "systems.viewport"
+  "systems.follower",
+  "modules.mario.mariomapsystem",
+  "modules.mario.brickbreakersystem",
+  "modules.mario.devsystem",
+})
 
 -- Wrap the Viewport drawing system around all the others:
-local DRAW =
-  require("systems.viewportdraw").wrap(
-  composeDrawSystems(
-    {
+local DRAW = require("systems.viewportdraw").wrap(
+                 composeDrawSystems({
       "modules.mario.drawsystem",
       "systems.physicsdraw",
       "systems.debugdraw",
-      DrawSound2.new("mario")
-    }
-  )
-)
+      DrawSound2.new("mario"),
+    }))
 
-return EcsAdapter(
-  {
-    loadResources = Resources.load,
-    create = Entities.initialEntities,
-    update = UPDATE,
-    draw = DRAW
-  }
-)
+return EcsAdapter({
+  loadResources = Resources.load,
+  create = Entities.initialEntities,
+  update = UPDATE,
+  draw = DRAW,
+})
