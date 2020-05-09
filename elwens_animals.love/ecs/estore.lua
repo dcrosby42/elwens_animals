@@ -179,11 +179,12 @@ function Estore:addComp(e,comp)
     -- First component of this type
     e[key] = comp
     e[keyp] = {}
-    e[keyp][comp.name or comp.cid] = comp
-  else
-    -- This entity already has some of this comp type
-    e[keyp][comp.name or comp.cid] = comp
   end
+  local compKey = comp.name
+  if compKey == nil or compKey == '' then
+    compKey = comp.cid
+  end
+  e[keyp][compKey] = comp
 
   return comp
 end
