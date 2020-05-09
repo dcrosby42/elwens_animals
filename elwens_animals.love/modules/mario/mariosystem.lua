@@ -1,5 +1,6 @@
 local Events = require("eventhelpers")
-
+local inspect = require("inspect")
+local Contacts = require("systems.contacthelper")
 local MoveX = "movex"
 local Jump = "jump"
 local Dash = "dash"
@@ -24,17 +25,6 @@ local function translateEvent(evt)
   local action = (JoystickActionMapping[evt.action] or evt.action)
   local value = evt.value or 0
   return action, value
-end
-
-local function touchingDown(e)
-  if e.contacts then
-    for _, contact in pairs(e.contacts) do
-      if contact.ny > 0 then
-        return true
-      end
-    end
-  end
-  return false
 end
 
 local function setAnim(anim, id)
@@ -121,7 +111,7 @@ local function update(estore, input, res)
     hasName("mario"),
     function(e)
       -- update contact state
-      e.mario.touchingdown = touchingDown(e)
+      e.mario.touchingdown = Contacts.touchingDown(e)
 
       -- Process controller events
       for _, evt in ipairs(events) do

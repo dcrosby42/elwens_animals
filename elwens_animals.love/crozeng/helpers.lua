@@ -253,6 +253,9 @@ function valsearchfirst(t, matchFn, callbackFn)
 end
 
 function tfind(t, fn)
+  if t == nil or type(t) ~= "table" then
+    return nil
+  end
   for k, v in pairs(t) do
     if fn(v, k) == true then
       return v
@@ -268,6 +271,9 @@ function tfindby(t, key, val)
 end
 function tfindall(t, fn)
   local res = {}
+  if t == nil or type(t) ~= "table" then
+    return res
+  end
   for k, v in pairs(t) do
     if fn(v, k) == true then
       table.insert(res, v)
@@ -275,6 +281,7 @@ function tfindall(t, fn)
   end
   return res
 end
+
 function tfindallby(t, key, val)
   local res = {}
   for _, v in pairs(t) do

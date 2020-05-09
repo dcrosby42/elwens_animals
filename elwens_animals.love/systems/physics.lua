@@ -200,8 +200,11 @@ function beginContact(a, b, contact)
   -- contact normal... vector from a->b
   local nx, ny = contact:getNormal()
   -- velocities
-  local a_dx, a_dy = a:getBody():getLinearVelocityFromWorldPoint(a_x, a_y)
-  local dxB, dyB = b:getBody():getLinearVelocityFromWorldPoint(a_x, a_y) -- FIXME? should this be b_x b_y?
+  local a_dx, a_dy, b_dx, b_dy
+  if a_x and a_y then
+    local a_dx, a_dy = a:getBody():getLinearVelocityFromWorldPoint(a_x, a_y)
+    local b_dx, b_dy = b:getBody():getLinearVelocityFromWorldPoint(a_x, a_y) -- FIXME? should this be b_x b_y?
+  end
 
   table.insert(
     _CollisionBuffer,
@@ -435,6 +438,7 @@ function newBody(pw, e)
     local f = P.newFixture(b, s)
     f:setUserData(e.body.cid)
     f:setFriction(e.body.friction) -- TODO someday allow this to be set per-shape instead of whole body instead of whole body.  If needed
+    f:setSensor(e.body.sensor)
     table.insert(shapes, s)
     table.insert(fixtures, f)
   end

@@ -91,7 +91,7 @@ local function updateCompGui(c)
     local str = nameBlurb(c) .. "(" .. round(c.x, 3) .. ", " .. round(c.y, 3) .. ") r: " .. round(c.r, 3)
     suit.Label(str, {align = "left"}, suit.layout:col(w, h))
   elseif c.type == "contact" then
-    local str = c.otherEid .. " N" .. coordStrParen(c.nx, c.ny)
+    local str = c.otherEid .. " N" .. coordStrParen(c.nx, c.ny) .. " loc" .. coordStrParen(c.x, c.y)
     suit.Label(str, {align = "left"}, suit.layout:col(w, h))
   elseif c.type == "tag" then
     suit.Label(c.name, {align = "left"}, suit.layout:col(w, h))

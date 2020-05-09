@@ -25,7 +25,7 @@ Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'fill',true, 'color',{0,0,0
 Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{1,1,1}, 'style','fill','draw',true,'debugonly',false})
 
 Comp.define('physicsWorld', {'gx',0,'gy',0,'allowSleep',true})
-Comp.define('body', {'kind','', 'group',0,'dynamic',true,'mass','','bullet',false,'fixedrotation',false,'friction',0.2,'debugDraw',false,'debugDrawColor',{0.8,0.8,1}})
+Comp.define('body', {'kind','', 'group',0,'dynamic',true,'mass','','bullet',false,'fixedrotation',false,'friction',0.2,'debugDraw',false,'debugDrawColor',{0.8,0.8,1},'sensor',false})
 Comp.define("force", {'fx',0,'fy',0,'torque',0,'impx',0,'impy',0,'angimp',0})
 Comp.define('joint', {'kind','', 'toEntity','','lowerlimit','','upperlimit','','motorspeed','','maxmotorforce','','docollide',false})
 Comp.define("rectangleShape", {'x',0,'y',0,'w',0,'h',0,'angle',0})
@@ -55,6 +55,8 @@ Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
 
 Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false,'touchingdown',false})
+Comp.define("slab", {'orient','h'})
+Comp.define("blockbreaker", {})
 
 Comp.define("touchable", {'touching',false,'up',false,'down',false,'left',false,'right',false})
 

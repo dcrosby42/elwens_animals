@@ -37,32 +37,6 @@ function Entities.initialEntities(res)
   return estore
 end
 
-function mkBrick(parent, x, y)
-  local id = "brick_standard_shimmer"
-  if x % 64 == 0 then
-    id = "qblock_standard"
-  end
-  return parent:newEntity(
-    {
-      {
-        "anim",
-        {
-          name = "shine",
-          id = id,
-          -- id = "brick_standard_shimmer",
-          sx = 1.06,
-          sy = 1.06,
-          centerx = 0,
-          centery = 0,
-          drawbounds = false
-        }
-      },
-      {"timer", {name = "shine", countDown = false}},
-      {"pos", {x = x, y = y}}
-    }
-  )
-end
-
 Comp.define("mariomap", {"sectors", {}})
 
 function Entities.locus(parent, res)
@@ -87,8 +61,8 @@ function Entities.locus(parent, res)
   parent:newEntity(
     {
       {"name", {name = "mariomap"}},
-      {"mariomap", {}},
-      {"sound", {sound = "bgmusic"}}
+      {"mariomap", {}}
+      -- {"sound", {sound = "bgmusic", loop = true}}
     }
   )
 end
@@ -104,13 +78,14 @@ function Entities.mario(parent, res)
 
   local picCx = 0.5
   local picCy = 0.55
-  local startX = 30
-  local startY = 30
+  local startX = 200 -- 30
+  local startY = 130 -- 30
 
   return parent:newEntity(
     {
       {"name", {name = "mario"}},
       {"mario", {mode = "standing", facing = "right"}},
+      {"blockbreaker", {}},
       {"controller", {id = "joystick1"}},
       {"anim", {name = "mario", id = "mario_big_stand_right", centerx = picCx, centery = picCy, drawbounds = false}},
       {"timer", {name = "mario", countDown = false}},
@@ -121,6 +96,53 @@ function Entities.mario(parent, res)
       {"vel", {}},
       {"followable", {targetname = "ViewFocus"}},
       {"debugDraw", {on = false, pos = true, bounds = false, color = {0.8, 1, 0.8, 0.5}}}
+    }
+  )
+end
+
+function mkBrick(parent, x, y)
+  local id = "brick_standard_shimmer"
+  if x % 64 == 0 then
+    id = "qblock_standard"
+  end
+  local w = 16
+  local h = 16
+  local left = -w / 2
+  local right = left + w
+  local top = -h / 2
+  local bottom = top + h
+  local verts = {left, top, right, top, right, bottom, left, bottom}
+  return parent:newEntity(
+    {
+      {"tag", {name = "brick"}},
+      {
+        "anim",
+        {
+          name = "an",
+          id = id,
+          sx = 1.06,
+          sy = 1.06,
+          centerx = 0.5,
+          centery = 0.5,
+          drawbounds = false
+        }
+      },
+      {"timer", {name = "an", countDown = false}},
+      {"pos", {x = x, y = y}},
+      {
+        "body",
+        {
+          sensor = true,
+          dynamic = false,
+          fixedrotation = true,
+          mass = 0.1,
+          debugDraw = false,
+          debugDrawColor = {1, 1, .8}
+        }
+      },
+      {"polygonShape", {vertices = verts}},
+      -- {"force", {}},
+      {"vel", {}}
     }
   )
 end
@@ -180,6 +202,17 @@ end
 function emptyGrid(w, c)
 end
 
+function Entities.slab(parent, orient, x, y, w, h)
+  return parent:newEntity(
+    {
+      {"slab", {orient = orient}},
+      {"body", {debugDraw = false, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
+      {"rectangleShape", {w = w, h = h}},
+      {"pos", {x = x, y = y}}
+    }
+  )
+end
+
 local BlockW = 16
 
 local stackup
@@ -206,7 +239,7 @@ function Entities.platforms(parent, res)
     for c = 1, #grid[r] do
       if grid[r][c] == 1 then
         grid[r][c] = {r = r, c = c}
-        mkBrick(parent, (c - 1) * 16, (r - 1) * 16)
+        mkBrick(parent, ((c) * 16) - (BlockW / 2), ((r) * 16) - (BlockW / 2))
       end
     end
   end
@@ -215,23 +248,20 @@ function Entities.platforms(parent, res)
   -- print(inspect(#slabs) .. " slabs")
   -- print(inspect(slabs))
   for i = 1, #slabs do
-    local w, h
+    local w, h, orient
     if slabs[i].w then
+      orient = "h"
       w = slabs[i].w * BlockW
       h = BlockW
     else
+      orient = "v"
       w = BlockW
       h = slabs[i].h * BlockW
     end
     local x = (w / 2) + ((slabs[i].c - 1) * BlockW)
     local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
-    parent:newEntity(
-      {
-        {"body", {debugDraw = false, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
-        {"rectangleShape", {w = w, h = h}},
-        {"pos", {x = x, y = y}}
-      }
-    )
+
+    Entities.slab(parent, orient, x, y, w, h)
   end
 end
 
@@ -333,7 +363,7 @@ function Entities.background(estore, res)
       {"name", {name = "background"}},
       -- {'pic', {id='background1', sx=1, sy=1.05}}, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
       {"pos", {}},
-      -- {'sound', {sound='bgmusic',loop=true,duration=res.sounds.bgmusic.duration}},
+      -- {"sound", {sound = "bgmusic", loop = true, duration = res.sounds.bgmusic.duration}},
       {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}}
     }
   )
