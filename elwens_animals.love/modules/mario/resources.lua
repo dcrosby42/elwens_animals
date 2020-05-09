@@ -123,6 +123,10 @@ local function loadSounds()
       jump = {
         type = "sound",
         file = "data/mario/sounds/smb_jump-super.wav"
+      },
+      breakblock = {
+        type = "sound",
+        file = "data/mario/sounds/smb_breakblock.wav"
       }
     }
   )

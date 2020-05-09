@@ -20,7 +20,7 @@ function Entities.initialEntities(res)
   Entities.platforms(estore)
   Entities.viewport(estore, res)
 
-  Entities.kerblock(estore)
+  -- Entities.kerblock(estore)
 
   -- mkBrick(estore, 0, 0)
   -- mkBrick(estore, 15, 0)
@@ -78,8 +78,10 @@ function Entities.mario(parent, res)
 
   local picCx = 0.5
   local picCy = 0.55
-  local startX = 200 -- 30
-  local startY = 130 -- 30
+  -- local startX = 200
+  -- local startY = 130
+  local startX = 30
+  local startY = 50
 
   return parent:newEntity(
     {
@@ -102,7 +104,7 @@ end
 
 function mkBrick(parent, x, y)
   local id = "brick_standard_shimmer"
-  if x % 64 == 0 then
+  if x % 56 == 0 then
     id = "qblock_standard"
   end
   local w = 16
@@ -118,7 +120,7 @@ function mkBrick(parent, x, y)
       {
         "anim",
         {
-          name = "an",
+          name = "shine",
           id = id,
           sx = 1.06,
           sy = 1.06,
@@ -127,7 +129,7 @@ function mkBrick(parent, x, y)
           drawbounds = false
         }
       },
-      {"timer", {name = "an", countDown = false}},
+      {"timer", {name = "shine", countDown = false}},
       {"pos", {x = x, y = y}},
       {
         "body",
@@ -206,7 +208,7 @@ function Entities.slab(parent, orient, x, y, w, h)
   return parent:newEntity(
     {
       {"slab", {orient = orient}},
-      {"body", {debugDraw = false, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
+      {"body", {debugDraw = true, debugDrawColor = {1, 1, 1}, dynamic = false, friction = 1}},
       {"rectangleShape", {w = w, h = h}},
       {"pos", {x = x, y = y}}
     }
