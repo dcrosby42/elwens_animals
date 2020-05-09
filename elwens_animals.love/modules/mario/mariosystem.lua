@@ -89,8 +89,8 @@ local function handleEvent(evt, e, _estore, input, res)
       e:newComp(
         "sound",
         {
-          sound = "jump",
-          duration = res.sounds["jump"].duration
+          sound = "jump"
+          -- duration = res.sounds["jump"].duration
         }
       )
     -- ? needed? e.force.fx = 0

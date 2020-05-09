@@ -1,4 +1,4 @@
-local Debug = require("mydebug").sub("Sound", true, true)
+local Debug = require("mydebug").sub("Sound", false, false)
 
 -- Accumulate's playtime for "playing" sounds.
 -- For non-looping sounds, once playtime exceeds the duration property, the sound component is deleted.

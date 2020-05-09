@@ -131,8 +131,7 @@ local function blockPunch(e, contact, estore, input, res)
       e:newComp(
         "sound",
         {
-          sound = "breakblock",
-          duration = res.sounds["breakblock"].duration
+          sound = "breakblock"
         }
       )
     end
