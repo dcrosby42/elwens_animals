@@ -6,6 +6,7 @@ local Res = require "modules.mario.resources"
 local G = love.graphics
 
 local DefaultZoom = 4
+local BlockW = 16
 
 local Entities = {}
 
@@ -14,36 +15,37 @@ local dbg_drawMarioBody = false
 local dbg_drawMario = false
 local dbg_drawBrickBody = false
 local dbg_drawSlabBody = false
-
-local mkBrick
+local dbg_playBgMusic = false
 
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
-  Entities.background(estore)
-  Entities.mario(estore)
+  local map = Entities.map(estore)
+  -- Entities.background(estore)
+  Entities.mario(map)
+  Entities.platforms(map)
   Entities.locus(estore)
-  Entities.platforms(estore)
   Entities.viewport(estore, res)
-
-  -- Entities.kerblock(estore)
-
-  -- mkBrick(estore, 0, 0)
-  -- mkBrick(estore, 15, 0)
-  -- mkBrick(estore, 30, 0)
-  -- mkBrick(estore, 0, 15)
-  -- local bg = Entities.background(vp,res)
-  -- Entities.map(vp)
-  -- Entities.tracker(vp)
-  --
-
-  -- local ui = Entities.ui(estore,res)
-  -- AnimalEnts.buttons(ui,res)
 
   return estore
 end
 
 Comp.define("mariomap", {"sectors", {}})
+
+function Entities.map(parent)
+  -- MAP
+  local map = parent:newEntity({
+    {"name", {name = "mariomap"}},
+    {"pos", {}},
+    {"mariomap", {}},
+    {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
+  })
+  if dbg_playBgMusic then
+    map:newComp("sound", {sound = "bgmusic", loop = true})
+  end
+  return map
+
+end
 
 function Entities.locus(parent, res)
   -- a thing that follows mario
@@ -87,34 +89,30 @@ function Entities.locus(parent, res)
     {"follower", {targetname = "ViewFocus"}},
   })
 
-  -- MAP
-  parent:newEntity({
-    {"name", {name = "mariomap"}},
-    {"mariomap", {}},
-    -- {"sound", {sound = "bgmusic", loop = true}}
-  })
+end
+
+function Entities.rectangleVerts(w, h, cx, cy)
+  cx = cx or 0.5
+  cy = cy or 0.5
+  local left = -(w * cx)
+  local right = left + w
+  local top = -(h * cy)
+  local bottom = top + h
+  return {left, top, right, top, right, bottom, left, bottom}
 end
 
 function Entities.mario(parent, res)
-  local w = 10
-  local h = 22
-  local left = -w / 2
-  local right = left + w
-  local bottom = 27 / 2
-  local top = bottom - h
-  local verts = {left, top, right, top, right, bottom, left, bottom}
-
   local picCx = 0.5
   local picCy = 0.55
   -- local startX = 200
   -- local startY = 130
   local startX = 30
   local startY = 50
-
+  local verts = Entities.rectangleVerts(10, 22, 0.5, 0.3865)
   return parent:newEntity({
     {"name", {name = "mario"}},
     {"mario", {mode = "standing", facing = "right"}},
-    {"blockbreaker", {}},
+    {"blockbreaker", {fragstyle = 'physical', fraglife = 2}},
     {"controller", {id = "joystick1"}},
     {
       "anim",
@@ -154,7 +152,7 @@ function Entities.mario(parent, res)
   })
 end
 
-function mkBrick(parent, x, y)
+function Entities.brick(parent, x, y)
   local id = "brick_standard_shimmer"
   if x % 56 == 0 then id = "qblock_standard" end
   local w = 16
@@ -244,7 +242,8 @@ function Entities.kerblock(parent, res)
   })
 end
 
-function emptyGrid(w, c) end
+function emptyGrid(w, c)
+end
 
 function Entities.slab(parent, orient, x, y, w, h)
   return parent:newEntity({
@@ -262,8 +261,6 @@ function Entities.slab(parent, orient, x, y, w, h)
     {"pos", {x = x, y = y}},
   })
 end
-
-local BlockW = 16
 
 local stackup
 function Entities.platforms(parent, res)
@@ -285,14 +282,12 @@ function Entities.platforms(parent, res)
     for c = 1, #grid[r] do
       if grid[r][c] == 1 then
         grid[r][c] = {r = r, c = c}
-        mkBrick(parent, ((c) * 16) - (BlockW / 2), ((r) * 16) - (BlockW / 2))
+        Entities.brick(parent, ((c) * 16) - (BlockW / 2),
+                       ((r) * 16) - (BlockW / 2))
       end
     end
   end
   local slabs = stackup(grid)
-  -- print("BlockW=" .. BlockW)
-  -- print(inspect(#slabs) .. " slabs")
-  -- print(inspect(slabs))
   for i = 1, #slabs do
     local w, h, orient
     if slabs[i].w then
@@ -408,16 +403,5 @@ function Entities.background(estore, res)
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
 end
-
-function Entities.map(parent, res)
-  parent:newEntity({{"name", {name = "map"}}, {"map", {slices = {}}}})
-end
-
--- function Entities.slice(parent,res,num)
---   parent:newEntity({
---     {'name',{name="slice-"..num}},
---     {'slice',{number=num}},
---   })
--- end
 
 return Entities

@@ -237,3 +237,20 @@ function sortEntities(ents, deep)
     end
   end
 end
+
+function tagEnt(e, name)
+  e:newComp('tag', {name = name})
+end
+
+function nameEnt(e, name)
+  if e.name then
+    e.name.name = name
+  else
+    e:newComp('name', {name = name})
+  end
+end
+
+function selfDestructEnt(e, t)
+  tagEnt(e, "self_destruct")
+  e:newComp('timer', {t = t, name = 'self_destruct'})
+end

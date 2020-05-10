@@ -56,7 +56,7 @@ Comp.define("slice", {'number',0})
 
 Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false,'touchingdown',false})
 Comp.define("slab", {'orient','h'})
-Comp.define("blockbreaker", {})
+Comp.define("blockbreaker", {'fragstyle','physical','fraglife',2})
 
 Comp.define("touchable", {'touching',false,'up',false,'down',false,'left',false,'right',false})
 
