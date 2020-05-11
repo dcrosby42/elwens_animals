@@ -538,7 +538,7 @@ function lmod(x, n)
   return 1 + (x - 1) % n
 end
 
-function lazyThunk(fn)
+function memoize0(fn)
   local result
   return function()
     if result == nil then

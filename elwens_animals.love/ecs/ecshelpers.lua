@@ -16,43 +16,33 @@ end
 function resolveSystem(s, opts)
   opts = opts or {}
   opts.systemKeys = opts.systemKeys or {"system", "System"}
-  if type(s) == "string" then
-    s = require(s)
-  end
-  if type(s) == "function" then
-    return s
-  end
+  if type(s) == "string" then s = require(s) end
+  if type(s) == "function" then return s end
   if type(s) == "table" then
     for _, key in ipairs(opts.systemKeys) do
-      if type(s[key]) == "function" then
-        return s[key]
-      end
+      if type(s[key]) == "function" then return s[key] end
     end
   end
-  error("ecshelpers.resolveSystem '" .. tostring(s) .. "' cannot be resolved as a System")
+  error("ecshelpers.resolveSystem '" .. tostring(s) ..
+            "' cannot be resolved as a System")
 end
 
 function composeSystems(systems)
   local rsystems = {}
-  for i = 1, #systems do
-    table.insert(rsystems, resolveSystem(systems[i]))
-  end
+  for i = 1, #systems do table.insert(rsystems, resolveSystem(systems[i])) end
   return function(estore, input, res)
-    for _, system in ipairs(rsystems) do
-      system(estore, input, res)
-    end
+    for _, system in ipairs(rsystems) do system(estore, input, res) end
   end
 end
 
 function composeDrawSystems(systems)
   local rsystems = {}
   for i = 1, #systems do
-    table.insert(rsystems, resolveSystem(systems[i], {systemKeys = {"drawSystem"}}))
+    table.insert(rsystems,
+                 resolveSystem(systems[i], {systemKeys = {"drawSystem"}}))
   end
   return function(estore, res)
-    for _, system in ipairs(rsystems) do
-      system(estore, res)
-    end
+    for _, system in ipairs(rsystems) do system(estore, res) end
   end
 end
 
@@ -77,15 +67,12 @@ function hasComps(...)
     end
   elseif num == 4 then
     return function(e)
-      return e[ctypes[1]] ~= nil and e[ctypes[2]] and e[ctypes[3]] ~= nil and e[ctypes[4]] ~= nil
+      return e[ctypes[1]] ~= nil and e[ctypes[2]] and e[ctypes[3]] ~= nil and
+                 e[ctypes[4]] ~= nil
     end
   else
     return function(e)
-      for _, ctype in ipairs(ctypes) do
-        if e[ctype] == nil then
-          return
-        end
-      end
+      for _, ctype in ipairs(ctypes) do if e[ctype] == nil then return end end
       return true
     end
   end
@@ -107,25 +94,19 @@ function allOf(...)
   local matchers = {...}
   return function(e)
     for _, matchFn in ipairs(matchers) do
-      if not matchFn(e) then
-        return false
-      end
+      if not matchFn(e) then return false end
     end
     return true
   end
 end
 
 function addInputEvent(input, evt)
-  if not input.events[evt.type] then
-    input.events[evt.type] = {}
-  end
+  if not input.events[evt.type] then input.events[evt.type] = {} end
   table.insert(input.events[evt.type], evt)
 end
 
 function setParentEntity(estore, childE, parentE, order)
-  if childE.parent then
-    estore:removeComp(childE.parent)
-  end
+  if childE.parent then estore:removeComp(childE.parent) end
   estore:newComp(childE, "parent", {parentEid = parentE.eid, order = order})
 end
 
@@ -140,24 +121,18 @@ end
 function defineUpdateSystem(matchSpec, fn)
   local matchFn = matchSpecToFn(matchSpec)
   return function(estore, input, res)
-    estore:walkEntities(
-      matchFn,
-      function(e)
-        fn(e, estore, input, res)
-      end
-    )
+    estore:walkEntities(matchFn, function(e)
+      fn(e, estore, input, res)
+    end)
   end
 end
 
 function defineDrawSystem(matchSpec, fn)
   local matchFn = matchSpecToFn(matchSpec)
   return function(estore, res)
-    estore:walkEntities(
-      matchFn,
-      function(e)
-        fn(e, estore, res)
-      end
-    )
+    estore:walkEntities(matchFn, function(e)
+      fn(e, estore, res)
+    end)
   end
 end
 
@@ -181,9 +156,7 @@ end
 function getBoundingRect(e)
   local x, y = getPos(e)
   local bounds = e.bounds
-  if not bounds then
-    return x, y, 1, 1
-  end
+  if not bounds then return x, y, 1, 1 end
 
   local sx = 1
   local sy = 1
@@ -231,11 +204,7 @@ end
 
 function sortEntities(ents, deep)
   table.sort(ents, byOrder)
-  if deep then
-    for i = 1, #ents do
-      sortEntities(ents[i]._children, true)
-    end
-  end
+  if deep then for i = 1, #ents do sortEntities(ents[i]._children, true) end end
 end
 
 function tagEnt(e, name)

@@ -55,6 +55,7 @@ function Anim.recalcDuration(anim)
 end
 
 function Anim.makeSimpleAnim(pics, frameDur)
+  frameDur = frameDur or 1/60
   local anim = {
     pics = {},
     duration = (#pics * frameDur)
