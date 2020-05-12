@@ -99,7 +99,7 @@ function Anim.simpleSheetToPics(img, w, h, opts)
   end
   local imgw = img:getWidth()
   local imgh = img:getHeight()
-  Debug.println("imgw=" .. imgw .. " imgh=" .. imgh)
+  Debug.println("simpleSheetToPics() imgw=" .. imgw .. " imgh=" .. imgh)
 
   local pics = {}
 
@@ -255,7 +255,7 @@ function Loaders.picStrip_anim(res, pics, name, data)
 end
 
 function Loaders.picStrip(res, picStrip)
-  local data = picStrip.data
+  local data = Loaders.getData(picStrip)
   local pics = Anim.simpleSheetToPics(R.getImage(data.path), data.picWidth,
                                       data.picHeight, data.picOptions)
   res:get('picStrips'):put(picStrip.name, pics)
@@ -273,7 +273,7 @@ end
 
 -- soundConfig: {type,name, data:{file,type=[music|sound], duration(optional), volume=(optional)}}
 function Loaders.sound(res, sound)
-  local cfg = sound.data
+  local cfg = Loaders.getData(sound)
   if cfg.type == "music" then
     -- Music sounds are loaded as a streaming Source and reused
     cfg.pool = SoundPool.music({file = cfg.file})
@@ -286,6 +286,27 @@ function Loaders.sound(res, sound)
   res:get('sounds'):put(sound.name, cfg)
 end
 
+local function loadDataFile(f)
+  -- TODO: support json, yaml, other?
+  return loadfile(f)()
+end
+
+function Loaders.getData(obj)
+  if obj.data then
+    return obj.data
+  elseif obj.datafile then
+    return loadDataFile(obj.datafile)
+  else
+    error(
+        "Loader: cannot get data from object, need 'data' or 'datafile': obj=" ..
+            inspect(obj))
+  end
+end
+
+function Loaders.settings(res, settings)
+  res:get('settings'):put(settings.name, Loaders.getData(settings))
+end
+
 function Loaders.loadConfig(res, config, loaders)
   loaders = loaders or Loaders
   local loader = loaders[config.type]
@@ -295,14 +316,24 @@ function Loaders.loadConfig(res, config, loaders)
   return res
 end
 
+function Loaders.copy()
+  return shallowclone(Loaders)
+end
+
 function Loaders.loadConfigs(res, configs, loaders)
   for i = 1, #configs do Loaders.loadConfig(res, configs[i], loaders) end
   return res
 end
 
+function R.newResourceRoot(loaders)
+  return ResourceRoot:new()
+end
+
 function R.buildResourceRoot(configs, loaders)
   return Loaders.loadConfigs(ResourceRoot:new(), configs, loaders)
 end
+
+R.Loaders = Loaders
 
 R.Anim = Anim
 

@@ -164,6 +164,10 @@ function tmerge(left, right)
   end
 end
 
+function clonemergeshallow(left,right)
+  return tmerge(shallowclone(left),right)
+end
+
 function tappend(t, x)
   t[#t + 1] = x
 end

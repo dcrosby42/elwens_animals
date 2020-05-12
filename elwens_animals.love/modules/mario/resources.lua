@@ -1,6 +1,39 @@
-local R = require "resourceloader"
-
-local configs = {
+return {
+  {type = "settings", name = "all", datafile = "modules/mario/settings.lua"},
+  {
+    type = "ecs",
+    name = "main",
+    data = {
+      entities = {},
+      components = {},
+      systems = {
+        "systems.timer",
+        "modules.mario.keyboardjoysticksystem",
+        "systems.selfdestruct",
+        "systems.physics",
+        "systems.sound",
+        "systems.touchbutton",
+        "modules.mario.mariosystem",
+        -- 'modules.mario.playertrackersystem',
+        -- "systems.viewport"
+        "systems.follower",
+        "modules.mario.mariomapsystem",
+        "modules.mario.brickbreakersystem",
+        "modules.mario.devsystem",
+      },
+      drawSystems = {
+        {
+          wrappingDrawSystem = "systems.viewportdraw",
+          wrappedSystems = {
+            "modules.mario.drawsystem",
+            "systems.physicsdraw",
+            "systems.debugdraw",
+            "modules.mario.drawsound",
+          },
+        },
+      },
+    },
+  },
   {
     type = "picStrip",
     name = "smallstuff",
@@ -74,10 +107,4 @@ local configs = {
     name = "breakblock",
     data = {file = "data/mario/sounds/smb_breakblock.wav", type = "sound"},
   },
-}
-
-return {
-  load = memoize0(function()
-    return R.buildResourceRoot(configs)
-  end),
 }

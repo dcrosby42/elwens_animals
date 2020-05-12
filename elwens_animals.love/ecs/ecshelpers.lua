@@ -1,3 +1,4 @@
+local ResourceLoader = require "resourceloader"
 -- local debug = print
 local debug = function(...)
 end
@@ -14,11 +15,18 @@ function requireModules(reqs)
 end
 
 function resolveSystem(s, opts)
+
   opts = opts or {}
-  opts.systemKeys = opts.systemKeys or {"system", "System"}
+  opts.res = opts.res or ResourceLoader.newResourceRoot()
+  opts.systemKeys = opts.systemKeys or {"updateSystem", "system", "System"}
+  opts.systemConstructorKeys = opts.systemConstructorKeys or
+                                   {"new", "newSystem", "newUpdateSystem"}
   if type(s) == "string" then s = require(s) end
   if type(s) == "function" then return s end
   if type(s) == "table" then
+    for _, key in ipairs(opts.systemConstructorKeys) do
+      if type(s[key]) == "function" then return s[key](opts.res) end
+    end
     for _, key in ipairs(opts.systemKeys) do
       if type(s[key]) == "function" then return s[key] end
     end

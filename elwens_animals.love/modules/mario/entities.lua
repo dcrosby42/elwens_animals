@@ -2,6 +2,7 @@ local Comp = require "comps"
 local Estore = require "ecs.estore"
 local F = require "modules.plotter.funcs"
 local Res = require "modules.mario.resources"
+local inspect = require "inspect"
 
 local G = love.graphics
 
@@ -10,14 +11,18 @@ local BlockW = 16
 
 local Entities = {}
 
-local dbg_drawLocus = false
-local dbg_drawMarioBody = false
-local dbg_drawMario = false
-local dbg_drawBrickBody = false
-local dbg_drawSlabBody = false
-local dbg_playBgMusic = false
+local dbg = {}
+-- local dbg.drawLocus = false
+-- local dbg.drawMarioBody = false
+-- local dbg.drawMario = false
+-- local dbg.drawBrickBody = false
+-- local dbg.drawSlabBody = false
+-- local dbg.playBgMusic = false
 
 function Entities.initialEntities(res)
+  dbg = res.settings.all.debug
+  print(inspect(dbg))
+
   local estore = Estore:new()
 
   local map = Entities.map(estore)
@@ -40,7 +45,7 @@ function Entities.map(parent)
     {"mariomap", {}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
-  if dbg_playBgMusic then
+  if dbg.playBgMusic then
     map:newComp("sound", {sound = "bgmusic", loop = true})
   end
   return map
@@ -57,7 +62,7 @@ function Entities.locus(parent, res)
     {
       "debugDraw",
       {
-        on = dbg_drawLocus,
+        on = dbg.drawLocus,
         color = {0, 1, 1, 0.5},
         pos = true,
         rects = true,
@@ -129,7 +134,7 @@ function Entities.mario(parent, res)
       "body",
       {
         fixedrotation = true,
-        debugDraw = dbg_drawMarioBody,
+        debugDraw = dbg.drawMarioBody,
         mass = 0.1,
         friction = 0,
         debugDrawColor = {1, .5, .5},
@@ -143,7 +148,7 @@ function Entities.mario(parent, res)
     {
       "debugDraw",
       {
-        on = dbg_drawMario,
+        on = dbg.drawMario,
         pos = true,
         bounds = false,
         color = {0.8, 1, 0.8, 0.5},
@@ -185,7 +190,7 @@ function Entities.brick(parent, x, y)
         dynamic = false,
         fixedrotation = true,
         mass = 0.1,
-        debugDraw = dbg_drawBrickBody,
+        debugDraw = dbg.drawBrickBody,
         debugDrawColor = {1, 1, .8},
       },
     },
@@ -251,7 +256,7 @@ function Entities.slab(parent, orient, x, y, w, h)
     {
       "body",
       {
-        debugDraw = dbg_drawSlabBody,
+        debugDraw = dbg.drawSlabBody,
         debugDrawColor = {1, 1, 1},
         dynamic = false,
         friction = 1,
