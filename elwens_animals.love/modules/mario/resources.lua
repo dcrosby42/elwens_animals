@@ -4,7 +4,7 @@ return {
     type = "ecs",
     name = "main",
     data = {
-      entities = {},
+      entities = {code = "modules.mario.entities"},
       components = {},
       systems = {
         "systems.timer",
@@ -22,14 +22,11 @@ return {
         "modules.mario.devsystem",
       },
       drawSystems = {
-        {
-          wrappingDrawSystem = "systems.viewportdraw",
-          wrappedSystems = {
-            "modules.mario.drawsystem",
-            "systems.physicsdraw",
-            "systems.debugdraw",
-            "modules.mario.drawsound",
-          },
+        ["systems.viewportdraw"] = {
+          "modules.mario.drawsystem",
+          "systems.physicsdraw",
+          "systems.debugdraw",
+          "modules.mario.drawsound",
         },
       },
     },

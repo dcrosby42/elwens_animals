@@ -48,4 +48,4 @@ local function wrap(mainDrawFunc)
   end
 end
 
-return {wrap = wrap}
+return {newDrawSystem = function(subsystem) return wrap(subsystem) end}
