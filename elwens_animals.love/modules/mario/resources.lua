@@ -1,5 +1,5 @@
 return {
-  {type = "settings", name = "all", datafile = "modules/mario/settings.lua"},
+  {type = "settings", name = "main", datafile = "modules/mario/settings.lua"},
   {
     type = "ecs",
     name = "main",

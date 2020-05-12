@@ -6,5 +6,6 @@ return {
     drawBrickBody = false,
     drawSlabBody = false,
     playBgMusic = false,
+    brickFragmentLife = 5,
   },
 }

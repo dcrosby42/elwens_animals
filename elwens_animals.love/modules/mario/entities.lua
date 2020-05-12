@@ -20,7 +20,7 @@ local dbg = {}
 -- local dbg.playBgMusic = false
 
 function Entities.initialEntities(res)
-  dbg = res.settings.all.debug
+  dbg = res.settings.main.debug
   print(inspect(dbg))
 
   local estore = Estore:new()
@@ -117,7 +117,7 @@ function Entities.mario(parent, res)
   return parent:newEntity({
     {"name", {name = "mario"}},
     {"mario", {mode = "standing", facing = "right"}},
-    {"blockbreaker", {fragstyle = 'physical', fraglife = 2}},
+    {"blockbreaker", {fragstyle = 'physical', fraglife = dbg.brickFragmentLife}},
     {"controller", {id = "joystick1"}},
     {
       "anim",
