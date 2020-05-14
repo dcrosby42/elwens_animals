@@ -1,3 +1,4 @@
+local Debug = require("mydebug").sub("mario.entities", true, true)
 local Comp = require "comps"
 local Estore = require "ecs.estore"
 local F = require "modules.plotter.funcs"
@@ -11,7 +12,7 @@ local BlockW = 16
 
 local Entities = {}
 
-local dbg = {}
+Entities.debug = {}
 -- local dbg.drawLocus = false
 -- local dbg.drawMarioBody = false
 -- local dbg.drawMario = false
@@ -20,8 +21,9 @@ local dbg = {}
 -- local dbg.playBgMusic = false
 
 function Entities.initialEntities(res)
-  dbg = res.settings.main.debug
-  print(inspect(dbg))
+  Entities.debug = res.settings.main.debug
+
+  Debug.println("debug settings: " .. inspect(Entities.debug))
 
   local estore = Estore:new()
 
@@ -45,7 +47,7 @@ function Entities.map(parent)
     {"mariomap", {}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
-  if dbg.playBgMusic then
+  if Entities.debug.playBgMusic then
     map:newComp("sound", {sound = "bgmusic", loop = true})
   end
   return map
@@ -62,7 +64,7 @@ function Entities.locus(parent, res)
     {
       "debugDraw",
       {
-        on = dbg.drawLocus,
+        on = Entities.debug.drawLocus,
         color = {0, 1, 1, 0.5},
         pos = true,
         rects = true,
@@ -117,7 +119,10 @@ function Entities.mario(parent, res)
   return parent:newEntity({
     {"name", {name = "mario"}},
     {"mario", {mode = "standing", facing = "right"}},
-    {"blockbreaker", {fragstyle = 'physical', fraglife = dbg.brickFragmentLife}},
+    {
+      "blockbreaker",
+      {fragstyle = 'physical', fraglife = Entities.debug.brickFragmentLife},
+    },
     {"controller", {id = "joystick1"}},
     {
       "anim",
@@ -134,7 +139,7 @@ function Entities.mario(parent, res)
       "body",
       {
         fixedrotation = true,
-        debugDraw = dbg.drawMarioBody,
+        debugDraw = Entities.debug.drawMarioBody,
         mass = 0.1,
         friction = 0,
         debugDrawColor = {1, .5, .5},
@@ -148,7 +153,7 @@ function Entities.mario(parent, res)
     {
       "debugDraw",
       {
-        on = dbg.drawMario,
+        on = Entities.debug.drawMario,
         pos = true,
         bounds = false,
         color = {0.8, 1, 0.8, 0.5},
@@ -190,7 +195,7 @@ function Entities.brick(parent, x, y)
         dynamic = false,
         fixedrotation = true,
         mass = 0.1,
-        debugDraw = dbg.drawBrickBody,
+        debugDraw = Entities.debug.drawBrickBody,
         debugDrawColor = {1, 1, .8},
       },
     },
@@ -256,7 +261,7 @@ function Entities.slab(parent, orient, x, y, w, h)
     {
       "body",
       {
-        debugDraw = dbg.drawSlabBody,
+        debugDraw = Entities.debug.drawSlabBody,
         debugDrawColor = {1, 1, 1},
         dynamic = false,
         friction = 1,
@@ -272,7 +277,7 @@ function Entities.platforms(parent, res)
   local fname = "data/images/mario/testmap1.png"
   local map = love.image.newImageData(fname)
   local w, h = map:getDimensions()
-  print("Map " .. fname .. " w: " .. w .. " h: " .. h)
+  Debug.println("Map " .. fname .. " w: " .. w .. " h: " .. h)
   local detect = function(r, g, b)
     if r == 1 and g == 1 and b == 1 then return 1 end
     return 0

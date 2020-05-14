@@ -10,6 +10,7 @@ local ImageDatas = {}
 R.getImageData = memoize1(love.image.newImageData)
 
 R.getImage = memoize1(function(fname)
+  Debug.println("getImage(" .. fname .. ")")
   return love.graphics.newImage(R.getImageData(fname))
 end)
 
@@ -91,12 +92,9 @@ local Anim = {}
 -- Assume the image at fname has left-to-right, top-to-bottom
 -- uniform sprite frames of w-by-h.
 -- opts: (optional) Passed to makePic(). {sx, sy, duration, frameNum}.  Though frameNum doesn't make much sense here.
-function Anim.simpleSheetToPics(img, w, h, opts)
-  opts = opts or {}
-  if type(img) == "string" then
-    Debug.println(img)
-    img = R.getImage(img)
-  end
+function Anim.simpleSheetToPics(img, w, h, picOpts, count)
+  picOpts = picOpts or {}
+  if type(img) == "string" then img = R.getImage(img) end
   local imgw = img:getWidth()
   local imgh = img:getHeight()
   Debug.println("simpleSheetToPics() imgw=" .. imgw .. " imgh=" .. imgh)
@@ -107,10 +105,14 @@ function Anim.simpleSheetToPics(img, w, h, opts)
     local y = (j - 1) * h
     for i = 1, imgw / w do
       local x = (i - 1) * w
-      local pic = R.makePic(nil, img, {x = x, y = y, w = w, h = h}, opts)
+      local pic = R.makePic(nil, img, {x = x, y = y, w = w, h = h}, picOpts)
       table.insert(pics, pic)
       Debug.println("Added pic.rect x=" .. x .. " y=" .. y .. " w=" .. w ..
                         " h=" .. h)
+      if count and #pics >= count then
+        Debug.println("Reach count limit of " .. count .. "; returning")
+        return pics
+      end
     end
   end
   return pics
@@ -257,7 +259,8 @@ end
 function Loaders.picStrip(res, picStrip)
   local data = Loaders.getData(picStrip)
   local pics = Anim.simpleSheetToPics(R.getImage(data.path), data.picWidth,
-                                      data.picHeight, data.picOptions)
+                                      data.picHeight, data.picOptions,
+                                      data.count)
   res:get('picStrips'):put(picStrip.name, pics)
 
   if data.pics then

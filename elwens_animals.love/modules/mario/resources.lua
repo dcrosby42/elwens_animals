@@ -14,8 +14,6 @@ return {
         "systems.sound",
         "systems.touchbutton",
         "modules.mario.mariosystem",
-        -- 'modules.mario.playertrackersystem',
-        -- "systems.viewport"
         "systems.follower",
         "modules.mario.mariomapsystem",
         "modules.mario.brickbreakersystem",
@@ -38,6 +36,7 @@ return {
       path = "data/images/mario/8x8stuff.png",
       picWidth = 8,
       picHeight = 8,
+      count = 4,
       picOptions = {}, -- see ResourceLoader.makePic() for opts
       pics = {
         brickfrag_ul = 1,
@@ -54,6 +53,7 @@ return {
       path = "data/images/mario/mario.png",
       picWidth = 24,
       picHeight = 32,
+      count = 10,
       picOptions = {}, -- see ResourceLoader.makePic() for opts
       anims = {
         mario_big_stand_left = {pics = {1}},
@@ -78,6 +78,7 @@ return {
       path = "data/images/mario/map_objects.png",
       picWidth = 16,
       picHeight = 16,
+      count = 10,
       picOptions = {}, -- see ResourceLoader.makePic() for opts
       anims = {
         brick_standard_matte = {pics = {9}},
