@@ -13,12 +13,6 @@ local BlockW = 16
 local Entities = {}
 
 Entities.debug = {}
--- local dbg.drawLocus = false
--- local dbg.drawMarioBody = false
--- local dbg.drawMario = false
--- local dbg.drawBrickBody = false
--- local dbg.drawSlabBody = false
--- local dbg.playBgMusic = false
 
 function Entities.initialEntities(res)
   Entities.debug = res.settings.main.debug
@@ -47,6 +41,7 @@ function Entities.map(parent)
     {"mariomap", {}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
+  if Entities.debug.drawMarioMap then map:newComp("debugDraw", {on = true}) end
   if Entities.debug.playBgMusic then
     map:newComp("sound", {sound = "bgmusic", loop = true})
   end

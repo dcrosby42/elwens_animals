@@ -28,47 +28,38 @@ end
 local SectorW = 320
 local SectorH = 240
 
-local system =
-  defineUpdateSystem(
-  {"mariomap"},
-  function(mapE, estore, input, res)
-    local locusE = estore:getEntityByName("locus")
-    if not locusE then
-      return
-    end
+local system = defineUpdateSystem({"mariomap"},
+                                  function(mapE, estore, input, res)
+  local locusE = estore:getEntityByName("locus")
+  if not locusE then return end
 
-    -- decide what sectors should exist
-    local x, y = getPos(locusE)
-    local sectors = getSectorRCs(SectorW, SectorH, x, y, locusE.rect)
-    mapE.mariomap.sectors = sectors
+  -- decide what sectors should exist
+  local x, y = getPos(locusE)
+  local sectors = getSectorRCs(SectorW, SectorH, x, y, locusE.rect)
+  mapE.mariomap.sectors = sectors
 
-    -- local chunks = {}
-    -- mapE:walkEntities(
-    --   hasComp("chunk"),
-    --   function(e)
-    --     chunks[e.chunk.sectorname] = e
-    --   end
-    -- )
+  -- local chunks = {}
+  -- mapE:walkEntities(
+  --   hasComp("chunk"),
+  --   function(e)
+  --     chunks[e.chunk.sectorname] = e
+  --   end
+  -- )
 
-    -- for i = 1, #sectors do
-    --   local s = sectors[i]
-    --   sname = sectorName(s[1], s[2])
-    -- end
+  -- for i = 1, #sectors do
+  --   local s = sectors[i]
+  --   sname = sectorName(s[1], s[2])
+  -- end
 
-    -- mapE:newChild(
-    --   {
-    --     {"name", {name = sname}},
-    --     {"pos", {x = s.x, y = s.y}},
-    --     {"debugDraw", {}},
-    --     {"rect", {w = s.w, h = s.h, color = {0.5, 0.5, 0.5}}},
-    --     {"label", {text = sname}}
-    --   }
-    -- )
-  end
-)
+  -- mapE:newChild(
+  --   {
+  --     {"name", {name = sname}},
+  --     {"pos", {x = s.x, y = s.y}},
+  --     {"debugDraw", {}},
+  --     {"rect", {w = s.w, h = s.h, color = {0.5, 0.5, 0.5}}},
+  --     {"label", {text = sname}}
+  --   }
+  -- )
+end)
 
-return {
-  system = system,
-  SectorW = SectorW,
-  SectorH = SectorH
-}
+return {system = system, SectorW = SectorW, SectorH = SectorH}
