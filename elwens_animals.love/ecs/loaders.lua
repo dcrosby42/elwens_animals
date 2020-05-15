@@ -1,5 +1,6 @@
 local R = require "resourceloader"
 local inspect = require "inspect"
+local Comp = require "comps"
 
 local Loaders = R.Loaders.copy()
 
@@ -41,11 +42,29 @@ local function loadEntities(eConfig)
   return entities
 end
 
+-- Component config block contains either a 'data' key or 'datafile'
+-- Data consists of a map of component definitions, 
+-- where the key is the component type name, and the value is a pair-list of field defs.
+-- Eg {data={ pos = {'x',0,'y',0,'real',false}, state = {'value','NIL'}}}
+-- "CHEAT" this method doesn't put the definitions in a clever place, it just modifies 
+-- the global Comp definitions.
+local function defineComponents(cConfig)
+  assert(cConfig.data or cConfig.datafile,
+         "loadEntities: expected 'data' or 'datafile' in config " ..
+             inspect(cConfig))
+  local defs = Loaders.getData(cConfig)
+  if defs then
+    for compType, compDef in pairs(defs) do Comp.define(compType, compDef) end
+  end
+  return Comp
+end
+
 function Loaders.ecs(res, ecsConfig)
   local data = Loaders.getData(ecsConfig)
 
   local ecs = {
     entities = loadEntities(data.entities),
+    components = defineComponents(data.components),
     update = composeSystems(data.systems),
     draw = loadDrawSystems(data.drawSystems),
   }

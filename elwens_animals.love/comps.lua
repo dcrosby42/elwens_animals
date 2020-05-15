@@ -54,13 +54,6 @@ Comp.define("health", {'hp',10,'maxhp',10})
 Comp.define("map", {'slices',{}})
 Comp.define("slice", {'number',0})
 
-Comp.define("mario", {'mode','standing','value',0,'facing','right','dash',false,'jump',false,'touchingdown',false})
-Comp.define("slab", {'orient','h'})
-Comp.define("block", {'kind','brick'})
-Comp.define("blockbreaker", {'fragstyle','physical','fraglife',2})
-
-Comp.define("touchable", {'touching',false,'up',false,'down',false,'left',false,'right',false})
-
 Comp.define("contact", {'otherEid','','nx',0,'ny',0,'myCid','','otherCid','','x',0,'y',0,'dx',0,'dy',0})
 
 return Comp

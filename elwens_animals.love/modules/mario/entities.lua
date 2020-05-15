@@ -31,8 +31,6 @@ function Entities.initialEntities(res)
   return estore
 end
 
-Comp.define("mariomap", {"sectors", {}})
-
 function Entities.map(parent)
   -- MAP
   local map = parent:newEntity({
@@ -113,7 +111,7 @@ function Entities.mario(parent, res)
   local verts = Entities.rectangleVerts(10, 22, 0.5, 0.3865)
   return parent:newEntity({
     {"name", {name = "mario"}},
-    {"mario", {mode = "standing", facing = "right"}},
+    {"mario", {}},
     {
       "blockbreaker",
       {

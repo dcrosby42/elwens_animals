@@ -5,7 +5,7 @@ return {
     name = "main",
     data = {
       entities = {code = "modules.mario.entities"},
-      components = {},
+      components = {datafile = "modules/mario/components.lua"},
       systems = {
         "systems.timer",
         "modules.mario.keyboardjoysticksystem",
