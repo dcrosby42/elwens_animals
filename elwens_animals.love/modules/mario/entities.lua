@@ -116,7 +116,10 @@ function Entities.mario(parent, res)
     {"mario", {mode = "standing", facing = "right"}},
     {
       "blockbreaker",
-      {fragstyle = 'physical', fraglife = Entities.debug.brickFragmentLife},
+      {
+        fragstyle = Entities.debug.brickFragmentStyle,
+        fraglife = Entities.debug.brickFragmentLife,
+      },
     },
     {"controller", {id = "joystick1"}},
     {
@@ -158,8 +161,12 @@ function Entities.mario(parent, res)
 end
 
 function Entities.brick(parent, x, y)
-  local id = "brick_standard_shimmer"
-  if x % 56 == 0 then id = "qblock_standard" end
+  local kind = "brick"
+  local animid = "brick_standard_shimmer"
+  if x % 56 == 0 then
+    kind = "qblock"
+    animid = "qblock_standard"
+  end
   local w = 16
   local h = 16
   local left = -w / 2
@@ -168,12 +175,13 @@ function Entities.brick(parent, x, y)
   local bottom = top + h
   local verts = {left, top, right, top, right, bottom, left, bottom}
   return parent:newEntity({
-    {"tag", {name = "brick"}},
+    -- {"tag", {name = "brick"}},
+    {"block", {kind = kind}},
     {
       "anim",
       {
-        name = "shine",
-        id = id,
+        name = "atimer",
+        id = animid,
         sx = 1.06,
         sy = 1.06,
         centerx = 0.5,
@@ -181,7 +189,7 @@ function Entities.brick(parent, x, y)
         drawbounds = false,
       },
     },
-    {"timer", {name = "shine", countDown = false}},
+    {"timer", {name = "atimer", countDown = false}},
     {"pos", {x = x, y = y}},
     {
       "body",

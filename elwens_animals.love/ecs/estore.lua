@@ -35,7 +35,12 @@ function Estore:nextCid()
 end
 
 function Estore:_makeEnt(eid)
-  local e = Entity:new({eid = eid, _estore = self, _parent = nil, _children = {}})
+  local e = Entity:new({
+    eid = eid,
+    _estore = self,
+    _parent = nil,
+    _children = {},
+  })
   self.ents[eid] = e
   addChildEntityTo(self._root, e)
   return e
@@ -52,11 +57,7 @@ function Estore:newEntity(compList, subs)
     end
   end
 
-  if subs then
-    for _, childComps in ipairs(subs) do
-      e:newChild(childComps)
-    end
-  end
+  if subs then for _, childComps in ipairs(subs) do e:newChild(childComps) end end
   return e
 end
 
@@ -66,15 +67,11 @@ function Estore:buildEntity(compList, subs)
 end
 
 function Estore:destroyEntity(e)
-  for _, childEnt in ipairs(e._children) do
-    self:destroyEntity(childEnt)
-  end
+  for _, childEnt in ipairs(e._children) do self:destroyEntity(childEnt) end
 
   local compsToRemove = {}
   for _, comp in pairs(self.comps) do
-    if comp.eid == e.eid then
-      table.insert(compsToRemove, comp)
-    end
+    if comp.eid == e.eid then table.insert(compsToRemove, comp) end
   end
 
   for _, comp in ipairs(compsToRemove) do
@@ -82,15 +79,14 @@ function Estore:destroyEntity(e)
     self:removeComp(comp)
   end
 
-  if e._parent then
-    removeChildEntityFrom(e._parent, e)
-  end
+  if e._parent then removeChildEntityFrom(e._parent, e) end
 end
 
 -- Claim a comp from its object pool and (optionally) initialize with values from given data.
 -- Once initialized, the comp is then added via Estore:addComp(e,comp)... see those docs for more info.
 function Estore:newComp(e, typeName, data)
-  local compType = assert(Comp.types[typeName], "No component type '" .. typeName .. "'")
+  local compType = assert(Comp.types[typeName],
+                          "No component type '" .. typeName .. "'")
   local comp = compType.cleanCopy(data)
   return self:addComp(e, comp)
 end
@@ -125,9 +121,7 @@ function Estore:addComp(e, comp)
   comp.eid = e.eid
 
   -- Assign the next cid (if not already set):
-  if not comp.cid or comp.cid == '' then
-    comp.cid = self:nextCid()
-  end
+  if not comp.cid or comp.cid == '' then comp.cid = self:nextCid() end
   -- Index the comp by cid
   self.comps[comp.cid] = comp
 
@@ -138,16 +132,17 @@ function Estore:addComp(e, comp)
   if key == "parent" then
     if e.parent then
       -- if e._parent and not e._parent._root then
-      error("UNACCEPTABLE! only one 'parent' Component per Entity please!\nExisting parent Comonent: " ..
-                Comp.debugString(e.parent) .. "\nNew parent Component: " .. Comp.debugString(comp) .. "\nThis Entity: " ..
-                entityDebugString(e) .. "\nExisting parent: " .. tdebug1(e._parent))
+      error(
+          "UNACCEPTABLE! only one 'parent' Component per Entity please!\nExisting parent Comonent: " ..
+              Comp.debugString(e.parent) .. "\nNew parent Component: " ..
+              Comp.debugString(comp) .. "\nThis Entity: " ..
+              entityDebugString(e) .. "\nExisting parent: " ..
+              tdebug1(e._parent))
     end
     local pid = comp.parentEid
     local parentEntity = self.ents[pid]
     if parentEntity then
-      if e._parent then
-        removeChildEntityFrom(e._parent, e)
-      end
+      if e._parent then removeChildEntityFrom(e._parent, e) end
       e._parent = parentEntity
       local chs = parentEntity._children
       local reorder = true
@@ -155,9 +150,7 @@ function Estore:addComp(e, comp)
         local myOrder = #chs + 1
         if #chs > 0 then
           local lastOrder = chs[#chs].order
-          if lastOrder then
-            myOrder = lastOrder + 1
-          end
+          if lastOrder then myOrder = lastOrder + 1 end
         end
         comp.order = myOrder
         reorder = false
@@ -167,8 +160,8 @@ function Estore:addComp(e, comp)
         parentEntity:resortChildren()
       end
     else
-      print("!! ERR Estore:addComp(): parentEntity with eid=" .. pid .. " not found for comp: " ..
-                Comp.debugString(comp))
+      print("!! ERR Estore:addComp(): parentEntity with eid=" .. pid ..
+                " not found for comp: " .. Comp.debugString(comp))
     end
   end
 
@@ -178,9 +171,7 @@ function Estore:addComp(e, comp)
     e[keyp] = {}
   end
   local compKey = comp.name
-  if compKey == nil or compKey == '' then
-    compKey = comp.cid
-  end
+  if compKey == nil or compKey == '' then compKey = comp.cid end
   e[keyp][compKey] = comp
 
   return comp
@@ -198,9 +189,7 @@ function Estore:detachComp(e, comp)
     -- Remove comp from the plural ref table:
     if plural then
       for k, c in pairs(plural) do
-        if c.cid == comp.cid then
-          plural[k] = nil
-        end
+        if c.cid == comp.cid then plural[k] = nil end
       end
     end
 
@@ -213,9 +202,7 @@ function Estore:detachComp(e, comp)
       end
     end
 
-    if key == "parent" then
-      self:_deparent(e)
-    end
+    if key == "parent" then self:_deparent(e) end
 
     local compkeycount = 0
     for k, v in pairs(e) do
@@ -274,9 +261,7 @@ end
 -- (Ie, match/process the given node, then the child nodes from first to last)
 -- IF a node IS matched AND the processing of that node returns false (explicitly), the children are NOT processed.
 function Estore:walkEntities(matchFn, doFn)
-  for _, e in ipairs(self._root._children) do
-    self:walkEntity(e, matchFn, doFn)
-  end
+  for _, e in ipairs(self._root._children) do self:walkEntity(e, matchFn, doFn) end
 end
 
 -- Match/process the given node, then the child nodes from first to last).
@@ -284,36 +269,35 @@ end
 -- (If children nodes supress processing their own children, this does not prevent processing of their own peers.)
 function Estore:walkEntity(e, matchFn, doFn)
   if (not matchFn) or matchFn(e) then -- execute doFn if either a) no matcher, or b) matcher provided and returns true
-    if doFn(e) == false then
-      return
-    end
+    if doFn(e) == false then return end
   end
-  for _, ch in ipairs(e._children) do
-    self:walkEntity(ch, matchFn, doFn)
-  end
+  for _, ch in ipairs(e._children) do self:walkEntity(ch, matchFn, doFn) end
 end
 
 -- Similar to walkEntities, but with the purpose of finding a particular result then exiting the search immediately.
 -- If the doFn() is applied to an Entity and returns explicitly true, the traversal exits and returns true.
 function Estore:seekEntity(matchFn, doFn)
   for _, e in ipairs(self._root._children) do
-    if self:_seekEntity(e, matchFn, doFn) == true then
-      return true
-    end
+    if self:_seekEntity(e, matchFn, doFn) == true then return true end
   end
+end
+
+function Estore:findEntity(matchFn)
+  local found
+  self:seekEntity(matchFn, function(e)
+    found = e
+    return true
+  end)
+  return found
 end
 
 -- (recursive step of seekEntity)
 function Estore:_seekEntity(e, matchFn, doFn)
   if (not matchFn) or matchFn(e) then -- execute doFn if either a) no matcher, or b) matcher provided and returns true
-    if doFn(e) == true then
-      return true
-    end
+    if doFn(e) == true then return true end
   end
   for _, ch in ipairs(e._children) do
-    if self:_seekEntity(ch, matchFn, doFn) == true then
-      return true
-    end
+    if self:_seekEntity(ch, matchFn, doFn) == true then return true end
   end
 end
 
@@ -330,9 +314,7 @@ function Estore:getComponentOfNamedEntity(entName, compName)
   local comp
   self:seekEntity(hasName(entName), function(e)
     comp = e[compName]
-    if comp then
-      return true
-    end
+    if comp then return true end
   end)
   return comp
 end
@@ -348,9 +330,7 @@ function Estore:_deparent(e)
   else
     if e._children then
       for _, childEntity in ipairs(e._children) do
-        if childEntity.parent then
-          self:removeComp(childEntity.parent)
-        end
+        if childEntity.parent then self:removeComp(childEntity.parent) end
         addChildEntityTo(self._root, childEntity)
       end
     end
@@ -358,9 +338,7 @@ function Estore:_deparent(e)
 end
 
 function Estore:setupParent(parentEnt, childEnt)
-  if childEnt.parent then
-    self:removeComp(childEnt.parent)
-  end
+  if childEnt.parent then self:removeComp(childEnt.parent) end
   self:newComp(childEnt, 'parent', {parentEid = parentEnt.eid})
 end
 
@@ -396,9 +374,7 @@ function Estore:clone(opts)
   estore2.cidCounter = self.cidCounter
   estore2._reorderLockout = true
 
-  for eid, _ent in pairs(self.ents) do
-    estore2:_makeEnt(eid)
-  end
+  for eid, _ent in pairs(self.ents) do estore2:_makeEnt(eid) end
 
   local count = 0
   for _cid, comp in pairs(self.comps) do
@@ -406,15 +382,11 @@ function Estore:clone(opts)
     local comp2 = Comp.getType(comp).copy(comp)
     -- Add to the proper Entity, creating new as needed, maintaining expected eid and cid
     local e = estore2.ents[comp.eid]
-    if not e then
-      e = estore2:_makeEnt(comp.eid)
-    end
+    if not e then e = estore2:_makeEnt(comp.eid) end
     estore2:addComp(e, comp2) -- note this will rebuild parent/child structures as needed
     count = count + 1
   end
-  if opts.keepCaches then
-    estore2.caches = self.caches
-  end
+  if opts.keepCaches then estore2.caches = self.caches end
   -- print("cloned "..count.." components")
   estore2._reorderLockout = false
   sortEntities(estore2._root._children, true)
@@ -424,11 +396,10 @@ end
 function Estore:debugString()
   local s = ""
   s = s .. "-- Estore:\n"
-  s = s .. "--- Next eid: e" .. self.eidCounter .. ", Next cid: c" .. self.cidCounter .. "\n"
+  s = s .. "--- Next eid: e" .. self.eidCounter .. ", Next cid: c" ..
+          self.cidCounter .. "\n"
   s = s .. "--- Entities:\n"
-  for eid, e in pairs(self.ents) do
-    s = s .. entityDebugString(e)
-  end
+  for eid, e in pairs(self.ents) do s = s .. entityDebugString(e) end
   s = s .. "--- Entity Tree:\n"
   for _, ch in ipairs(self._root._children) do
     s = s .. entityTreeDebugString(ch, "  ")
@@ -455,9 +426,7 @@ function removeChildEntityFrom(parEnt, chEnt)
       break
     end
   end
-  if remi > 0 then
-    table.remove(list, remi)
-  end
+  if remi > 0 then table.remove(list, remi) end
 end
 
 return Estore

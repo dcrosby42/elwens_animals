@@ -22,24 +22,24 @@ local DrawSound = {}
 --
 
 function DrawSound.new(prefix)
-  return defineDrawSystem(
-    {"sound"},
-    function(e, estore, res)
-      -- For each sound component in this entity:
-      for _, soundComp in pairs(e.sounds) do
-        local key = prefix .. "." .. soundComp.sound .. "." .. soundComp.cid
-        local soundConfig = res.sounds[soundComp.sound]
-        local soundState = {
-          playState = soundComp.state,
-          volume = soundComp.volume,
-          pitch = soundComp.pitch,
-          playTime = soundComp.playtime,
-          duration = soundComp.duration,
-          isLooping = soundComp.loop
-        }
-        sndCanvas:drawSound(key, soundConfig, soundState)
-      end -- end for-each sound component
-    end -- end handler
+  return defineDrawSystem({"sound"}, function(e, estore, res)
+    -- For each sound component in this entity:
+    for _, soundComp in pairs(e.sounds) do
+      local key = prefix .. "." .. soundComp.sound .. "." .. soundComp.cid
+      local soundConfig = res.sounds[soundComp.sound]
+      assert(soundConfig, "No sound configured for '" .. soundComp.sound ..
+                 "', in sound Component of Entity: " .. entityDebugString(e))
+      local soundState = {
+        playState = soundComp.state,
+        volume = soundComp.volume,
+        pitch = soundComp.pitch,
+        playTime = soundComp.playtime,
+        duration = soundComp.duration,
+        isLooping = soundComp.loop,
+      }
+      sndCanvas:drawSound(key, soundConfig, soundState)
+    end -- end for-each sound component
+  end -- end handler
   ) -- end system
 end -- end "new"
 

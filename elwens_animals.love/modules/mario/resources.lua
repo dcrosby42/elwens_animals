@@ -86,7 +86,8 @@ return {
           pics = {9, 6, 7, 8},
           frameDurations = {2, 0.1},
         },
-        qblock_standard = {pics = {5, 1, 2, 3, 4}, frameDurations = {2, 0.1}},
+        qblock_standard = {pics = {1, 2, 3, 4}, frameDurations = {0.15}},
+        block_standard = {pics = {5}},
       },
     },
   },
@@ -104,5 +105,15 @@ return {
     type = "sound",
     name = "breakblock",
     data = {file = "data/mario/sounds/smb_breakblock.wav", type = "sound"},
+  },
+  {
+    type = "sound",
+    name = "bump",
+    data = {file = "data/mario/sounds/smb_bump.wav", type = "sound"},
+  },
+  {
+    type = "sound",
+    name = "coin",
+    data = {file = "data/mario/sounds/smb_coin.wav", type = "sound"},
   },
 }
