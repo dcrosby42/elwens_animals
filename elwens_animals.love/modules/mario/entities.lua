@@ -279,7 +279,7 @@ end
 
 local stackup
 function Entities.platforms(parent, res)
-  local fname = "data/images/mario/testmap1.png"
+  local fname = "modules/mario/maps/testmap1.png"
   local map = love.image.newImageData(fname)
   local w, h = map:getDimensions()
   Debug.println("Map " .. fname .. " w: " .. w .. " h: " .. h)

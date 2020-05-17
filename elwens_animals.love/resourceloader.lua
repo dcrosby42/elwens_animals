@@ -10,7 +10,7 @@ R.getImage = memoize1(function(fname)
   return love.graphics.newImage(R.getImageData(fname))
 end)
 
-R.getFont = memoize2(love.graphics.getFont)
+R.getFont = memoize2(love.graphics.newFont)
 
 R.getSoundData = memoize1(love.sound.newSoundData)
 
@@ -289,7 +289,8 @@ function Loaders.font(res, fontConfig)
   if not choices or #choices == 0 then choices = {name = "default", size = 12} end
   for _, choice in ipairs(choices) do
     local font = R.getFont(data.file, choice.size)
-    local thisName = fontConfig.name .. "." .. choice.name
+    local thisName = fontConfig.name .. "_" .. choice.name
+    -- Debug.println("font: " .. thisName .. " "..tostring(font).." ("..love.graphics.)
     res:get('fonts'):put(thisName, font)
   end
 end

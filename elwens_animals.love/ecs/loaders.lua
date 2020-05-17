@@ -4,7 +4,7 @@ local Comp = require "comps"
 
 local Loaders = R.Loaders.copy()
 
-local function loadDrawSystems(dsConfig)
+local function OLDloadDrawSystems(dsConfig)
   if #dsConfig > 0 then
     -- normal list of system names, just convert it into the classical sys sequence
     return composeDrawSystems(dsConfig)
@@ -32,6 +32,11 @@ local function loadDrawSystems(dsConfig)
   end
 end
 
+local function loadSystems(sysConfig)
+  local systems = Loaders.getData(sysConfig)
+  return composeSystems(systems) -- composeSystems() from ecs.ecshelpers
+end
+
 local function mkDrawSystemChain(systems)
   for i, sys in ipairs(systems) do
     if type(sys) == 'table' and #sys > 0 then
@@ -44,13 +49,15 @@ local function mkDrawSystemChain(systems)
   return makeFuncChain2(systems) -- mkFuncChain2 from crozeng.helpers
 end
 
+local function loadDrawSystems(drawSysConfig)
+  local drawSystems = Loaders.getData(drawSysConfig)
+  return mkDrawSystemChain(drawSystems)
+end
+
 local function loadEntities(eConfig)
-  assert(eConfig.code,
-         "loadEntities: expected 'code' in config " .. inspect(eConfig))
-  local entities = require(eConfig.code)
+  local entities = Loaders.getData(eConfig)
   assert(entities.initialEntities,
-         "loadEntities: expected object from '" .. eConfig.code ..
-             "' to contain a function 'initialEntities()'")
+         "loadEntities: expected entities object to contain a function 'initialEntities()'")
   return entities
 end
 
@@ -60,7 +67,7 @@ end
 -- Eg {data={ pos = {'x',0,'y',0,'real',false}, state = {'value','NIL'}}}
 -- "CHEAT" this method doesn't put the definitions in a clever place, it just modifies 
 -- the global Comp definitions.
-local function defineComponents(cConfig)
+local function loadComponents(cConfig)
   assert(cConfig.data or cConfig.datafile,
          "loadEntities: expected 'data' or 'datafile' in config " ..
              inspect(cConfig))
@@ -76,9 +83,9 @@ function Loaders.ecs(res, ecsConfig)
 
   local ecs = {
     entities = loadEntities(data.entities),
-    components = defineComponents(data.components),
-    update = composeSystems(data.systems),
-    draw = mkDrawSystemChain(data.drawSystems),
+    components = loadComponents(data.components),
+    update = loadSystems(data.systems),
+    draw = loadDrawSystems(data.drawSystems),
   }
 
   res:get('ecs'):put(ecsConfig.name, ecs)
