@@ -155,15 +155,20 @@ function Entities.mario(parent, res)
         color = {0.8, 1, 0.8, 0.5},
       },
     },
+    {"var", {name = "points", value = 0}},
+    {"var", {name = "coins", value = 0}},
+    {"var", {name = "supermario", value = false}},
   })
 end
 
 function Entities.brick(parent, x, y)
   local kind = "brick"
+  local contents = ""
   local animid = "brick_standard_shimmer"
   if x % 56 == 0 then
     kind = "qblock"
     animid = "qblock_standard"
+    contents = "coin"
   end
   local w = 16
   local h = 16
@@ -173,8 +178,7 @@ function Entities.brick(parent, x, y)
   local bottom = top + h
   local verts = {left, top, right, top, right, bottom, left, bottom}
   return parent:newEntity({
-    -- {"tag", {name = "brick"}},
-    {"block", {kind = kind}},
+    {"block", {kind = kind, contents = contents}},
     {
       "anim",
       {

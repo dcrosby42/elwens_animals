@@ -6,6 +6,10 @@
 -- numberlua = require 'vendor/numberlua' -- intentionally global
 -- bit32 = numberlua.bit32 -- intentionally global
 
+if unpack == nil then
+  unpack = table.unpack -- unpack moves out of global space starting in lua 5.2, I heard
+end
+
 function flattenTable(t)
   s = ""
   for k, v in pairs(t) do
@@ -538,10 +542,6 @@ function map(array, func)
   return new_array
 end
 
-function lmod(x, n)
-  return 1 + (x - 1) % n
-end
-
 function memoize0(fn)
   local result
   return function()
@@ -559,5 +559,48 @@ function memoize1(fn)
       cache[arg] = fn(arg)
     end
     return cache[arg]
+  end
+end
+
+function memoize2(fn)
+  local cache={}
+  return function(arg1,arg2)
+    assert(arg1, "func from memoize2 ")
+    if not cache[arg1] then
+      cache[arg1] = {}
+    end
+    if not cache[arg1][arg2] then
+      cache[arg1][arg2] = fn(arg1,arg2)
+    end
+    return cache[arg1][arg2]
+  end
+end
+
+function tail(list)
+  return {select(2, unpack(list))}
+end
+
+function noop()
+end
+function arity(fn)
+  return debug.getinfo(fn).nparams
+end
+
+function makeFuncChain2(fns)
+  local n = 2
+  if #fns == 0 then return noop end
+  local func = fns[1]
+  local remain = makeFuncChain2(tail(fns))
+  if arity(func) == n + 1 then
+    return function(a, b)
+      func(a, b, function()
+        remain(a, b)
+      end)
+    end
+  else
+    return function(a, b)
+      func(a, b)
+      remain(a, b)
+    end
   end
 end

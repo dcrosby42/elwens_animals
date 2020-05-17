@@ -20,12 +20,14 @@ return {
         "modules.mario.devsystem",
       },
       drawSystems = {
-        ["systems.viewportdraw"] = {
+        {
+          "systems.viewportdraw",
           "modules.mario.drawsystem",
           "systems.physicsdraw",
           "systems.debugdraw",
           "modules.mario.drawsound",
         },
+        "modules.mario.drawhud",
       },
     },
   },
@@ -115,5 +117,35 @@ return {
     type = "sound",
     name = "coin",
     data = {file = "data/mario/sounds/smb_coin.wav", type = "sound"},
+  },
+  {
+    type = "sound",
+    name = "powerup_appear",
+    data = {
+      file = "data/mario/sounds/smb3_mushroom_appears.wav",
+      type = "sound",
+    },
+  },
+  {
+    type = "sound",
+    name = "powerup",
+    data = {file = "data/mario/sounds/smb3_power-up.wav", type = "sound"},
+  },
+  {
+    type = "sound",
+    name = "powerdown",
+    data = {file = "data/mario/sounds/smb3_pipe.wav", type = "sound"},
+  },
+  {
+    type = "font",
+    name = "narpassword",
+    data = {
+      file = "data/fonts/narpassword.ttf",
+      choices = {
+        {name = "small", size = 8},
+        {name = "normal", size = 12},
+        {name = "big", size = 24},
+      },
+    },
   },
 }

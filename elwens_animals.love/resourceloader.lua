@@ -4,20 +4,13 @@ local Debug = require('mydebug').sub("ResourceLoader", true, true)
 
 local R = {}
 
-local Images = {}
-local ImageDatas = {}
-
 R.getImageData = memoize1(love.image.newImageData)
 
 R.getImage = memoize1(function(fname)
-  Debug.println("getImage(" .. fname .. ")")
   return love.graphics.newImage(R.getImageData(fname))
 end)
 
-function R.getFont(fname, size)
-  -- TODO
-  return nil
-end
+R.getFont = memoize2(love.graphics.getFont)
 
 R.getSoundData = memoize1(love.sound.newSoundData)
 
@@ -287,6 +280,18 @@ function Loaders.sound(res, sound)
   cfg.duration = cfg.duration or cfg.pool:getSourceDuration()
   cfg.volume = cfg.volume or 1
   res:get('sounds'):put(sound.name, cfg)
+end
+
+-- fontConfig: {type,name, data:{file, choices={{name="dude",size=14}...}}}
+function Loaders.font(res, fontConfig)
+  local data = Loaders.getData(fontConfig)
+  local choices = data.choices
+  if not choices or #choices == 0 then choices = {name = "default", size = 12} end
+  for _, choice in ipairs(choices) do
+    local font = R.getFont(data.file, choice.size)
+    local thisName = fontConfig.name .. "." .. choice.name
+    res:get('fonts'):put(thisName, font)
+  end
 end
 
 local function loadDataFile(f)

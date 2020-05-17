@@ -12,7 +12,8 @@ return {
     false,
   },
   slab = {'orient', 'h'},
-  block = {'kind', 'brick'},
+  block = {'kind', 'brick', 'contents', ''},
   blockbreaker = {'fragstyle', 'physical', 'fraglife', 2},
   mariomap = {"sectors", {}},
+  var = {"value", 0},
 }

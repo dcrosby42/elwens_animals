@@ -1,6 +1,18 @@
 local Contacts = require("systems.contacthelper")
+local Debug = require("mydebug").sub("BrickBreakerSystem", true, true)
 local Slab = require("modules.mario.slab")
 local Block = require("modules.mario.block")
+
+local function varPlus(varComp, num)
+  varComp.value = (varComp.value or 0) + num
+end
+local function varMinus(varComp, num)
+  varComp.value = (varComp.value or 0) - 1
+end
+
+local function varSet(varComp, value)
+  varComp.value = value
+end
 
 local function slabPunched(e, slabE, contact, estore)
   -- calc the x,y of "standard brick" location where e punched slabE
@@ -14,11 +26,21 @@ local function slabPunched(e, slabE, contact, estore)
     if punchedE.block.kind == 'brick' then
       Slab.breakSlab(e, slabE, estore)
       Block.explodeBrick(e, punchedE, estore)
+      varPlus(e.vars.points, 10)
+      Debug.println("points=" .. e.vars.points.value)
     elseif punchedE.block.kind == 'qblock' then
       punchedE.block.kind = 'block'
       punchedE.anim.id = 'block_standard'
       e:newComp("sound", {sound = "bump"})
-      e:newComp("sound", {sound = "coin"})
+      if punchedE.block.contents == 'coin' then
+        e:newComp("sound", {sound = "coin"})
+        varPlus(e.vars.coins, 1)
+        Debug.println("coins=" .. e.vars.coins.value)
+      elseif punchedE.block.contents == 'powerup' then
+        e:newComp("sound", {sound = "powerup_appear"})
+        varSet(e.vars.supermario, true)
+        Debug.println("supermario=" .. e.vars.supermario.value)
+      end
     elseif punchedE.block.kind == 'block' then
       e:newComp("sound", {sound = "bump"})
     end

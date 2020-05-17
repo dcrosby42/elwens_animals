@@ -32,6 +32,18 @@ local function loadDrawSystems(dsConfig)
   end
 end
 
+local function mkDrawSystemChain(systems)
+  for i, sys in ipairs(systems) do
+    if type(sys) == 'table' and #sys > 0 then
+      sys = mkDrawSystemChain(sys)
+    elseif type(sys) == 'string' then
+      sys = resolveSystem(sys, {systemKeys = {"drawSystem"}}) -- resolveSystem from ecs.ecshelpers
+    end
+    systems[i] = sys
+  end
+  return makeFuncChain2(systems) -- mkFuncChain2 from crozeng.helpers
+end
+
 local function loadEntities(eConfig)
   assert(eConfig.code,
          "loadEntities: expected 'code' in config " .. inspect(eConfig))
@@ -66,7 +78,7 @@ function Loaders.ecs(res, ecsConfig)
     entities = loadEntities(data.entities),
     components = defineComponents(data.components),
     update = composeSystems(data.systems),
-    draw = loadDrawSystems(data.drawSystems),
+    draw = mkDrawSystemChain(data.drawSystems),
   }
 
   res:get('ecs'):put(ecsConfig.name, ecs)
