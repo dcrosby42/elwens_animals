@@ -1,4 +1,4 @@
-local Debug = (require("mydebug")).sub("Anim", false, false)
+local Debug = (require("mydebug")).sub("anim")
 local R = require "resourceloader"
 
 local Anim = {}

@@ -1,8 +1,8 @@
 local ResourceLoader = require "resourceloader"
 local EcsAdapter = require "ecs.moduleadapter"
 
-local function newFromConfigs(configs)
-  local loaders = require 'ecs/loaders'
+local function newFromConfigs(configs, loaders)
+  loaders = loaders or require('ecs/loaders')
   local res = ResourceLoader.buildResourceRoot(configs, loaders)
   return EcsAdapter({
     create = res.ecs.main.entities.initialEntities,
@@ -14,9 +14,9 @@ local function newFromConfigs(configs)
   })
 end
 
-local function newFromFile(path)
+local function newFromFile(path, loaders)
   local configs = loadfile(path)()
-  return newFromConfigs(configs)
+  return newFromConfigs(configs, loaders)
 end
 
 return {

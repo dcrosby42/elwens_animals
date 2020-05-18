@@ -1,4 +1,4 @@
-local Debug = (require('mydebug')).sub("GarbageCollect",false,false)
+local Debug = (require('mydebug')).sub("garbagecollect")
 local GC = {}
 local Thresh = 1
 local State = {

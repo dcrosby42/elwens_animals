@@ -604,3 +604,42 @@ function makeFuncChain2(fns)
     end
   end
 end
+
+function keyBy(list, key)
+  local m = {}
+  for _, val in ipairs(list) do m[val[key]] = val end
+  return m
+end
+
+function groupBy(list, key)
+  local m = {}
+  for _, val in ipairs(list) do
+    local vals = m[val[key]] or {}
+    table.insert(vals, val)
+    m[val[key]] = vals
+  end
+  return m
+end
+
+function groupThenKeyBy(list, gkey, mkey)
+  local m = {}
+  for _, val in ipairs(list) do
+    local vals = m[val[gkey]] or {}
+    vals[val[mkey]] = val
+    m[val[gkey]] = vals
+  end
+  return m
+end
+
+function array2grid(list, width, height)
+  local i = 1
+  local grid = {}
+  for row = 1, height do
+    grid[row] = {}
+    for col = 1, width do
+      grid[row][col] = list[i]
+      i = i + 1
+    end
+  end
+  return grid
+end

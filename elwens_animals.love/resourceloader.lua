@@ -1,6 +1,7 @@
 local inspect = require('inspect')
 local SoundPool = require "soundpool"
-local Debug = require('mydebug').sub("ResourceLoader", true, true)
+local MyDebug = require('mydebug')
+local Debug = MyDebug.sub("resourceloader")
 
 local R = {}
 
@@ -18,6 +19,22 @@ R.getSoundData = memoize1(love.sound.newSoundData)
 R.getMusicSource = memoize1(function(fname)
   return love.audio.newSource(fname, "stream")
 end)
+
+-- MyDebug settings:
+-- { 
+--   someModuleName = { onConsole=true, onScreen=false, doNotes=false },
+--   otherModuleName = { onConsole=true, onScreen=false, doNotes=false },
+--   ...
+-- }
+function applyMyDebugSettings(myDebugSettings)
+  for name, flags in pairs(myDebugSettings) do
+    for kind, bool in pairs(flags) do
+      assert(MyDebug[kind],
+             "Dunno what kind of logging '" .. kind .. "' is for MyDebug")
+      MyDebug[kind][name] = bool
+    end
+  end
+end
 
 -- Args:
 --   fname:(optional) filename. If omitted, img MUST be given.
@@ -313,7 +330,9 @@ function Loaders.getData(obj)
 end
 
 function Loaders.settings(res, settings)
-  res:get('settings'):put(settings.name, Loaders.getData(settings))
+  local data = Loaders.getData(settings)
+  res:get('settings'):put(settings.name, data)
+  if settings.name == 'mydebug' then applyMyDebugSettings(data) end
 end
 
 function Loaders.loadConfig(res, config, loaders)

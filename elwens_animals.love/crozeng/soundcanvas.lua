@@ -1,4 +1,4 @@
-local Debug = require("mydebug").sub("SoundCanvas", true, true, true)
+local Debug = require("mydebug").sub("soundcanvas")
 local GC = require("garbagecollect")
 
 local function getDuration(config, state)

@@ -1,7 +1,6 @@
 require "crozeng/helpers"
 
-local Debug = require "mydebug"
-Debug = Debug.sub("Pool", false, false, false)
+local Debug = require("mydebug").sub("pool")
 
 local Pool = {}
 

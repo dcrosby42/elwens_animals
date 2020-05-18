@@ -4,34 +4,6 @@ local Comp = require "comps"
 
 local Loaders = R.Loaders.copy()
 
-local function OLDloadDrawSystems(dsConfig)
-  if #dsConfig > 0 then
-    -- normal list of system names, just convert it into the classical sys sequence
-    return composeDrawSystems(dsConfig)
-  else
-    -- nested system.  Eg, viewportdraw
-    local drawSystems = {}
-    for name, subs in pairs(dsConfig) do
-      -- resolve the sub system(s) and wrap them up in the encompassing system
-      local sysobj = require(name)
-      if sysobj.newDrawSystem then
-        local ds = require(name).newDrawSystem(loadDrawSystems(subs))
-        table.insert(drawSystems, ds)
-      else
-        error("loadDrawSystems: Tried to load wrapping draw system '" .. name ..
-                  "' but it did not provide a 'newDrawSystem()' func. Config was: " ..
-                  inspect(dsConfig))
-      end
-    end
-    if #drawSystems > 1 then
-      error(
-          "loadDrawSystems: Dunno what to do with MULTIPLE top level composite systems....? Config was: " ..
-              inspect(dsConfig))
-    end
-    return drawSystems[1] -- should really only be one
-  end
-end
-
 local function loadSystems(sysConfig)
   local systems = Loaders.getData(sysConfig)
   return composeSystems(systems) -- composeSystems() from ecs.ecshelpers

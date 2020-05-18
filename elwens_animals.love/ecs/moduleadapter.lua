@@ -5,7 +5,6 @@
 -- 
 
 require 'ecs.ecshelpers'
-local Debug = require('mydebug').sub("EcsDev2",true,true)
 local Editor = require('ecs.editorgui')
 local JoystickAdapter = require('ecs.joystickadapter')
 local G = love.graphics

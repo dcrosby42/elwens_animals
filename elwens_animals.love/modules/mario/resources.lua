@@ -1,4 +1,17 @@
 return {
+  {
+    type = "settings",
+    name = "mydebug",
+    data = {
+      resourceloader = {onConsole = true, onScreen = false, doNotes = false},
+      mario_entities = {onConsole = true},
+      anim = {onConsole = false},
+      garbagecollect = {onConsole = false},
+      pool = {onConsole = false},
+      soundcanvas = {onConsole = false},
+      soundmanager = {onConsole = false},
+    },
+  },
   {type = "settings", name = "main", datafile = "modules/mario/settings.lua"},
   {
     type = "ecs",
@@ -155,5 +168,10 @@ return {
         {name = "big", size = 32},
       },
     },
+  },
+  {
+    type = "custommap",
+    name = "proto1",
+    datafile = "modules/mario/maps/proto1.lua",
   },
 }

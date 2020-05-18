@@ -10,8 +10,7 @@
 --
 local SoundManager = {}
 
-local Debug=require 'mydebug'
-Debug = Debug.sub("SoundManager", false,false)
+local Debug = require('mydebug').sub("soundmanager0")
 
 function SoundManager:new()
   local o ={

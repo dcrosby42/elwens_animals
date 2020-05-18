@@ -1,4 +1,4 @@
-local Debug = require('mydebug').sub("soundmanager",true,true,true)
+local Debug = require('mydebug').sub("soundmanager")
 local GC = require('garbagecollect')
 
 local soundmanager = {}

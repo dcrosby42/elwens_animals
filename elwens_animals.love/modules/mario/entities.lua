@@ -1,9 +1,10 @@
-local Debug = require("mydebug").sub("mario.entities", true, true)
+local Debug = require("mydebug").sub("mario_entities")
 local Comp = require "comps"
 local Estore = require "ecs.estore"
 local F = require "modules.plotter.funcs"
 local Res = require "modules.mario.resources"
 local inspect = require "inspect"
+local sti = require "vendor/sti"
 
 local G = love.graphics
 
@@ -28,6 +29,7 @@ function Entities.initialEntities(res)
   Entities.locus(estore)
   Entities.viewport(estore, res)
 
+  sti("modules/mario/maps/proto1.lua")
   return estore
 end
 
@@ -43,6 +45,7 @@ function Entities.map(parent)
   if Entities.debug.playBgMusic then
     map:newComp("sound", {sound = "bgmusic", loop = true})
   end
+
   return map
 
 end
