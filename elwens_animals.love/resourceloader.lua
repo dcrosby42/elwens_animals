@@ -317,22 +317,51 @@ local function loadDataFile(f)
   return loadfile(f)()
 end
 
+local function convertData(config, data)
+  assert(config.dataconverter.require,
+         "dataconverter requires 'require' parameter. config=" ..
+             inspect(config))
+  local module = require(config.dataconverter.require)
+  if type(module) == 'table' then
+    assert(config.dataconverter.func,
+           "dataconverter module is a table, therefore requires 'func' parameter. config=" ..
+               inspect(config))
+    assert(module[config.dataconverter.func],
+           "dataconverter '" .. config.dataconverter.require ..
+               "' doesn't export function '" .. config.dataconverter.func .. "'")
+    return module[config.dataconverter.func](data)
+  elseif type(module) == 'function' then
+    return module(data)
+  else
+    error("dataconverter wasn't a table or a function? config=" ..
+              inspect(config))
+  end
+end
+
 function Loaders.getData(obj)
+  local data
   if obj.data then
-    return obj.data
+    data = obj.data
   elseif obj.datafile then
-    return loadDataFile(obj.datafile)
+    data = loadDataFile(obj.datafile)
   else
     error(
         "Loader: cannot get data from object, need 'data' or 'datafile': obj=" ..
             inspect(obj))
   end
+  if obj.dataconverter then data = convertData(obj, data) end
+  return data
 end
 
 function Loaders.settings(res, settings)
   local data = Loaders.getData(settings)
   res:get('settings'):put(settings.name, data)
   if settings.name == 'mydebug' then applyMyDebugSettings(data) end
+end
+
+function Loaders.data(res, config)
+  local data = Loaders.getData(config)
+  res:get('data'):put(config.name, data)
 end
 
 function Loaders.loadConfig(res, config, loaders)

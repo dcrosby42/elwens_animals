@@ -3,7 +3,7 @@ return {
     type = "settings",
     name = "mydebug",
     data = {
-      brickbreaker = {onConsole = false},
+      brickbreaker = {onConsole = true},
       mario_entities = {onConsole = true},
       resourceloader = {onConsole = true, onScreen = false, doNotes = false},
       anim = {onConsole = false},
@@ -98,7 +98,7 @@ return {
       path = "modules/mario/sprites/map_objects.png",
       picWidth = 16,
       picHeight = 16,
-      count = 10,
+      count = 12,
       picOptions = {}, -- see ResourceLoader.makePic() for opts
       anims = {
         brick_standard_matte = {pics = {9}},
@@ -108,6 +108,9 @@ return {
         },
         qblock_standard = {pics = {1, 2, 3, 4}, frameDurations = {0.15}},
         block_standard = {pics = {5}},
+        ground_dirt_left = {pics = {10}},
+        ground_dirt = {pics = {11}},
+        ground_dirt_right = {pics = {12}},
       },
     },
   },
@@ -171,8 +174,9 @@ return {
     },
   },
   {
-    type = "custommap",
+    type = "data",
     name = "proto1",
     datafile = "modules/mario/maps/proto1.lua",
+    dataconverter = {require = "modules.mario.custommap", func = "convertMap"},
   },
 }

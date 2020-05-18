@@ -36,10 +36,12 @@ local function slabPunched(e, slabE, contact, estore)
         e:newComp("sound", {sound = "coin"})
         varPlus(e.vars.coins, 1)
         Debug.println("coins=" .. e.vars.coins.value)
-      elseif punchedE.block.contents == 'powerup' then
+      elseif punchedE.block.contents == 'mushroom' then
         e:newComp("sound", {sound = "powerup_appear"})
-        varSet(e.vars.supermario, true)
-        Debug.println("supermario=" .. e.vars.supermario.value)
+      elseif punchedE.block.contents == 'oneup' then
+        e:newComp("sound", {sound = "powerup_appear"})
+        -- varSet(e.vars.supermario, true)
+        -- Debug.println("supermario=" .. e.vars.supermario.value)
       end
     elseif punchedE.block.kind == 'block' then
       e:newComp("sound", {sound = "bump"})

@@ -5,15 +5,20 @@ local F = require "modules.plotter.funcs"
 local Res = require "modules.mario.resources"
 local inspect = require "inspect"
 local sti = require "vendor/sti"
+local Const = require "modules.mario.const"
+local BlockW = Const.BlockW
+local BlockW2 = Const.BlockW2
+local BlockW4 = Const.BlockW4
 
 local G = love.graphics
 
 local DefaultZoom = 4
-local BlockW = 16
 
 local Entities = {}
 
 Entities.debug = {}
+
+local stackup
 
 function Entities.initialEntities(res)
   Entities.debug = res.settings.main.debug
@@ -22,10 +27,10 @@ function Entities.initialEntities(res)
 
   local estore = Estore:new()
 
-  local map = Entities.map(estore)
+  local map = Entities.map(estore, res)
   -- Entities.background(estore)
   Entities.mario(map)
-  Entities.platforms(map)
+  -- Entities.platforms(map)
   Entities.locus(estore)
   Entities.viewport(estore, res)
 
@@ -33,7 +38,7 @@ function Entities.initialEntities(res)
   return estore
 end
 
-function Entities.map(parent)
+function Entities.map(parent, res)
   -- MAP
   local map = parent:newEntity({
     {"name", {name = "mariomap"}},
@@ -45,6 +50,83 @@ function Entities.map(parent)
   if Entities.debug.playBgMusic then
     map:newComp("sound", {sound = "bgmusic", loop = true})
   end
+
+  -- custommap
+  -- {
+  --   layers={
+  --     tilelayer={
+  --       [name]={
+  --         {
+  --           name="Blocks",
+  --           type="tilelayer",
+  --           data={0,0,0,0,0...},
+  --           grid={{0,0,0,0,0},{0,0,0,0,0}},
+  --           ...
+  --         }
+  --       }
+  --     },
+  --     objectgroup={
+  --       ?
+  --     }
+  --   },
+  --   tiles={(exported tiled lua data from file)}
+  -- }
+  function inflateCells(grid)
+    for r = 1, #grid do
+      for c = 1, #grid[r] do
+        if grid[r][c] ~= 0 then
+          grid[r][c] = {code = grid[r][c], r = r, c = c}
+        end
+      end
+    end
+    return grid
+  end
+
+  local grid = res.data.proto1.layers.tilelayer.Blocks.grid
+  inflateCells(grid)
+
+  function attachObjects(grid, objects)
+    for _, obj in ipairs(objects) do
+      local c = (obj.x / BlockW) + 1
+      local r = (obj.y / BlockW) + 1
+      if grid[r][c] then
+        if not grid[r][c].objects then grid[r][c].objects = {} end
+        table.insert(grid[r][c].objects, obj)
+      end
+    end
+  end
+  local objects = res.data.proto1.layers.objectgroup.Items.objects
+  attachObjects(grid, objects)
+
+  function generateBricks(grid, parent)
+    for r = 1, #grid do
+      for c = 1, #grid[r] do
+        if grid[r][c] ~= 0 then Entities.brick(parent, grid[r][c]) end
+      end
+    end
+  end
+  generateBricks(grid, parent)
+
+  local slabs = stackup(grid)
+  function generateSlabs(grid, parent)
+    for i = 1, #slabs do
+      local w, h, orient
+      if slabs[i].w then
+        orient = "h"
+        w = slabs[i].w * BlockW
+        h = BlockW
+      else
+        orient = "v"
+        w = BlockW
+        h = slabs[i].h * BlockW
+      end
+      local x = (w / 2) + ((slabs[i].c - 1) * BlockW)
+      local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
+
+      Entities.slab(parent, orient, x, y, w, h)
+    end
+  end
+  generateSlabs(grid, parent)
 
   return map
 
@@ -164,7 +246,76 @@ function Entities.mario(parent, res)
   })
 end
 
-function Entities.brick(parent, x, y)
+local BlockDecoder = {
+  [1] = {kind = "brick", anim = "brick_standard_shimmer"},
+  [2] = {kind = "block", anim = "block_standard"},
+  [3] = {kind = "qblock", anim = "qblock_standard"},
+  [4] = {kind = "ground", anim = "ground_dirt_left"},
+  [5] = {kind = "ground", anim = "ground_dirt"},
+  [6] = {kind = "ground", anim = "ground_dirt_right"},
+}
+
+local BlockVerts
+do
+  local left = -BlockW2
+  local right = left + BlockW
+  local top = -BlockW2
+  local bottom = top + BlockW
+  BlockVerts = {left, top, right, top, right, bottom, left, bottom}
+end
+
+function Entities.brick(parent, cell)
+  -- call {r,c,code,slab}
+
+  local x = (cell.c) * BlockW - BlockW2
+  local y = (cell.r) * BlockW - BlockW2
+  local btype = BlockDecoder[cell.code]
+  assert(btype, "Couldn't decode block code for cell. " .. inspect(cell))
+  local contents = ""
+  -- if btype.kind == 'qblock' then contents = "coin" end
+  if cell.objects then
+    for _, obj in ipairs(cell.objects) do
+      if obj.type == 'coin' then
+        contents = 'coin'
+      elseif obj.type == 'mushroom' then
+        contents = 'mushroom'
+      elseif obj.type == 'oneup' then
+        contents = 'oneup'
+      end
+    end
+  end
+  return parent:newEntity({
+    {"block", {kind = btype.kind, contents = contents}},
+    {
+      "anim",
+      {
+        name = "atimer",
+        id = btype.anim,
+        sx = 1.06,
+        sy = 1.06,
+        centerx = 0.5,
+        centery = 0.5,
+        drawbounds = false,
+      },
+    },
+    {"timer", {name = "atimer", countDown = false}},
+    {"pos", {x = x, y = y}},
+    {
+      "body",
+      {
+        sensor = true,
+        dynamic = false,
+        fixedrotation = true,
+        mass = 0.1,
+        debugDraw = Entities.debug.drawBrickBody,
+        debugDrawColor = {1, 1, .8},
+      },
+    },
+    {"polygonShape", {vertices = BlockVerts}},
+  })
+end
+
+function Entities.old_brick(parent, x, y)
   local kind = "brick"
   local contents = ""
   local animid = "brick_standard_shimmer"
@@ -280,7 +431,6 @@ function Entities.slab(parent, orient, x, y, w, h)
   })
 end
 
-local stackup
 function Entities.platforms(parent, res)
   local fname = "modules/mario/maps/testmap1.png"
   local map = love.image.newImageData(fname)
@@ -300,8 +450,8 @@ function Entities.platforms(parent, res)
     for c = 1, #grid[r] do
       if grid[r][c] == 1 then
         grid[r][c] = {r = r, c = c}
-        Entities.brick(parent, ((c) * 16) - (BlockW / 2),
-                       ((r) * 16) - (BlockW / 2))
+        Entities.old_brick(parent, ((c) * 16) - (BlockW / 2),
+                           ((r) * 16) - (BlockW / 2))
       end
     end
   end
