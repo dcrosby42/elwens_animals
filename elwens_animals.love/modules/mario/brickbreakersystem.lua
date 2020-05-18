@@ -1,5 +1,5 @@
 local Contacts = require("systems.contacthelper")
-local Debug = require("mydebug").sub("BrickBreakerSystem", true, true)
+local Debug = require("mydebug").sub("brickbreaker")
 local Slab = require("modules.mario.slab")
 local Block = require("modules.mario.block")
 
