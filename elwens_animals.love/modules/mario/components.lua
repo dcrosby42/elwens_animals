@@ -15,5 +15,7 @@ return {
   block = {'kind', 'brick', 'contents', ''},
   blockbreaker = {'fragstyle', 'physical', 'fraglife', 2},
   mariomap = {"sectors", {}},
+
   var = {"value", 0},
+  bumpAnim = {'orig', 0, 't', 0},
 }

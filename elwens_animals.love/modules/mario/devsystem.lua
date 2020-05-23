@@ -24,7 +24,7 @@ local function zoomReset(e)
   e.viewport.sy = ZoomDefault
 end
 
-return function(estore, input, res)
+local function uiZoom(estore, input, res)
   for _, evt in ipairs(input.events) do
     if evt.type == "keyboard" and evt.state == "pressed" then
       if evt.key == "=" and evt.shift then
@@ -42,4 +42,28 @@ return function(estore, input, res)
       end
     end
   end
+end
+
+local bumpAnimLen = 0.2
+local bumpSpeed = -100
+local bumpDispl = 5
+local function bumpAnim(estore, input, res)
+  estore:walkEntities(hasComps('bumpAnim', 'pos'), function(e)
+    e.bumpAnim.t = e.bumpAnim.t + input.dt
+
+    if e.bumpAnim.t > bumpAnimLen then
+      e.pos.y = e.bumpAnim.orig
+      e:removeComp(e.bumpAnim)
+    else
+      local dy = bumpSpeed * input.dt
+      if e.bumpAnim.t > bumpAnimLen / 2 then dy = -dy end
+      e.pos.y = e.pos.y + dy
+    end
+
+  end)
+end
+
+return function(estore, input, res)
+  uiZoom(estore, input, res)
+  bumpAnim(estore, input, res)
 end

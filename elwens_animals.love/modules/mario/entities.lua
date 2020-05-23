@@ -16,22 +16,18 @@ local DefaultZoom = 4
 
 local Entities = {}
 
-Entities.debug = {}
-
 local stackup
 
 function Entities.initialEntities(res)
-  Entities.debug = res.settings.main.debug
-
-  Debug.println("debug settings: " .. inspect(Entities.debug))
+  Debug.println("debug settings: " .. inspect(res.settings.mario.debug))
 
   local estore = Estore:new()
 
   local map = Entities.map(estore, res)
   -- Entities.background(estore)
-  Entities.mario(map)
-  -- Entities.platforms(map)
-  Entities.locus(estore)
+  Entities.mario(map, res)
+  -- Entities.platforms(res, map)
+  Entities.locus(estore, res)
   Entities.viewport(estore, res)
 
   sti("modules/mario/maps/proto1.lua")
@@ -46,8 +42,10 @@ function Entities.map(parent, res)
     {"mariomap", {}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
-  if Entities.debug.drawMarioMap then map:newComp("debugDraw", {on = true}) end
-  if Entities.debug.playBgMusic then
+  if res.settings.mario.debug.drawMarioMap then
+    map:newComp("debugDraw", {on = true})
+  end
+  if res.settings.mario.debug.playBgMusic then
     map:newComp("sound", {sound = "bgmusic", loop = true})
   end
 
@@ -98,17 +96,17 @@ function Entities.map(parent, res)
   local objects = res.data.proto1.layers.objectgroup.Items.objects
   attachObjects(grid, objects)
 
-  function generateBricks(grid, parent)
+  function generateBricks(res, grid, parent)
     for r = 1, #grid do
       for c = 1, #grid[r] do
-        if grid[r][c] ~= 0 then Entities.brick(parent, grid[r][c]) end
+        if grid[r][c] ~= 0 then Entities.brick(res, parent, grid[r][c]) end
       end
     end
   end
-  generateBricks(grid, parent)
+  generateBricks(res, grid, parent)
 
   local slabs = stackup(grid)
-  function generateSlabs(grid, parent)
+  function generateSlabs(res, grid, parent)
     for i = 1, #slabs do
       local w, h, orient
       if slabs[i].w then
@@ -123,10 +121,10 @@ function Entities.map(parent, res)
       local x = (w / 2) + ((slabs[i].c - 1) * BlockW)
       local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
 
-      Entities.slab(parent, orient, x, y, w, h)
+      Entities.slab(res, parent, orient, x, y, w, h)
     end
   end
-  generateSlabs(grid, parent)
+  generateSlabs(res, grid, parent)
 
   return map
 
@@ -142,7 +140,7 @@ function Entities.locus(parent, res)
     {
       "debugDraw",
       {
-        on = Entities.debug.drawLocus,
+        on = res.settings.mario.debug.drawLocus,
         color = {0, 1, 1, 0.5},
         pos = true,
         rects = true,
@@ -200,8 +198,8 @@ function Entities.mario(parent, res)
     {
       "blockbreaker",
       {
-        fragstyle = Entities.debug.brickFragmentStyle,
-        fraglife = Entities.debug.brickFragmentLife,
+        fragstyle = res.settings.mario.debug.brickFragmentStyle,
+        fraglife = res.settings.mario.debug.brickFragmentLife,
       },
     },
     {"controller", {id = "joystick1"}},
@@ -220,7 +218,7 @@ function Entities.mario(parent, res)
       "body",
       {
         fixedrotation = true,
-        debugDraw = Entities.debug.drawMarioBody,
+        debugDraw = res.settings.mario.debug.drawMarioBody,
         mass = 0.1,
         friction = 0,
         debugDrawColor = {1, .5, .5},
@@ -234,7 +232,7 @@ function Entities.mario(parent, res)
     {
       "debugDraw",
       {
-        on = Entities.debug.drawMario,
+        on = res.settings.mario.debug.drawMario,
         pos = true,
         bounds = false,
         color = {0.8, 1, 0.8, 0.5},
@@ -264,7 +262,7 @@ do
   BlockVerts = {left, top, right, top, right, bottom, left, bottom}
 end
 
-function Entities.brick(parent, cell)
+function Entities.brick(res, parent, cell)
   -- call {r,c,code,slab}
 
   local x = (cell.c) * BlockW - BlockW2
@@ -307,7 +305,7 @@ function Entities.brick(parent, cell)
         dynamic = false,
         fixedrotation = true,
         mass = 0.1,
-        debugDraw = Entities.debug.drawBrickBody,
+        debugDraw = res.settings.mario.debug.drawBrickBody,
         debugDrawColor = {1, 1, .8},
       },
     },
@@ -354,7 +352,7 @@ function Entities.old_brick(parent, x, y)
         dynamic = false,
         fixedrotation = true,
         mass = 0.1,
-        debugDraw = Entities.debug.drawBrickBody,
+        debugDraw = res.settings.mario.debug.drawBrickBody,
         debugDrawColor = {1, 1, .8},
       },
     },
@@ -396,7 +394,7 @@ function Entities.kerblock(parent, res)
       {
         fixedrotation = false,
         mass = 0.1,
-        debugDraw = false,
+        debugDraw = res.settings.mario.debug.drawBrickBody,
         debugDrawColor = {1, .5, .5},
       },
     },
@@ -414,13 +412,13 @@ end
 function emptyGrid(w, c)
 end
 
-function Entities.slab(parent, orient, x, y, w, h)
+function Entities.slab(res, parent, orient, x, y, w, h)
   return parent:newEntity({
     {"slab", {orient = orient}},
     {
       "body",
       {
-        debugDraw = Entities.debug.drawSlabBody,
+        debugDraw = res.settings.mario.debug.drawSlabBody,
         debugDrawColor = {1, 1, 1},
         dynamic = false,
         friction = 1,
@@ -431,48 +429,48 @@ function Entities.slab(parent, orient, x, y, w, h)
   })
 end
 
-function Entities.platforms(parent, res)
-  local fname = "modules/mario/maps/testmap1.png"
-  local map = love.image.newImageData(fname)
-  local w, h = map:getDimensions()
-  Debug.println("Map " .. fname .. " w: " .. w .. " h: " .. h)
-  local detect = function(r, g, b)
-    if r == 1 and g == 1 and b == 1 then return 1 end
-    return 0
-  end
-  local grid = {}
-  for y = 0, h - 1 do
-    local row = y + 1
-    grid[y + 1] = {}
-    for x = 0, w - 1 do grid[y + 1][x + 1] = detect(map:getPixel(x, y)) end
-  end
-  for r = 1, #grid do
-    for c = 1, #grid[r] do
-      if grid[r][c] == 1 then
-        grid[r][c] = {r = r, c = c}
-        Entities.old_brick(parent, ((c) * 16) - (BlockW / 2),
-                           ((r) * 16) - (BlockW / 2))
-      end
-    end
-  end
-  local slabs = stackup(grid)
-  for i = 1, #slabs do
-    local w, h, orient
-    if slabs[i].w then
-      orient = "h"
-      w = slabs[i].w * BlockW
-      h = BlockW
-    else
-      orient = "v"
-      w = BlockW
-      h = slabs[i].h * BlockW
-    end
-    local x = (w / 2) + ((slabs[i].c - 1) * BlockW)
-    local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
+-- function Entities.platforms(res, parent)
+--   local fname = "modules/mario/maps/testmap1.png"
+--   local map = love.image.newImageData(fname)
+--   local w, h = map:getDimensions()
+--   Debug.println("Map " .. fname .. " w: " .. w .. " h: " .. h)
+--   local detect = function(r, g, b)
+--     if r == 1 and g == 1 and b == 1 then return 1 end
+--     return 0
+--   end
+--   local grid = {}
+--   for y = 0, h - 1 do
+--     local row = y + 1
+--     grid[y + 1] = {}
+--     for x = 0, w - 1 do grid[y + 1][x + 1] = detect(map:getPixel(x, y)) end
+--   end
+--   for r = 1, #grid do
+--     for c = 1, #grid[r] do
+--       if grid[r][c] == 1 then
+--         grid[r][c] = {r = r, c = c}
+--         Entities.old_brick(parent, ((c) * 16) - (BlockW / 2),
+--                            ((r) * 16) - (BlockW / 2))
+--       end
+--     end
+--   end
+--   local slabs = stackup(grid)
+--   for i = 1, #slabs do
+--     local w, h, orient
+--     if slabs[i].w then
+--       orient = "h"
+--       w = slabs[i].w * BlockW
+--       h = BlockW
+--     else
+--       orient = "v"
+--       w = BlockW
+--       h = slabs[i].h * BlockW
+--     end
+--     local x = (w / 2) + ((slabs[i].c - 1) * BlockW)
+--     local y = (h / 2) + ((slabs[i].r - 1) * BlockW)
 
-    Entities.slab(parent, orient, x, y, w, h)
-  end
-end
+--     Entities.slab(res, parent, orient, x, y, w, h)
+--   end
+-- end
 
 function stackup(grid)
   local slabs = {}

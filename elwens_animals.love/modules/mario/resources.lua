@@ -2,18 +2,13 @@ return {
   {
     type = "settings",
     name = "mydebug",
-    data = {
-      brickbreaker = {onConsole = true},
-      mario_entities = {onConsole = true},
-      resourceloader = {onConsole = true, onScreen = false, doNotes = false},
-      anim = {onConsole = false},
-      garbagecollect = {onConsole = false},
-      pool = {onConsole = false},
-      soundcanvas = {onConsole = false},
-      soundmanager = {onConsole = false},
-    },
+    datafile = "modules/mario/mydebug.settings.lua",
   },
-  {type = "settings", name = "main", datafile = "modules/mario/settings.lua"},
+  {
+    type = "settings",
+    name = "mario",
+    datafile = "modules/mario/mario.settings.lua",
+  },
   {
     type = "ecs",
     name = "main",

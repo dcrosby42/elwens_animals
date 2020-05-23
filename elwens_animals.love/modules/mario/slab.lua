@@ -43,7 +43,7 @@ function Slab.calcPunchedLoc(e, slabE)
   end
 end
 
-local function breakSlabH(e, slabE, parent)
+local function breakSlabH(e, slabE, parent, res)
   local x, y = getPos(e)
   local slabw = slabE.rectangleShape.w
   local slabx = slabE.pos.x - (slabw / 2)
@@ -63,19 +63,19 @@ local function breakSlabH(e, slabE, parent)
     if b > 0 then
       local w = math.floor(b * BlockW)
       local x = slabx + w / 2
-      Entities.slab(parent, slabE.orient, x, slaby, w, h)
+      Entities.slab(res, parent, slabE.orient, x, slaby, w, h)
     end
     if b < (slabn - 1) then
       local w = math.floor((slabn - 1 - b) * BlockW)
       local x = slabx + ((b + 1) * BlockW) + (w / 2)
-      Entities.slab(parent, slabE.orient, x, slaby, w, h)
+      Entities.slab(res, parent, slabE.orient, x, slaby, w, h)
     end
     slabE:destroy()
   end
   return {x = (slabx + (b * BlockW)) + BlockW2, y = slaby}
 end
 
-local function breakSlabV(e, slabE, parent)
+local function breakSlabV(e, slabE, parent, res)
   local x, y = getPos(e)
   local slabh = slabE.rectangleShape.h
   local slabn = math.floor(slabh / BlockW)
@@ -95,24 +95,24 @@ local function breakSlabV(e, slabE, parent)
       -- figure out the "top leavins"
       local h = math.floor(b * BlockW)
       local slaby = slabtop + h / 2
-      Entities.slab(parent, slabE.slab.orient, slabx, slaby, BlockW, h)
+      Entities.slab(res, parent, slabE.slab.orient, slabx, slaby, BlockW, h)
     end
     if b < (slabn - 1) then
       -- figure out the "bottom leavins"
       local h = math.floor((slabn - 1 - b) * BlockW)
       local slaby = slabtop + ((b + 1) * BlockW) + (h / 2)
-      Entities.slab(parent, slabE.slab.orient, slabx, slaby, BlockW, h)
+      Entities.slab(res, parent, slabE.slab.orient, slabx, slaby, BlockW, h)
     end
     slabE:destroy()
   end
   return {x = slabx, y = (slabtop + (b * BlockW)) + BlockW2}
 end
 
-function Slab.breakSlab(e, slabE, parent)
+function Slab.breakSlab(e, slabE, parent, res)
   if slabE.slab.orient == "h" then
-    return breakSlabH(e, slabE, parent)
+    return breakSlabH(e, slabE, parent, res)
   elseif slabE.slab.orient == "v" then
-    return breakSlabV(e, slabE, parent)
+    return breakSlabV(e, slabE, parent, res)
   end
 end
 

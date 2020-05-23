@@ -14,7 +14,7 @@ local function varSet(varComp, value)
   varComp.value = value
 end
 
-local function slabPunched(e, slabE, contact, estore)
+local function slabPunched(e, slabE, contact, estore, res)
   -- calc the x,y of "standard brick" location where e punched slabE
   local punchedX, punchedY = Slab.calcPunchedLoc(e, slabE)
   -- find the punched entity by location
@@ -24,7 +24,7 @@ local function slabPunched(e, slabE, contact, estore)
 
   if punchedE then
     if punchedE.block.kind == 'brick' then
-      Slab.breakSlab(e, slabE, estore)
+      Slab.breakSlab(e, slabE, estore, res)
       Block.explodeBrick(e, punchedE, estore)
       varPlus(e.vars.points, 10)
       Debug.println("points=" .. e.vars.points.value)
@@ -41,8 +41,8 @@ local function slabPunched(e, slabE, contact, estore)
       elseif punchedE.block.contents == 'oneup' then
         e:newComp("sound", {sound = "powerup_appear"})
         -- varSet(e.vars.supermario, true)
-        -- Debug.println("supermario=" .. e.vars.supermario.value)
       end
+      punchedE:newComp("bumpAnim", {orig = punchedE.pos.y})
     elseif punchedE.block.kind == 'block' then
       e:newComp("sound", {sound = "bump"})
     end
@@ -57,7 +57,7 @@ local breakerSystem = defineUpdateSystem({'blockbreaker', 'contact'},
     if Contacts.isUp(contact) and e.vel.dy <= 0 then
       local otherE = estore:getEntity(contact.otherEid)
       if (otherE and otherE.slab) then
-        slabPunched(e, otherE, contact, estore)
+        slabPunched(e, otherE, contact, estore, res)
       end
     end
   end

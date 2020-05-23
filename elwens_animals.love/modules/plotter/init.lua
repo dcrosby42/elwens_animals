@@ -1,5 +1,5 @@
 -- local Estore = require 'ecs.estore'
-local Debug = require('mydebug').sub("plotter",true,true)
+local Debug = require('mydebug').sub("plotter", true, true)
 local G = love.graphics
 local Viewport = require('modules.plotter.viewport')
 local Axes = require('modules.plotter.axes')
@@ -11,7 +11,6 @@ local DefaultScaleW = 50
 local DefaultScaleH = 50
 
 local M = {}
-
 
 local function addDrawables(w)
   -- w.drawables.f1 = {
@@ -33,75 +32,85 @@ local function addDrawables(w)
   -- }
 
   w.drawables.f3 = {
-    type="fn",
-    kind="points",
-    fn=F.constant(1),
-    style={
-      color={1,1,1},
+    type = "fn",
+    kind = "points",
+    fn = F.constant(1),
+    style = {
+      color = {1, 1, 1},
       -- pointSize=1,
     },
   }
   w.drawables.f4 = {
-    type="fn",
-    kind="line",
-    fn=F.sigmoid,
-    style={
-      color={1,1,0},
+    type = "fn",
+    kind = "line",
+    fn = F.sigmoid,
+    style = {
+      color = {1, 1, 0},
       -- pointSize=1,
     },
   }
   w.drawables.f5 = {
-    type="fn",
-    kind="line",
-    fn=F.sigmoid1,
-    style={
-      color={1,1,0.5},
+    type = "fn",
+    kind = "line",
+    fn = F.sigmoid1,
+    style = {
+      color = {1, 1, 0.5},
       -- pointSize=1,
     },
   }
   w.drawables.f6 = {
-    type="fn",
-    kind="line",
-    fn=function(x)
+    type = "fn",
+    kind = "line",
+    fn = function(x)
       return love.math.noise(x)
     end,
-    style={
-      color={0,0,1},
+    style = {
+      color = {0, 0, 1},
       -- pointSize=1,
     },
   }
   w.drawables.f7 = {
-    type="fn",
-    kind="line",
-    step=0.01,
-    fn=function(x)
+    type = "fn",
+    kind = "line",
+    step = 0.01,
+    fn = function(x)
       -- return N.octaveNoise(x, 1, 0, 1, 0, 1)
       return N.octaveNoise(x, 4, 0.8, 1, 0, 1)
     end,
-    style={
-      color={0.5,0.5,1},
+    style = {
+      color = {0.5, 0.5, 1},
       -- pointSize=1,
     },
   }
 
   w.drawables.f8 = {
-    type="fn",
-    kind="line",
+    type = "fn",
+    kind = "line",
     -- step=0.01,
-    fn=function(x)
+    fn = function(x)
       -- return N.octaveNoise(x, 4, 0.8, 1, 0, 1)
       return -x + love.math.noise(x)
     end,
-    style={
-      color={0.5,0.5,1},
+    style = {
+      color = {0.5, 0.5, 1},
       -- pointSize=1,
     },
   }
 
+  w.drawables.f9 = {
+    type = "fn",
+    kind = "line",
+    fn = function(t)
+      local a = -9.81
+      local u = 2.5
+      return (u * t) + (0.5 * a * math.pow(t, 2))
+    end,
+    style = {color = {0, 0.6, 1}},
+  }
 end
 
 local function rebuildAxes(w)
-  local xpts,ypts = Axes.generateXYAxes(w.viewport:getSpaceExtents())
+  local xpts, ypts = Axes.generateXYAxes(w.viewport:getSpaceExtents())
   w.drawables.xaxis.pts = xpts
   w.drawables.yaxis.pts = ypts
 end
@@ -110,29 +119,21 @@ function M.newWorld()
   local vp = Viewport:new()
   vp.scale.w = DefaultScaleW
   vp.scale.h = DefaultScaleH
-  local world={
-    viewport=vp,
-    controller={
-      dragging=false,
-    },
-    drawables={
-      xaxis={
-        type="series",
-        kind="pointsAndLines",
-        pts={},
-        style={
-          pointSize=4,
-          color={0,1,0},
-        },
+  local world = {
+    viewport = vp,
+    controller = {dragging = false},
+    drawables = {
+      xaxis = {
+        type = "series",
+        kind = "pointsAndLines",
+        pts = {},
+        style = {pointSize = 4, color = {0, 1, 0}},
       },
-      yaxis={
-        type="series",
-        kind="pointsAndLines",
-        pts={},
-        style={
-          pointSize=4,
-          color={1,0,0},
-        },
+      yaxis = {
+        type = "series",
+        kind = "pointsAndLines",
+        pts = {},
+        style = {pointSize = 4, color = {1, 0, 0}},
       },
     },
   }
@@ -141,7 +142,7 @@ function M.newWorld()
   return world
 end
 
-function M.updateWorld(w,action)
+function M.updateWorld(w, action)
   local sidefx = nil
 
   if action.type == "tick" then
@@ -149,25 +150,25 @@ function M.updateWorld(w,action)
 
   elseif action.type == "mouse" then
     if action.state == "pressed" then
-      w.controller.dragging=true
+      w.controller.dragging = true
 
     elseif action.state == "moved" then
       if w.controller.dragging then
         local fdx = action.dx / w.viewport.scale.w
-        local fdy =  action.dy / w.viewport.scale.h
-        local focus = w.viewport.focus 
+        local fdy = action.dy / w.viewport.scale.h
+        local focus = w.viewport.focus
         focus.x = focus.x - fdx
         focus.y = focus.y + fdy
       end
 
     elseif action.state == "released" then
-      w.controller.dragging=false
+      w.controller.dragging = false
     end
 
   elseif action.type == "keyboard" and action.state == "pressed" then
     if action.gui then
       if action.key == "left" then
-        local s = w.viewport.scale.w 
+        local s = w.viewport.scale.w
         if s <= 10 then
           s = s - 1
           if s <= 0 then s = 1 end
@@ -177,7 +178,7 @@ function M.updateWorld(w,action)
         end
         w.viewport.scale.w = s
       elseif action.key == "right" then
-        local s = w.viewport.scale.w 
+        local s = w.viewport.scale.w
         if s < 10 then
           s = s + 1
         else
@@ -186,7 +187,7 @@ function M.updateWorld(w,action)
         if s > 500 then s = 500 end
         w.viewport.scale.w = s
       elseif action.key == "up" then
-        local s = w.viewport.scale.h 
+        local s = w.viewport.scale.h
         if s < 10 then
           s = s + 1
         else
@@ -194,9 +195,9 @@ function M.updateWorld(w,action)
         end
         if s > 500 then s = 100 end
         w.viewport.scale.h = s
-      
+
       elseif action.key == "down" then
-        local s = w.viewport.scale.h 
+        local s = w.viewport.scale.h
         if s <= 10 then
           s = s - 1
           if s <= 0 then s = 1 end
@@ -205,24 +206,22 @@ function M.updateWorld(w,action)
           if s <= 10 then s = 10 end
         end
         w.viewport.scale.h = s
-     
+
       elseif action.key == "0" then
         w.viewport.scale.w = DefaultScaleW
         w.viewport.scale.h = DefaultScaleH
       end
     else
       local amt = 1
-      if action.shift then
-        amt = 5
-      end
+      if action.shift then amt = 5 end
       if action.key == "left" then
         w.viewport.focus.x = w.viewport.focus.x - amt
       elseif action.key == "right" then
-        w.viewport.focus.x = w.viewport.focus.x + amt 
+        w.viewport.focus.x = w.viewport.focus.x + amt
       elseif action.key == "up" then
-        w.viewport.focus.y = w.viewport.focus.y + amt 
+        w.viewport.focus.y = w.viewport.focus.y + amt
       elseif action.key == "down" then
-        w.viewport.focus.y = w.viewport.focus.y - amt 
+        w.viewport.focus.y = w.viewport.focus.y - amt
       elseif action.key == "0" then
         w.viewport.focus.x = 0
         w.viewport.focus.y = 0
@@ -235,16 +234,19 @@ function M.updateWorld(w,action)
 end
 
 function M.drawWorld(w)
-  G.setBackgroundColor(0,0,0)
-  G.setColor(1,1,1,1)
+  G.setBackgroundColor(0, 0, 0)
+  G.setColor(1, 1, 1, 1)
 
-  for _,d in pairs(w.drawables) do
-    draw(d, w.viewport)
-  end
+  for _, d in pairs(w.drawables) do draw(d, w.viewport) end
 
-  G.setColor(1,1,1,1)
-  G.print("Focus: "..math.round(w.viewport.focus.x,3)..", "..math.round(w.viewport.focus.y,3).." | Arrows or mouse to move, shift-arrows for large moves, 0 to reset",0,0)
-  G.print("Scale: "..math.round(w.viewport.scale.w,3)..", "..math.round(w.viewport.scale.h,3).." | Cmd-arrows to change scale, Cmd-0 to reset",0,15)
+  G.setColor(1, 1, 1, 1)
+  G.print("Focus: " .. math.round(w.viewport.focus.x, 3) .. ", " ..
+              math.round(w.viewport.focus.y, 3) ..
+              " | Arrows or mouse to move, shift-arrows for large moves, 0 to reset",
+          0, 0)
+  G.print("Scale: " .. math.round(w.viewport.scale.w, 3) .. ", " ..
+              math.round(w.viewport.scale.h, 3) ..
+              " | Cmd-arrows to change scale, Cmd-0 to reset", 0, 15)
 end
 
 return M
