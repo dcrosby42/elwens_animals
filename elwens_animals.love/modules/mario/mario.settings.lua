@@ -2,7 +2,7 @@ return {
   debug = {
     drawLocus = false,
     drawMarioBody = false,
-    drawMario = true,
+    drawMario = false,
     drawBrickBody = false,
     drawSlabBody = false,
     drawMarioMap = false,

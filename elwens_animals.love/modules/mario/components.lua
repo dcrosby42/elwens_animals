@@ -17,5 +17,6 @@ return {
   mariomap = {"sectors", {}},
 
   var = {"value", 0},
-  bumpAnim = {'orig', 0, 't', 0},
+  bumpanim = {'orig', 0, 't', 0},
+  coinbumpanim = {'orig', 0, 't', 0},
 }

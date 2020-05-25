@@ -2,6 +2,7 @@ local Contacts = require("systems.contacthelper")
 local Debug = require("mydebug").sub("brickbreaker")
 local Slab = require("modules.mario.slab")
 local Block = require("modules.mario.block")
+local Entities = require("modules.mario.entities")
 
 local function varPlus(varComp, num)
   varComp.value = (varComp.value or 0) + num
@@ -33,8 +34,10 @@ local function slabPunched(e, slabE, contact, estore, res)
       punchedE.anim.id = 'block_standard'
       e:newComp("sound", {sound = "bump"})
       if punchedE.block.contents == 'coin' then
-        e:newComp("sound", {sound = "coin"})
+        -- e:newComp("sound", {sound = "coin"})
+        Entities.coin_from_block(estore, punchedE, res)
         varPlus(e.vars.coins, 1)
+        varPlus(e.vars.points, 100)
         Debug.println("coins=" .. e.vars.coins.value)
       elseif punchedE.block.contents == 'mushroom' then
         e:newComp("sound", {sound = "powerup_appear"})
@@ -42,7 +45,7 @@ local function slabPunched(e, slabE, contact, estore, res)
         e:newComp("sound", {sound = "powerup_appear"})
         -- varSet(e.vars.supermario, true)
       end
-      punchedE:newComp("bumpAnim", {orig = punchedE.pos.y})
+      punchedE:newComp("bumpanim", {orig = punchedE.pos.y})
     elseif punchedE.block.kind == 'block' then
       e:newComp("sound", {sound = "bump"})
     end

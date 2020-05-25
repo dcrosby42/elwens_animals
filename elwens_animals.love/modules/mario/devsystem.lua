@@ -48,22 +48,45 @@ local bumpAnimLen = 0.2
 local bumpSpeed = -100
 local bumpDispl = 5
 local function bumpAnim(estore, input, res)
-  estore:walkEntities(hasComps('bumpAnim', 'pos'), function(e)
-    e.bumpAnim.t = e.bumpAnim.t + input.dt
+  estore:walkEntities(hasComps('bumpanim', 'pos'), function(e)
+    e.bumpanim.t = e.bumpanim.t + input.dt
 
-    if e.bumpAnim.t > bumpAnimLen then
-      e.pos.y = e.bumpAnim.orig
-      e:removeComp(e.bumpAnim)
+    if e.bumpanim.t > bumpAnimLen then
+      e.pos.y = e.bumpanim.orig
+      e:removeComp(e.bumpanim)
     else
       local dy = bumpSpeed * input.dt
-      if e.bumpAnim.t > bumpAnimLen / 2 then dy = -dy end
+      if e.bumpanim.t > bumpAnimLen / 2 then dy = -dy end
       e.pos.y = e.pos.y + dy
     end
 
   end)
 end
 
+local coinBumpAnimLen = 0.58
+local coinBumpInitVel = -300
+local coinBumpGrav = 9.8 * 100
+local function coinBumpAnim(estore, input, res)
+  local toKill
+  estore:walkEntities(hasComps('coinbumpanim', 'pos'), function(e)
+    local anim = e.coinbumpanim
+    anim.t = anim.t + input.dt
+
+    if anim.t > coinBumpAnimLen then
+      e.pos.y = anim.orig
+      e:removeComp(anim)
+      toKill = e
+    else
+      e.pos.y = anim.orig + (coinBumpInitVel * anim.t) +
+                    (0.5 * coinBumpGrav * math.pow(anim.t, 2))
+    end
+
+  end)
+  if toKill then toKill:destroy() end
+end
+
 return function(estore, input, res)
   uiZoom(estore, input, res)
   bumpAnim(estore, input, res)
+  coinBumpAnim(estore, input, res)
 end

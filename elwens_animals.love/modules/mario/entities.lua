@@ -26,6 +26,7 @@ function Entities.initialEntities(res)
   local map = Entities.map(estore, res)
   -- Entities.background(estore)
   Entities.mario(map, res)
+  -- Entities.coin(map, res, 0, 160)
   -- Entities.platforms(res, map)
   Entities.locus(estore, res)
   Entities.viewport(estore, res)
@@ -189,8 +190,8 @@ function Entities.mario(parent, res)
   local picCy = 0.55
   -- local startX = 200
   -- local startY = 130
-  local startX = 30
-  local startY = 50
+  local startX = 87
+  local startY = 210
   local verts = Entities.rectangleVerts(10, 22, 0.5, 0.3865)
   return parent:newEntity({
     {"name", {name = "mario"}},
@@ -568,6 +569,47 @@ function Entities.background(estore, res)
     -- {"sound", {sound = "bgmusic", loop = true, duration = res.sounds.bgmusic.duration}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
+end
+
+function Entities.coin(parent, res, x, y)
+  local e = parent:newEntity({
+    {
+      "anim",
+      {
+        name = "atimer",
+        id = "coin_spin",
+        centerx = 0.5,
+        centery = 0.5,
+        drawbounds = false,
+      },
+    },
+    {"timer", {name = "atimer", countDown = false}},
+    {"pos", {x = x, y = y}},
+    -- {
+    --   "body",
+    --   {
+    --     sensor = true,
+    --     dynamic = false,
+    --     fixedrotation = true,
+    --     mass = 0.1,
+    --     debugDraw = res.settings.mario.debug.drawBrickBody,
+    --     debugDrawColor = {1, 1, .8},
+    --   },
+    -- },
+    -- {"polygonShape", {vertices = BlockVerts}},
+  })
+  tagEnt(e, 'coin')
+  return e
+end
+
+function Entities.coin_from_block(estore, blockE, res)
+
+  local parent = blockE:getParent()
+  local x, y = getPos(blockE)
+  y = y - BlockW
+  local e = Entities.coin(estore, res, x, y)
+  e:newComp('coinbumpanim', {orig = e.pos.y})
+  e:newComp('sound', {sound = 'coin'})
 end
 
 return Entities

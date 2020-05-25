@@ -93,7 +93,7 @@ return {
       path = "modules/mario/sprites/map_objects.png",
       picWidth = 16,
       picHeight = 16,
-      count = 12,
+      count = 68,
       picOptions = {}, -- see ResourceLoader.makePic() for opts
       anims = {
         brick_standard_matte = {pics = {9}},
@@ -106,6 +106,7 @@ return {
         ground_dirt_left = {pics = {10}},
         ground_dirt = {pics = {11}},
         ground_dirt_right = {pics = {12}},
+        coin_spin = {pics = {65, 66, 67, 68}, frameDuration = 0.1},
       },
     },
   },
