@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="100" height="15" tilewidth="16" tileheight="16" infinite="1" nextlayerid="4" nextobjectid="17">
+ <tileset firstgid="1" source="gpad_buttons.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="100" height="15" locked="1">
+  <data encoding="csv"/>
+ </layer>
+ <objectgroup id="3" name="Object Layer 1">
+  <object id="1" gid="12" x="-1136" y="-304.561" width="49.7778" height="39.9532"/>
+  <object id="2" gid="13" x="-1073.12" y="-304.561" width="49.1228" height="39.9532"/>
+  <object id="3" gid="10" x="-1099.32" y="-336" width="39.9532" height="49.7778"/>
+  <object id="4" gid="17" x="-1099.32" y="-265.263" width="39.9532" height="49.1228"/>
+  <object id="5" gid="49" x="-928" y="-304" width="64" height="32"/>
+  <object id="6" gid="50" x="-1008" y="-304" width="64" height="32"/>
+  <object id="7" gid="45" x="-803.692" y="-352" width="55.3846" height="55.3846"/>
+  <object id="8" gid="46" x="-848" y="-307.692" width="55.3846" height="55.3846"/>
+  <object id="9" gid="43" x="-759.385" y="-307.692" width="55.3846" height="55.3846"/>
+  <object id="10" gid="44" x="-803.692" y="-263.385" width="55.3846" height="55.3846"/>
+  <object id="11" gid="19" x="-1104" y="-416" width="64" height="16"/>
+  <object id="13" gid="19" x="-1104" y="-448" width="64" height="32"/>
+  <object id="15" gid="19" x="-800" y="-416" width="64" height="16"/>
+  <object id="16" gid="19" x="-800" y="-448" width="64" height="32"/>
+ </objectgroup>
+ <imagelayer id="2" name="Image Layer 1"/>
+</map>

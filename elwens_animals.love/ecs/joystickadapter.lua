@@ -1,4 +1,4 @@
-
+local Debug = require('mydebug').sub('ecsjoystickadapter')
 -- TODO: this state should be per-joystick, but we're currently treating
 -- all joystick input as if it came from one place, and there can be only
 -- one joystick
@@ -39,6 +39,7 @@ Layouts["generic"] = {
 -- (Incoming action.id is a placeholder set to TODO for now.)
 -- Because of this, we're mapping ALL joystick input to the given controllerId
 local function appendControllerEvents(events, action, controllerId)
+  Debug.println(inspect(action))
   local layout = Layouts["generic"]
   local axis, value, changed, button
   if action.controlType == 'axis' then
@@ -59,7 +60,7 @@ local function appendControllerEvents(events, action, controllerId)
     if button then
       table.insert(events, {type='controller', id=controllerId, action=button, value=action.value})
     else
-      print("UNHANDLED JOYSTICK BUTTON"..tdebug(action))
+      Debug.println("UNHANDLED JOYSTICK BUTTON"..tdebug(action))
     end
   end
 end

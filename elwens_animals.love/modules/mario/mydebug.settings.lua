@@ -7,4 +7,6 @@ return {
   pool = {onConsole = false},
   soundcanvas = {onConsole = false},
   soundmanager = {onConsole = false},
+  mariosystem = {onConsole = true},
+  ecsjoystickadapter ={onConsole=true},
 }

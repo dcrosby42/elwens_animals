@@ -6,6 +6,7 @@ local Snowman = require 'modules/snowman'
 local Plotter = require 'modules/plotter'
 local Downhill = require 'modules/downhill'
 local Mario = require 'modules/mario'
+local JoystickConfig = require 'modules/joystickconfig'
 local GC = require 'garbagecollect'
 
 local M = {}
@@ -21,7 +22,8 @@ M.newWorld = function()
   w.modes["f3"] = function() return { module=Christmas, state=Christmas.newWorld() } end
   w.modes["f4"] = function() return { module=Snowman, state=Snowman.newWorld() } end
   w.modes["f5"] = function() return { module=Plotter, state=Plotter.newWorld() } end
-  w.modes["f7"] = function() return { module=Mario, state=Mario.newWorld() } end
+  w.modes["f6"] = function() return { module=Mario, state=Mario.newWorld() } end
+  w.modes["f7"] = function() return { module=JoystickConfig, state=JoystickConfig.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f1","f2","f3","f4","f6","f7"}
   w.current = "f7"

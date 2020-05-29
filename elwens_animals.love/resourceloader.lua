@@ -273,15 +273,23 @@ function Loaders.picStrip(res, picStrip)
                                       data.count)
   res:get('picStrips'):put(picStrip.name, pics)
 
+  -- Any individual pics called out by the config should get indexed by name:
   if data.pics then
     local rset = res:get('pics')
     for name, index in pairs(data.pics) do rset:put(name, pics[index]) end
   end
+  -- Any individual anims called out by the config should get loaded as anims:
   if data.anims then
     for name, animData in pairs(data.anims) do
       Loaders.picStrip_anim(res, pics, name, animData)
     end
   end
+end
+
+function Loaders.pic(res, picConfig)
+  local data = Loaders.getData(picConfig)
+  local pic = R.makePic(data.path, nil, data.rect, {sx = data.sx, sy = data.sy})
+  res:get('pics'):put(picConfig.name, pic)
 end
 
 -- soundConfig: {type,name, data:{file,type=[music|sound], duration(optional), volume=(optional)}}
@@ -388,6 +396,11 @@ end
 
 function R.buildResourceRoot(configs, loaders)
   return Loaders.loadConfigs(ResourceRoot:new(), configs, loaders)
+end
+
+function R.buildResourceRootFromFile(file, loaders)
+  local configs = loadfile(file)()
+  return R.buildResourceRoot(configs, loaders)
 end
 
 R.Loaders = Loaders

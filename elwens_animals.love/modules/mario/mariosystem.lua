@@ -1,4 +1,5 @@
 local Events = require("eventhelpers")
+local Debug = require("mydebug").sub("mariosystem")
 local inspect = require("inspect")
 local Contacts = require("systems.contacthelper")
 local MoveX = "movex"
@@ -7,7 +8,9 @@ local Dash = "dash"
 local JoystickActionMapping = {
   leftx = MoveX,
   face3 = Jump,
-  face4 = Dash
+  face4 = Dash,
+  face1 = Dash,
+  face2 = Jump,
 }
 
 local RunTopSpeed = 400
@@ -23,6 +26,8 @@ local S = {}
 
 local function translateEvent(evt)
   local action = (JoystickActionMapping[evt.action] or evt.action)
+  Debug.println("translateEvent evt.action=" .. evt.action .. " action=" ..
+                    action)
   local value = evt.value or 0
   return action, value
 end
@@ -56,9 +61,7 @@ local function moveMario(e, dt)
   if e.mario.value / e.vel.dx < 0 then
     -- Desired move direction is counter to actual current velocity,
     -- so provide assistive brake.
-    if math.abs(e.vel.dx) > 180 then
-      e.mario.skid = true
-    end
+    if math.abs(e.vel.dx) > 180 then e.mario.skid = true end
     brake(e, dt)
   end
   e.force.fx = e.mario.value * WalkForce * dt
@@ -86,19 +89,14 @@ local function handleEvent(evt, e, _estore, input, res)
       e.mario.jump = true
       local boost = (math.abs(e.vel.dx) / RunTopSpeed) * -50
       e.vel.dy = JumpVel + boost
-      e:newComp(
-        "sound",
-        {
-          sound = "jump"
-          -- duration = res.sounds["jump"].duration
-        }
-      )
-    -- ? needed? e.force.fx = 0
+      e:newComp("sound", {
+        sound = "jump",
+        -- duration = res.sounds["jump"].duration
+      })
+      -- ? needed? e.force.fx = 0
     end
     if value == 0 then
-      if e.vel.dy < 0 then
-        e.vel.dy = 0
-      end
+      if e.vel.dy < 0 then e.vel.dy = 0 end
       e.mario.jump = false
     end
   end
@@ -107,82 +105,75 @@ end
 local function update(estore, input, res)
   local events = input.events
 
-  estore:walkEntities(
-    hasName("mario"),
-    function(e)
-      -- update contact state
-      e.mario.touchingdown = Contacts.touchingDown(e)
+  estore:walkEntities(hasName("mario"), function(e)
+    -- update contact state
+    e.mario.touchingdown = Contacts.touchingDown(e)
 
-      -- Process controller events
-      for _, evt in ipairs(events) do
-        if evt.type == "controller" and evt.id == e.controller.id then
-          handleEvent(evt, e, estore, input, res)
-        end
-      end
-
-      -- Update motion
-      if e.mario.touchingdown then
-        if e.mario.value ~= 0 then
-          moveMario(e, input.dt)
-        else
-          stopMario(e, input.dt)
-        end
-        if math.abs(e.vel.dx) < 8 then
-          setMarioAnim(e, "stand")
-          e.mario.skid = false
-        elseif e.mario.skid then
-          setMarioAnim(e, "skid")
-        else
-          setMarioAnim(e, "walk")
-        end
-      else
-        e.mario.skid = false
-        if e.mario.value ~= 0 then
-          moveMarioInAir(e, input.dt)
-        else
-          e.force.fx = 0
-        end
-        if e.vel.dy < 0 and e.mario.jump then
-          setMarioAnim(e, "jump")
-        else
-          setMarioAnim(e, "fall")
-        end
-      end
-      e.timers.mario.factor = 1
-      if e.mario.touchingdown then
-        -- decide top speed
-        local maxSpd = WalkTopSpeed
-        if e.mario.dash then
-          maxSpd = RunTopSpeed
-        end
-        -- limit speed
-        if e.vel.dx > maxSpd then
-          e.vel.dx = maxSpd
-        elseif e.vel.dx < -maxSpd then
-          e.vel.dx = -maxSpd
-        end
-      else
-        -- air limits
-        local maxSpd = RunTopSpeed
-        if e.vel.dx > maxSpd then
-          e.vel.dx = maxSpd
-        elseif e.vel.dx < -maxSpd then
-          e.vel.dx = -maxSpd
-        end
-      end
-      if math.abs(e.vel.dx) > WalkTopSpeed then
-        -- speed up the running anim
-        e.timers.mario.factor = 2
-      end
-      if e.vel.dx < 0 and e.mario.value < 0 then
-        e.mario.facing = "left"
-      elseif e.vel.dx > 0 and e.mario.value > 0 then
-        e.mario.facing = "right"
+    -- Process controller events
+    for _, evt in ipairs(events) do
+      if evt.type == "controller" and evt.id == e.controller.id then
+        handleEvent(evt, e, estore, input, res)
       end
     end
-  )
+
+    -- Update motion
+    if e.mario.touchingdown then
+      if e.mario.value ~= 0 then
+        moveMario(e, input.dt)
+      else
+        stopMario(e, input.dt)
+      end
+      if math.abs(e.vel.dx) < 8 then
+        setMarioAnim(e, "stand")
+        e.mario.skid = false
+      elseif e.mario.skid then
+        setMarioAnim(e, "skid")
+      else
+        setMarioAnim(e, "walk")
+      end
+    else
+      e.mario.skid = false
+      if e.mario.value ~= 0 then
+        moveMarioInAir(e, input.dt)
+      else
+        e.force.fx = 0
+      end
+      if e.vel.dy < 0 and e.mario.jump then
+        setMarioAnim(e, "jump")
+      else
+        setMarioAnim(e, "fall")
+      end
+    end
+    e.timers.mario.factor = 1
+    if e.mario.touchingdown then
+      -- decide top speed
+      local maxSpd = WalkTopSpeed
+      if e.mario.dash then maxSpd = RunTopSpeed end
+      -- limit speed
+      if e.vel.dx > maxSpd then
+        e.vel.dx = maxSpd
+      elseif e.vel.dx < -maxSpd then
+        e.vel.dx = -maxSpd
+      end
+    else
+      -- air limits
+      local maxSpd = RunTopSpeed
+      if e.vel.dx > maxSpd then
+        e.vel.dx = maxSpd
+      elseif e.vel.dx < -maxSpd then
+        e.vel.dx = -maxSpd
+      end
+    end
+    if math.abs(e.vel.dx) > WalkTopSpeed then
+      -- speed up the running anim
+      e.timers.mario.factor = 2
+    end
+    if e.vel.dx < 0 and e.mario.value < 0 then
+      e.mario.facing = "left"
+    elseif e.vel.dx > 0 and e.mario.value > 0 then
+      e.mario.facing = "right"
+    end
+  end)
 end
 
-return {
-  system = update
-}
+return {system = update}
