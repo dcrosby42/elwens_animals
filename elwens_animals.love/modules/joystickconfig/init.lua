@@ -20,13 +20,8 @@ function M.newWorld()
 end
 
 function M.updateWorld(w, action)
-  if action.type == 'joystick' then w.tracker:update(action) end
+  if action.type == 'joystick' then w.tracker:update(action, w.res) end
   return w
-end
-function debugbytes(str)
-  local out = ""
-  for i = 1, #str do out = out .. string.byte(str, i) .. " " end
-  return out
 end
 
 function M.drawWorld(w, action)
@@ -38,11 +33,20 @@ function M.drawWorld(w, action)
 
     local jview = w.views[joystick.name]
     if not jview then
-      local joystickConfig = w.res.data.joysticks[joystick.name]
-      assert(joystickConfig,
-             "No joystick config named " .. tostring(joystick.name) ..
-                 " in joysticks=" .. inspect(w.res.data.joysticks))
+      local joystickConfig = w.tracker:getJoystickConfigFrom(w.res,
+                                                             joystick.name)
+      -- local joystickConfig = w.res.data.joysticks[joystick.name]
+      -- if not joystickConfig then
+      --   joystickConfig = w.res.data.joysticks["FALLBACK"]
+      -- end
+      -- assert(joystickConfig,
+      --        "No joystick config named " .. tostring(joystick.name) ..
+      --            " in joysticks=" .. inspect(w.res.data.joysticks))
       local layout = w.res.data[joystickConfig.viewLayout]
+      if not layout then
+        print("!! No layout named '" .. joystick .. "'")
+        layout = w.res.data.joysticks["DEFAULT"].viewLayout
+      end
       jview = JoystickView.newJoystickView(layout)
       w.views[joystick.name] = jview
     end

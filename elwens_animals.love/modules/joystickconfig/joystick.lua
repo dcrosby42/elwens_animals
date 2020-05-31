@@ -35,16 +35,19 @@ local function getMapping()
 end
 
 function Joystick:new(opts)
-  local numAxes = 5
-  local numButtons = 12
+  -- local numAxes = 5
+  -- local numButtons = 12
+  assert(opts.mapping, "opts.mapping required")
+  Debug.println("Joystick:new opts=" .. inspect(opts))
   local o = {
     joystickId = opts.joystickId,
     instanceId = opts.instanceId,
     name = opts.name,
-    axes = initZeros(numAxes),
-    buttons = initZeros(numButtons),
-    mapping = getMapping(),
+    axes = initZeros(opts.mapping.numAxes),
+    buttons = initZeros(opts.mapping.numButtons),
+    mapping = opts.mapping,
   }
+  Debug.println(#(opts.mapping.buttons))
   setmetatable(o, self)
   self.__index = self
   return o

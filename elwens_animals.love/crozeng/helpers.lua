@@ -236,6 +236,13 @@ function tdebug1(t, ind)
   end
 end
 
+function debugStringBytes(str)
+  local out = ""
+  for i = 1, #str do out = out .. string.byte(str, i) .. " " end
+  return out
+end
+
+
 function keyvalsearch(t, matchFn, callbackFn)
   for _, v in pairs(t) do
     if fn(k, v) then

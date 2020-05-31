@@ -352,7 +352,7 @@ return {
         {
           id = 15,
           name = "dpadLeft",
-          type = "axis",
+          type = "dpad",
           shape = "rectangle",
           x = 16,
           y = 256,
@@ -366,7 +366,7 @@ return {
         {
           id = 17,
           name = "dpadUp",
-          type = "axis",
+          type = "dpad",
           shape = "rectangle",
           x = 64,
           y = 208,
@@ -380,7 +380,7 @@ return {
         {
           id = 18,
           name = "dpadDown",
-          type = "axis",
+          type = "dpad",
           shape = "rectangle",
           x = 64,
           y = 288,
@@ -394,7 +394,7 @@ return {
         {
           id = 21,
           name = "dpadRight",
-          type = "axis",
+          type = "dpad",
           shape = "rectangle",
           x = 96,
           y = 256,

@@ -67,12 +67,55 @@ function J.newJoystickView(tiledmap)
 end
 
 function J.drawJoystickView(view, joystick)
-  G.print(joystick.name)
+  -- Name and id
+  G.print(joystick.name, 0, 0)
+  G.print("Joystick Id: " .. joystick.joystickId, 0, 12)
+  G.print("Instance Id: " .. joystick.instanceId, 0, 24)
+
+  -- Print the axis values
+  local w = 35
+  local h = 12
+  local x = 0
+  local y = 0
+  G.push()
+  G.translate(0, 40)
+  for i = 1, #joystick.axes do
+    y = 0
+    x = (i - 1) * w
+    G.rectangle("fill", x, y, w, h)
+    G.rectangle("line", x, y, w, 2 * h)
+    G.setColor(0, 0, 0)
+    G.print("" .. i, x, y)
+    y = y + h
+    -- G.rectangle("line", x, y, w, h)
+    G.setColor(1, 1, 1)
+    if joystick.axes[i] == nil then print("NIL axes # " .. i) end
+    G.print("" .. math.round(joystick.axes[i], 2), x, y)
+  end
+  G.pop()
+
+  G.push()
+  G.translate(#joystick.axes * w + 10, 40)
+  w = 20
+  for i = 1, #joystick.buttons do
+    y = 0
+    x = (i - 1) * w
+    G.rectangle("fill", x, y, w, h)
+    G.rectangle("line", x, y, w, 2 * h)
+    G.setColor(0, 0, 0)
+    G.print("" .. i, x, y)
+    y = y + h
+    -- G.rectangle("line", x, y, w, h)
+    G.setColor(1, 1, 1)
+    G.print("" .. math.round(joystick.buttons[i], 2), x, y)
+  end
+  G.pop()
+
+  -- Draw the buttons
   for _, obj in ipairs(view.buttonsLayer.objects) do
     local tile = view.tiles[obj.gid]
     local file = tile.image
-    -- if obj.name == "faceLeft" then file = string.gsub(file, "Dark", "Light") end
-    local offx = 0
+    local offx = 0 -- for moving the stick controls 
     local offy = 0
     if joystick then
       if obj.type == "button" or obj.type == "stick" then
