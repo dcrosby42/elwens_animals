@@ -607,7 +607,11 @@ end
 
 function keyBy(list, key)
   local m = {}
-  for _, val in ipairs(list) do m[val[key]] = val end
+  if type(key) == 'function' then
+    for _, val in ipairs(list) do m[key(val)] = val end
+  else
+    for _, val in ipairs(list) do m[val[key]] = val end
+  end
   return m
 end
 
@@ -627,6 +631,14 @@ function groupThenKeyBy(list, gkey, mkey)
     local vals = m[val[gkey]] or {}
     vals[val[mkey]] = val
     m[val[gkey]] = vals
+  end
+  return m
+end
+
+function invertMap(map)
+  local m = {}
+  for key,val in pairs(map) do
+    m[val] = key
   end
   return m
 end
