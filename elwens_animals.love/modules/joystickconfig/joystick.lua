@@ -7,72 +7,76 @@ local function initZeros(n)
   return obj
 end
 
-local function getMapping()
-  return {
-    -- axes = {
-    --   [1] = "leftx",
-    --   [2] = "lefty",
-    --   [3] = "unknown",
-    --   [4] = "rightx",
-    --   [5] = "righty",
-    -- },o
-    axes = {leftx = 1, lefty = 2, unknown = 3, rightx = 4, righty = 5},
-    buttons = {
-      face1 = 1,
-      face2 = 2,
-      face3 = 3,
-      face4 = 4,
-      l2 = 5,
-      r2 = 6,
-      l1 = 7,
-      r1 = 8,
-      select = 9,
-      start = 10,
-      l3 = 11,
-      r3 = 12,
-    },
-  }
-end
-
+--
+-- opts: { 
+--   joystickId,
+--   instanceId,
+--   name,        -- joystick identifier name, eg "Generic   USB  Joystick "
+--   mapping      -- ControlMap from crozeng.joystick 
+-- }
 function Joystick:new(opts)
-  -- local numAxes = 5
-  -- local numButtons = 12
   assert(opts.mapping, "opts.mapping required")
-  Debug.println("Joystick:new opts=" .. inspect(opts))
+  Debug.println(function()
+    return "Joystick:new opts=" .. inspect(opts)
+  end)
   local o = {
     joystickId = opts.joystickId,
     instanceId = opts.instanceId,
     name = opts.name,
-    axes = initZeros(opts.mapping.numAxes),
-    buttons = initZeros(opts.mapping.numButtons),
+    axes = {},
+    buttons = {},
     mapping = opts.mapping,
   }
-  Debug.println(#(opts.mapping.buttons))
   setmetatable(o, self)
   self.__index = self
   return o
 end
 
+-- Update internal button or axis state.
 function Joystick:update(jAction)
   if jAction.controlType == "axis" then
-    self.axes[jAction.control] = jAction.value
-    Debug.println("Axes: " .. inspect(self.axes))
+    if self.axes[jAction.controlName] ~= jAction.value then
+      self.axes[jAction.controlName] = jAction.value
+      Debug.println(function()
+        return "Axes: " .. inspect(self.axes) .. ", CHANGED: " ..
+                   jAction.controlName .. " => " .. tostring(jAction.value)
+      end)
+      return true
+    end
   elseif jAction.controlType == "button" then
-    self.buttons[jAction.control] = jAction.value
-    Debug.println("Buttons: " .. inspect(self.buttons))
+    if self.buttons[jAction.controlName] ~= jAction.value then
+      self.buttons[jAction.controlName] = jAction.value
+      Debug.println(function()
+        return "Buttons: " .. inspect(self.buttons) .. ", CHANGED: " ..
+                   jAction.controlName .. " => " .. tostring(jAction.value)
+      end)
+      return true
+    end
   end
+  -- no actual change
+  return false
 end
 
+-- Get last known button state.
+-- Returns 0 or 1.
+-- buttonId can be a string name like "face1" or a control number like 4.
 function Joystick:buttonValue(buttonId)
-  if self.mapping.buttons[buttonId] then
-    return self.buttons[self.mapping.buttons[buttonId]] or 0
+  if type(buttonId) == 'number' and self.mapping.buttonNames[buttonId] then
+    return self.buttons[self.mapping.buttonNames[buttonId]] or 0
+  else
+    return self.buttons[buttonId] or 0
   end
   return 0
 end
 
+-- Get last known axis state.
+-- Returns number between -1 and 1.
+-- buttonId can be a string name like "leftx" or a control number like 1.
 function Joystick:axisValue(axisId)
-  if self.mapping.axes[axisId] then
-    return self.axes[self.mapping.axes[axisId]] or 0
+  if type(axisId) == 'number' and self.mapping.axisNames[axisId] then
+    return self.axes[self.mapping.axisNames[axisId]] or 0
+  else
+    return self.axes[axisId] or 0
   end
   return 0
 end

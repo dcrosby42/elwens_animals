@@ -9,8 +9,8 @@ local JoystickActionMapping = {
   leftx = MoveX,
   face3 = Jump,
   face4 = Dash,
-  face1 = Dash,
-  face2 = Jump,
+  -- face1 = Dash,
+  -- face2 = Jump,
 }
 
 local RunTopSpeed = 400

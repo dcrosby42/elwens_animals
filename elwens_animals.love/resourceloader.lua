@@ -346,6 +346,30 @@ local function convertData(config, data)
   end
 end
 
+-- Descend into nested tables loading and merging any datafiles indicated by "datafile" keys
+local function expandDatafiles(obj)
+  if obj then
+    if type(obj) == 'table' then
+      if obj.datafile then
+        -- If an object has a "datafile" key, load the file
+        local data = loadDataFile(obj.datafile)
+        -- remove the "datafile" attribute
+        obj.datafile = nil
+        -- add all the data to this object, potentially overwriting existing keys
+        tmerge(obj, data)
+        -- recurse through all key-vals for this object
+        expandDatafiles(obj)
+        return obj
+      else
+        -- recurse and expand all key-vals
+        for key, val in pairs(obj) do obj[key] = expandDatafiles(val) end
+        return obj
+      end
+    end
+  end
+  return obj
+end
+
 function Loaders.getData(obj)
   local data
   if obj.data then
@@ -356,6 +380,10 @@ function Loaders.getData(obj)
     error(
         "Loader: cannot get data from object, need 'data' or 'datafile': obj=" ..
             inspect(obj))
+  end
+  if obj.expandDatafiles then
+    data = expandDatafiles(data)
+    obj.expandDatafiles = nil
   end
   if obj.dataconverter then data = convertData(obj, data) end
   return data

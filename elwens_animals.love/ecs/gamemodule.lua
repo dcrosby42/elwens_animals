@@ -1,7 +1,9 @@
 local ResourceLoader = require "resourceloader"
 local EcsAdapter = require "ecs.moduleadapter"
 
-local function newFromConfigs(configs, loaders)
+local GameModule = {}
+
+function GameModule.newFromConfigs(configs, loaders)
   loaders = loaders or require('ecs/loaders')
   local res = ResourceLoader.buildResourceRoot(configs, loaders)
   return EcsAdapter({
@@ -14,13 +16,9 @@ local function newFromConfigs(configs, loaders)
   })
 end
 
-local function newFromFile(path, loaders)
+function GameModule.newFromFile(path, loaders)
   local configs = loadfile(path)()
-  return newFromConfigs(configs, loaders)
+  return GameModule.newFromConfigs(configs, loaders)
 end
 
-return {
-  new = newFromConfigs,
-  newFromConfigs = newFromConfigs,
-  newFromFile = newFromFile,
-}
+return GameModule

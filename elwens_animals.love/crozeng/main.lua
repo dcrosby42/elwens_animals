@@ -6,10 +6,10 @@ local ModuleLoader = require "crozeng.moduleloader"
 
 local SoundCanvas = require "crozeng.soundcanvas"
 local sndCanvas = SoundCanvas.default
-
+local Joystick = require "crozeng.joystick"
 local DefaultConfig = {
   width = love.graphics.getWidth(),
-  height = love.graphics.getHeight()
+  height = love.graphics.getHeight(),
 }
 
 local Config = DefaultConfig
@@ -25,7 +25,7 @@ function setErrorMode(err, traceback)
   print(traceback)
   errWorld = {
     err = err,
-    traceback = traceback -- debug.traceback()
+    traceback = traceback, -- debug.traceback()
   }
 end
 function clearErrorMode()
@@ -33,9 +33,7 @@ function clearErrorMode()
 end
 
 function loadItUp(opts)
-  if not opts then
-    opts = {}
-  end
+  if not opts then opts = {} end
   Config = tcopy(DefaultConfig)
   if Hooks.module_name then
     RootModule = ModuleLoader.load(Hooks.module_name)
@@ -57,9 +55,7 @@ function loadItUp(opts)
   end
 
   if opts.doOnload ~= false then
-    if Hooks.onload then
-      Hooks.onload()
-    end
+    if Hooks.onload then Hooks.onload() end
     Config.width = love.graphics.getWidth()
     Config.height = love.graphics.getHeight()
   end
@@ -72,18 +68,12 @@ local function reloadRootModule(newWorldOpts)
   love.audio.stop()
   if Hooks.module_name then
     local names = ModuleLoader.list_deps_of(Hooks.module_name)
-    for i = 1, #names do
-      ModuleLoader.uncache_package(names[i])
-    end
+    for i = 1, #names do ModuleLoader.uncache_package(names[i]) end
     ModuleLoader.uncache_package(Hooks.module_name)
 
-    ok, err =
-      xpcall(
-      function()
-        loadItUp({doOnload = false, newWorldOpts = newWorldOpts})
-      end,
-      debug.traceback
-    )
+    ok, err = xpcall(function()
+      loadItUp({doOnload = false, newWorldOpts = newWorldOpts})
+    end, debug.traceback)
     if ok then
       print("crozeng: Reloaded root module.")
       clearErrorMode()
@@ -101,27 +91,17 @@ end
 local function updateWorld(action)
   if errWorld then
     if action.type == "keyboard" and action.state == "pressed" then
-      if action.key == "r" and action.gui then
-        reloadRootModule()
-      end
+      if action.key == "r" and action.gui then reloadRootModule() end
     end
     return
   end
-  if not RootModule then
-    return
-  end
+  if not RootModule then return end
   local newworld, sidefx
-  ok, err =
-    xpcall(
-    function()
-      newworld, sidefx = RootModule.updateWorld(world, action)
-    end,
-    debug.traceback
-  )
+  ok, err = xpcall(function()
+    newworld, sidefx = RootModule.updateWorld(world, action)
+  end, debug.traceback)
   if ok then
-    if newworld then
-      world = newworld
-    end
+    if newworld then world = newworld end
     if sidefx then
       for i = 1, #sidefx do
         if sidefx[i].type == "crozeng.reloadRootModule" then
@@ -144,11 +124,8 @@ end
 function drawErrorScreen(w)
   love.graphics.setBackgroundColor(0.5, 0, 0)
   love.graphics.setColor(1, 1, 1)
-  love.graphics.print(
-    "!! CAUGHT ERROR !!\n\nHIT 'R' TO RELOAD\n\n" .. w.err .. "\n\n(inside crozeng)" .. w.traceback,
-    0,
-    0
-  )
+  love.graphics.print("!! CAUGHT ERROR !!\n\nHIT 'R' TO RELOAD\n\n" .. w.err ..
+                          "\n\n(inside crozeng)" .. w.traceback, 0, 0)
 end
 
 function love.draw()
@@ -156,16 +133,10 @@ function love.draw()
   if errWorld then
     drawErrorScreen(errWorld)
   else
-    ok, err =
-      xpcall(
-      function()
-        RootModule.drawWorld(world)
-      end,
-      debug.traceback
-    )
-    if not ok then
-      setErrorMode(err, debug.traceback())
-    end
+    ok, err = xpcall(function()
+      RootModule.drawWorld(world)
+    end, debug.traceback)
+    if not ok then setErrorMode(err, debug.traceback()) end
   end
   sndCanvas:endFrame()
 end
@@ -201,7 +172,7 @@ local function toKeyboardAction(state, key)
     lshift = false,
     gui = false,
     lgui = false,
-    lgui = false
+    lgui = false,
   }
   keyboardAction.state = state
   keyboardAction.key = key
@@ -244,7 +215,7 @@ local mouseAction = {
   lshift = false,
   gui = false,
   lgui = false,
-  lgui = false
+  lgui = false,
 }
 function toMouseAction(s, x, y, b, it, dx, dy)
   mouseAction.state = s
@@ -270,7 +241,15 @@ function love.mousemoved(x, y, dx, dy, isTouch)
   updateWorld(toMouseAction("moved", x, y, nil, isTouch, dx, dy))
 end
 
-local touchAction = {type = "touch", state = nil, id = "", x = 0, y = 0, dx = 0, dy = 0}
+local touchAction = {
+  type = "touch",
+  state = nil,
+  id = "",
+  x = 0,
+  y = 0,
+  dx = 0,
+  dy = 0,
+}
 function toTouchAction(s, id, x, y, dx, dy)
   touchAction.state = s
   touchAction.id = id
@@ -300,7 +279,7 @@ local function dedupeJoystickAxis(joystick, axis, value)
   if not state then
     state = {
       -- last=love.timer.getTime(),
-      value = value
+      value = value,
     }
     _joystickAxisCache[key] = state
     return false
@@ -315,20 +294,33 @@ local function dedupeJoystickAxis(joystick, axis, value)
   return false
 end
 
-local joystickAction = {type = "joystick", joystickId = 0, instanceId = 0, controlType = "", control = "", value = 0}
+local joystickAction = {
+  type = "joystick",
+  joystickId = 0,
+  instanceId = 0,
+  controlType = "",
+  control = "",
+  value = 0,
+  controlMap = Joystick.DefaultControlMap,
+}
 function toJoystickAction(joystick, controlType, control, value)
   joystickAction.joystickId, joystickAction.instanceId = joystick:getID()
   joystickAction.name = joystick:getName()
   joystickAction.controlType = controlType
   joystickAction.control = control
   joystickAction.value = (value or 0)
+  local controlMap = Joystick.getControlMap(joystickAction.name)
+  joystickAction.controlMapName = controlMap.name
+  if controlType == "button" then
+    joystickAction.controlName = controlMap.buttonNames[control]
+  elseif controlType == "axis" then
+    joystickAction.controlName = controlMap.axisNames[control]
+  end
   return joystickAction
 end
 
 function love.joystickaxis(joystick, axis, value)
-  if dedupeJoystickAxis(joystick, axis, value) then
-    return
-  end
+  if dedupeJoystickAxis(joystick, axis, value) then return end
   updateWorld(toJoystickAction(joystick, "axis", axis, value))
 end
 

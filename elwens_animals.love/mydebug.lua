@@ -78,14 +78,27 @@ local function drawNotes(ox, oy)
   end
 end
 
+local function resolveMessage(m)
+  if type(m) == "string" then
+  return m
+  elseif type(m) == "function" then
+    return m()
+  else return tostring()
+  end
+end
+
 local function makeSub(name, printToScreen, printToConsole, doNotes)
   D.onScreen[name] = printToScreen or D.onScreen[name]
   D.onConsole[name] = printToConsole or D.onConsole[name]
   D.doNotes[name] = doNotes or D.doNotes[name]
   local sub = {
     println = function(str)
-      if D.onScreen[name] then D.println("[" .. name .. "] " .. str) end
-      if D.onConsole[name] then print("[" .. name .. "] " .. str) end
+      if D.onScreen[name] then
+        D.println("[" .. name .. "] " .. resolveMessage(str))
+      end
+      if D.onConsole[name] then
+        print("[" .. name .. "] " .. resolveMessage(str))
+      end
     end,
     note = function(key, val)
       if D.doNotes[name] then
