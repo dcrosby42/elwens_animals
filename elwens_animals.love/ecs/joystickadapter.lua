@@ -43,7 +43,11 @@ local function appendControllerEvents(events, action, controllerId)
   local layout = Layouts["generic"]
   local axis, value, changed, button
   if action.controlType == 'axis' then
-    axis = layout.axes[action.control]
+    if action.controlName then
+      axis = action.controlName
+    else
+      axis = layout.axes[action.control]
+    end
     if not axis or axis == "unknown" then return end
     value = math.round1(action.value)
     changed = false
@@ -56,7 +60,12 @@ local function appendControllerEvents(events, action, controllerId)
     end
 
   elseif action.controlType == 'button' then
-    button = layout.buttons[action.control]
+    if action.controlName then
+      button = action.controlName
+    else
+      button = layout.buttons[action.control]
+    end
+
     if button then
       table.insert(events, {type='controller', id=controllerId, action=button, value=action.value})
     else
