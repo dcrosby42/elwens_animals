@@ -193,6 +193,7 @@ function ResourceSet:put(name, obj)
 end
 
 function ResourceSet:get(name)
+  assert(self[name], "No key '" .. name .. "' in ResourceSet.")
   return self[name]
 end
 

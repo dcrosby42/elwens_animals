@@ -8,8 +8,8 @@ return {
   height = 15,
   tilewidth = 16,
   tileheight = 16,
-  nextlayerid = 3,
-  nextobjectid = 20,
+  nextlayerid = 4,
+  nextobjectid = 21,
   properties = {},
   tilesets = {
     {
@@ -238,9 +238,22 @@ return {
           rotation = 0,
           visible = true,
           properties = {}
-        },
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      id = 3,
+      name = "Spawns",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      draworder = "topdown",
+      properties = {},
+      objects = {
         {
-          id = 19,
+          id = 20,
           name = "mario",
           type = "mario",
           shape = "rectangle",

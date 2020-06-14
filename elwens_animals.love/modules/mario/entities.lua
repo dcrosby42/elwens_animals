@@ -23,9 +23,20 @@ function Entities.initialEntities(res)
 
   local estore = Estore:new()
 
-  local map = Entities.map(estore, res)
-  -- Entities.background(estore)
-  Entities.mario(map, res)
+  local mapName = res.data.maps.firstMap
+  local mapData = res.data:get(mapName)
+  local map = Entities.map(estore, mapData, res)
+
+  if res.settings.mario.debug.drawMarioMap then
+    map:newComp("debugDraw", {on = true})
+  end
+  if res.settings.mario.debug.playBgMusic then
+    map:newComp("sound", {sound = "bgmusic", loop = true})
+  end
+  local marioSpawn = lfindby(mapData.layers.objectgroup.Spawns.objects, 'type',
+                             'mario')
+
+  Entities.mario(map, res, marioSpawn)
   -- Entities.coin(map, res, 0, 160)
   -- Entities.platforms(res, map)
   Entities.locus(estore, res)
@@ -35,20 +46,13 @@ function Entities.initialEntities(res)
   return estore
 end
 
-function Entities.map(parent, res)
-  -- MAP
+function Entities.map(parent, mapData, res)
   local map = parent:newEntity({
     {"name", {name = "mariomap"}},
     {"pos", {}},
     {"mariomap", {}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
-  if res.settings.mario.debug.drawMarioMap then
-    map:newComp("debugDraw", {on = true})
-  end
-  if res.settings.mario.debug.playBgMusic then
-    map:newComp("sound", {sound = "bgmusic", loop = true})
-  end
 
   -- custommap
   -- {
@@ -81,7 +85,7 @@ function Entities.map(parent, res)
     return grid
   end
 
-  local grid = res.data.proto1.layers.tilelayer.Blocks.grid
+  local grid = mapData.layers.tilelayer.Blocks.grid
   inflateCells(grid)
 
   function attachObjects(grid, objects)
@@ -89,12 +93,20 @@ function Entities.map(parent, res)
       local c = (obj.x / BlockW) + 1
       local r = (obj.y / BlockW) + 1
       if grid[r][c] then
-        if not grid[r][c].objects then grid[r][c].objects = {} end
-        table.insert(grid[r][c].objects, obj)
+        if type(grid[r][c]) == 'table' then
+          if not grid[r][c].objects then grid[r][c].objects = {} end
+          table.insert(grid[r][c].objects, obj)
+        else
+          Debug.println(
+              "grid[" .. r .. "][" .. c .. "] is not a table, it's " ..
+                  tostring(
+                      grid[r][c] .. ", so I cannot attach object to it: " ..
+                          inspect(obj)))
+        end
       end
     end
   end
-  local objects = res.data.proto1.layers.objectgroup.Items.objects
+  local objects = mapData.layers.objectgroup.Items.objects
   attachObjects(grid, objects)
 
   function generateBricks(res, grid, parent)
@@ -185,13 +197,18 @@ function Entities.rectangleVerts(w, h, cx, cy)
   return {left, top, right, top, right, bottom, left, bottom}
 end
 
-function Entities.mario(parent, res)
+function Entities.mario(parent, res, marioSpawn)
   local picCx = 0.5
   local picCy = 0.55
   -- local startX = 200
   -- local startY = 130
   local startX = 87
   local startY = 210
+  if marioSpawn then
+    startX = marioSpawn.x + BlockW2
+    startY = marioSpawn.y - BlockW + 1
+  end
+
   local verts = Entities.rectangleVerts(10, 22, 0.5, 0.3865)
   return parent:newEntity({
     {"name", {name = "mario"}},

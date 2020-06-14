@@ -1,6 +1,6 @@
 return {
   brickbreaker = {onConsole = true},
-  mario_entities = {onConsole = false},
+  mario_entities = {onConsole = true},
   resourceloader = {onConsole = true, onScreen = false, doNotes = false},
   anim = {onConsole = false},
   garbagecollect = {onConsole = false},
@@ -8,5 +8,5 @@ return {
   soundcanvas = {onConsole = false},
   soundmanager = {onConsole = false},
   mariosystem = {onConsole = true},
-  ecsjoystickadapter ={onConsole=true},
+  ecsjoystickadapter = {onConsole = true},
 }

@@ -175,4 +175,11 @@ return {
     datafile = "modules/mario/maps/proto1.lua",
     dataconverter = {require = "modules.mario.custommap", func = "convertMap"},
   },
+  {
+    type = "data",
+    name = "proto2",
+    datafile = "modules/mario/maps/proto2.lua",
+    dataconverter = {require = "modules.mario.custommap", func = "convertMap"},
+  },
+  {type = "data", name = "maps", data = {firstMap = "proto2"}},
 }

@@ -26,7 +26,7 @@ M.newWorld = function()
   w.modes["f7"] = function() return { module=JoystickConfig, state=JoystickConfig.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f1","f2","f3","f4","f6","f7"}
-  w.current = "f7"
+  w.current = "f6"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
