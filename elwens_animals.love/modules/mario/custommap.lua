@@ -10,8 +10,9 @@ local function convertMap(data)
   for key, tlayer in pairs(layers.tilelayer) do
     tlayer.grid = array2grid(tlayer.data, tlayer.width, tlayer.height)
   end
-  local map = {tiled = data, layers = layers}
+  local map = {properties = data.properties, tiled = data, layers = layers}
   map.width = data.width * BlockW
+  map.height = data.height * BlockW
   map.widthInTiles = data.width
   map.heightInTiles = data.height
   return map

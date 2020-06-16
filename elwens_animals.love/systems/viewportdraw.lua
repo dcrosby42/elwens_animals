@@ -15,12 +15,13 @@ return function(estore, res, mainDrawFunc)
     local sy = viewport.viewport.sy
 
     G.push()
-    -- G.translate((d-viewport.pos.x - viewport.rect.offx), (-viewport.pos.y - viewport.rect.offy))
-    G.scale(sx, sy)
+    -- G.scale(sx, sy)
 
     -- (viewport rect offsets were calc'd based on actual window size, they need to be manually accounted for here as we pretend to use a viewport rect that counts the scaled pixes)
-    local tx = -viewport.pos.x - (viewport.rect.offx / sx)
-    local ty = -viewport.pos.y - (viewport.rect.offy / sy)
+    -- local tx = -viewport.pos.x - (viewport.rect.offx / sx)
+    -- local ty = -viewport.pos.y - (viewport.rect.offy / sy)
+    local tx = viewport.pos.x
+    local ty = viewport.pos.y
     G.translate(tx, ty)
   end
 

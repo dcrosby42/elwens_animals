@@ -39,18 +39,23 @@ function Entities.initialEntities(res)
   Entities.mario(map, res, marioSpawn)
   -- Entities.coin(map, res, 0, 160)
   -- Entities.platforms(res, map)
-  Entities.locus(estore, res)
-  Entities.viewport(estore, res)
+  Entities.locus(map, res)
+  Entities.viewport(map, res)
 
   sti("modules/mario/maps/proto1.lua")
   return estore
 end
 
 function Entities.map(parent, mapData, res)
+  local name = "The Map"
+  if mapData and mapData.properties and mapData.properties.name then
+    name = mapData.properties.name
+  end
   local map = parent:newEntity({
-    {"name", {name = "mariomap"}},
+    {"name", {name = name}},
     {"pos", {}},
     {"mariomap", {}},
+    {"rect", {w = mapData.width, h = mapData.height}},
     {"physicsWorld", {gy = 9.8 * 64, allowSleep = false}},
   })
 
@@ -550,8 +555,11 @@ function stackup(grid)
 end
 
 function Entities.viewport(estore)
+  -- Use the screen's current width and height as w/h for this viewport. TODO: improve?
   local w = G.getWidth()
   local h = G.getHeight()
+  -- The viewport's rect offx and offy values are used by viewportdraw.
+  -- Using w/2 and h/2 lets us copy x/y from our follow target and treat it like it's at the center of our focus.
   local offx = -w / 2
   local offy = -h / 2
   return estore:newEntity({

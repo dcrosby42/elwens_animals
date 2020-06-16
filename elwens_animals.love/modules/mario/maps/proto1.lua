@@ -10,7 +10,9 @@ return {
   tileheight = 16,
   nextlayerid = 4,
   nextobjectid = 21,
-  properties = {},
+  properties = {
+    ["name"] = "Proto 1"
+  },
   tilesets = {
     {
       name = "map_tileset",
