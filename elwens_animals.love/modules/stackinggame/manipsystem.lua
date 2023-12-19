@@ -1,6 +1,6 @@
 local Debug = require 'mydebug'
 local EventHelpers = require 'eventhelpers'
-local Entities = require 'modules.animalscreen.entities'
+local Entities = require 'modules.stackinggame.entities'
 
 local FlingFactorX=10
 local FlingFactorY=10
@@ -38,6 +38,8 @@ return function(estore, input, res)
       vis.sy = 0.7
       e.pos.x = touch.x
       e.pos.y = touch.y
+      e.pos.r = 0
+      e.vel.angularvelocity = 0
       e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE?
 
       -- Try to add a sound for this animal
@@ -55,8 +57,10 @@ return function(estore, input, res)
             -- Move the entity where the touch is moving
             e.pos.x = touch.x
             e.pos.y = touch.y
+            e.pos.r = 0
             e.vel.dx = 0
             e.vel.dy = 0
+            e.vel.angularvelocity = 0
             -- track some deltas
             e.manipulator.dx = touch.dx or 0
             e.manipulator.dy = touch.dy or 0

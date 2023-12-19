@@ -32,9 +32,30 @@ function Entities.animal(estore, res, kind)
     {'pic', {id=kind, sx=0.5, sy=0.5, centerx=0.5, centery=0.5}}, 
     {'pos', {}},
     {'vel', {}},
-    {'body', {}},
+    {'body', {debugDraw=false}},
     {'force', {}},
-    {'circleShape', {radius=50}},
+    -- https://www.mathopenref.com/coordpolycalc.html
+    -- {'circleShape', {radius=50}},
+    -- {'polygonShape', {vertices={ 0,-50, -48,-15, -29,40, 29,40, 48,-15 }}}, -- pentagon r=50
+    -- {'polygonShape', {vertices={ 
+    --   19,-46,
+    --   -19,-46,
+    --   -46,-19,
+    --   -46,19,
+    --   -19,46,
+    --   19,46,
+    --   46,19,
+    --   46,-19,
+    -- }}}, -- octagon r=50
+    -- {'polygonShape', {vertices={
+    --   35,-35,
+    --   -35,-35,
+    --   -35,35,
+    --   35,35,
+    -- }}} -- square r=50
+      {'rectangleShape', {x=0, y=0, w=100, h=100}},
+
+
   })
 end
 

@@ -16,16 +16,16 @@ M.newWorld = function()
   Debug.setup()
   local w = {}
   w.modes={}
-  w.modes["f1"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
+  w.modes["f1"] = function() return { module=StackingGame, state=StackingGame.newWorld() } end
   w.modes["f2"] = function() return { module=FishBowl, state=FishBowl.newWorld() } end
   w.modes["f3"] = function() return { module=Christmas, state=Christmas.newWorld() } end
   w.modes["f4"] = function() return { module=Snowman, state=Snowman.newWorld() } end
   w.modes["f5"] = function() return { module=Plotter, state=Plotter.newWorld() } end
   w.modes["f6"] = function() return { module=Downhill, state=Downhill.newWorld() } end
-  w.modes["f7"] = function() return { module=StackingGame, state=StackingGame.newWorld() } end
+  -- w.modes["f7"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   w.cycle = {"f1","f2","f3","f4","f6","f7"}
-  w.current = "f7"
+  w.current = "f1"
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
