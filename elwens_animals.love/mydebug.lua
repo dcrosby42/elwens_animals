@@ -9,16 +9,16 @@ D.d = {
   stringLines = {},
   notes = {},
   bounds = {},
-  bgColor = {0,0,0,0.5},
-  fgColor = {1,1,1,1},
-  onces={},
+  bgColor = { 0, 0, 0, 0.5 },
+  fgColor = { 1, 1, 1, 1 },
+  onces = {},
 }
 
-local function appendScrolled(lines,s,max)
+local function appendScrolled(lines, s, max)
   local e = #lines
   if e >= max then
-    for i=1, (e - 1) do
-      lines[i] = lines[i+1]
+    for i = 1, (e - 1) do
+      lines[i] = lines[i + 1]
     end
     e = e - 1
   end
@@ -34,7 +34,7 @@ end
 local function toLines()
   local lines = {}
   i = 1
-  for sli,line in ipairs(D.d.stringLines) do
+  for sli, line in ipairs(D.d.stringLines) do
     lines[i] = line
     i = i + 1
   end
@@ -53,48 +53,48 @@ local function draw()
   local dlines = toLines()
   local y = D.d.bounds.y
 
-  love.graphics.setColor(unpack(D.d.bgColor))
-  love.graphics.rectangle("fill", 0,y, D.d.bounds.width, D.d.bounds.height)
+  love.graphics.setColor(table.unpack(D.d.bgColor))
+  love.graphics.rectangle("fill", 0, y, D.d.bounds.width, D.d.bounds.height)
 
-  love.graphics.setColor(unpack(D.d.fgColor))
-  for i,line in ipairs(dlines) do
-    love.graphics.print(line,0,y)
+  love.graphics.setColor(table.unpack(D.d.fgColor))
+  for i, line in ipairs(dlines) do
+    love.graphics.print(line, 0, y)
     y = y + D.d.lineHeight
   end
-  love.graphics.setColor(1,1,1,1)
+  love.graphics.setColor(1, 1, 1, 1)
 end
 
-local function drawNotes(ox,oy)
-  local x,y = ox,oy
-  love.graphics.print("Notes:",x,y)
-  y=y+D.d.lineHeight
+local function drawNotes(ox, oy)
+  local x, y = ox, oy
+  love.graphics.print("Notes:", x, y)
+  y = y + D.d.lineHeight
   for name, notes in pairsByKeys(D.d.notes) do
-    love.graphics.print(name,x,y)
-    y=y+D.d.lineHeight
-    x=ox+10
-    for key,val in pairs(notes) do
-      love.graphics.print(key .. ": "..val,x,y)
-      y=y+D.d.lineHeight
+    love.graphics.print(name, x, y)
+    y = y + D.d.lineHeight
+    x = ox + 10
+    for key, val in pairs(notes) do
+      love.graphics.print(key .. ": " .. val, x, y)
+      y = y + D.d.lineHeight
     end
-    x=ox
+    x = ox
   end
 end
 
 
-local function makeSub(name,printToScreen,printToConsole,doNotes)
+local function makeSub(name, printToScreen, printToConsole, doNotes)
   D.onScreen[name] = printToScreen
   D.onConsole[name] = printToConsole
   D.doNotes[name] = doNotes
   local sub = {
-    println=function(str)
+    println = function(str)
       if D.onScreen[name] then
-        D.println("["..name.."] "..str)
+        D.println("[" .. name .. "] " .. str)
       end
       if D.onConsole[name] then
-        print("["..name.."] "..str)
+        print("[" .. name .. "] " .. str)
       end
     end,
-    note=function(key,val)
+    note = function(key, val)
       if D.doNotes[name] then
         local n = D.d.notes[name]
         if not n then
@@ -105,30 +105,30 @@ local function makeSub(name,printToScreen,printToConsole,doNotes)
           n[key] = nil
         else
           if type(val) == "number" then
-            n[key] = tostring(math.round(val,3))
+            n[key] = tostring(math.round(val, 3))
           else
             n[key] = tostring(val)
           end
         end
       end
     end,
-    once=function(key,fn)
+    once = function(key, fn)
       if not D.d.onces[key] then
         local out = fn()
         if out then
-          print("["..key.."] "..tostring(out))
+          print("[" .. key .. "] " .. tostring(out))
         end
         D.d.onces[key] = true
       end
     end,
   }
-  sub.noteObj=function(leadup,map)
+  sub.noteObj = function(leadup, map)
     local pref = ""
-    for i=1,#leadup do
-      pref = pref..tostring(leadup[i]).."."
+    for i = 1, #leadup do
+      pref = pref .. tostring(leadup[i]) .. "."
     end
-    for k,v in pairs(map) do
-      sub.note(pref..k, v)
+    for k, v in pairs(map) do
+      sub.note(pref .. k, v)
     end
   end
   return sub
@@ -141,8 +141,8 @@ D.update = update
 D.draw = draw
 D.drawNotes = drawNotes
 D.sub = makeSub
-D.onConsole={}
-D.onScreen={}
-D.doNotes={}
+D.onConsole = {}
+D.onScreen = {}
+D.doNotes = {}
 
 return D

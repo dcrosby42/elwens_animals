@@ -2,20 +2,20 @@ local Debug = require 'mydebug'
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.farmgame.entities'
 
-local FlingFactorX=10
-local FlingFactorY=10
+local FlingFactorX = 10
+local FlingFactorY = 10
 
 
 return function(estore, input, res)
   EventHelpers.handle(input.events, 'touch', {
     -- Touch pressed
-    pressed =function(touch)
+    pressed = function(touch)
       -- First, see if we touched an animal
       local hit
       estore:seekEntity(
         hasTag('animal'),
-        function(e) 
-          if dist(touch.x,touch.y, e.pos.x,e.pos.y) <= 70 then
+        function(e)
+          if dist(touch.x, touch.y, e.pos.x, e.pos.y) <= 70 then
             hit = e
             return true
           end
@@ -40,18 +40,17 @@ return function(estore, input, res)
       e.pos.y = touch.y
       e.pos.r = 0
       e.vel.angularvelocity = 0
-      e:newComp('manipulator', {id=touch.id, mode='drag'}) -- TODO MORE INFO HERE?
+      e:newComp('manipulator', { id = touch.id, mode = 'drag' }) -- TODO MORE INFO HERE?
 
       -- Try to add a sound for this animal
       Entities.addSound(e, animalName, res)
-
     end,
 
     -- Touch dragged
-    moved =function(touch)
+    moved = function(touch)
       -- Find the entity having a manipulator that matches the id of this touch event
       estore:walkEntities(
-        hasComps('manipulator','pos'),
+        hasComps('manipulator', 'pos'),
         function(e)
           if e.manipulator.id == touch.id then
             -- Move the entity where the touch is moving
@@ -65,13 +64,13 @@ return function(estore, input, res)
             e.manipulator.dx = touch.dx or 0
             e.manipulator.dy = touch.dy or 0
           end
-      end)
+        end)
     end,
 
     -- End of touch
-    released =function(touch)
+    released = function(touch)
       estore:walkEntities(
-        hasComps('manipulator','pos'),
+        hasComps('manipulator', 'pos'),
         function(e)
           if e.manipulator.id == touch.id then
             e.pos.x = touch.x
@@ -83,8 +82,8 @@ return function(estore, input, res)
             comp.sy = 0.5
             e:removeComp(e.manipulator)
           end
-      end)
+        end)
     end,
 
   })
-end 
+end
