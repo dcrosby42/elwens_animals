@@ -55,6 +55,8 @@ function composeDrawSystems(systems)
   end
 end
 
+-- Create an Entity predicate that matches entities having components for all given comp types.
+-- Eg, hasComps("label","pos","bounds") matches entities that have at least one each of label, pos and bounds components.
 function hasComps(...)
   local ctypes = {...}
   local num = #ctypes
@@ -86,18 +88,28 @@ function hasComps(...)
   end
 end
 
+-- Create an Entity predicate that matches on tag name
 function hasTag(tagname)
   return function(e)
     return e.tags and e.tags[tagname]
   end
 end
 
+-- Create an Entity predicate that matches on name component
 function hasName(name)
   return function(e)
     return e.name and e.name.name==name
   end
 end
 
+-- Create an Entity predictate that matches on proximity
+function isNear(x,y,maxDist)
+  return function(e)
+    return e.pos and math.dist(x, y, e.pos.x, e.pos.y) <= maxDist
+  end
+end
+
+-- Compose an Entity predicate that matches when all given predicates match
 function allOf(...)
   local matchers = {...}
   return function(e)
@@ -212,4 +224,41 @@ function sortEntities(ents, deep)
       sortEntities(ents[i]._children, true)
     end
   end
+end
+
+-- Find an entity with this tag near these coords; if found, run the func.
+-- Entity is passed as the sole arg to the func.
+-- Return true if an entity was matched, false otherwise.
+function touchingTaggedEntity(estore, coords, tagName, maxDist, fn)
+  local hit = false
+  estore:seekEntity(
+    allOf(hasTag(tagName), isNear(coords.x, coords.y, maxDist)),
+    function(e)
+      fn(e)
+      hit = true
+      return true
+    end
+  )
+  return hit
+end
+
+-- Return the first Entity matching the given entity predicate.
+-- Return nil if not found
+function findEntity(estore, filter)
+  local found
+  estore:seekEntity(filter, function(e)
+    found = true
+    return true
+  end)
+  return found
+end
+
+-- Return all the Entities matching the given entity predicate.
+-- Return empty table if none found
+function findEntities(estore, filter)
+  local ents = {}
+  estore:walkEntities(filter, function(e)
+    table.insert(ents, e)
+  end)
+  return ents
 end
