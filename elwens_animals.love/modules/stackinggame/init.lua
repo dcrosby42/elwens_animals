@@ -33,7 +33,7 @@ function M.newWorld()
     },
     resources = res,
     soundmgr = SoundManager:new(),
-    mute = true,
+    mute = false,
   }
   return world
 end

@@ -45,34 +45,51 @@ local animalsWithSounds = {
 
 local function loadAnimalImages(images)
   images["background1"] = R.getImage("data/images/zoo_keeper.png")
-  for _,name in ipairs(Res.animalNames) do
-    images[name] = R.getImage("data/images/"..name..".png")
+  for _, name in ipairs(Res.animalNames) do
+    images[name] = R.getImage("data/images/" .. name .. ".png")
   end
 end
 
 local function loadAnimalPics()
   local pics = {}
-  for _,name in ipairs(Res.animalNames) do
-    pics[name] = R.makePic("data/images/"..name..".png")
+  for _, name in ipairs(Res.animalNames) do
+    pics[name] = R.makePic("data/images/" .. name .. ".png")
   end
+  return pics
+end
+
+local function loadGeneralPics()
+  local names = {
+    "wood_box",
+    "wood_box_75",
+    "lettuce_100",
+    "strawberry_100",
+    "apple_100",
+    "bananas_100",
+  }
+  local pics = {}
+  for _, imgName in ipairs(names) do
+    pics[imgName] = R.makePic("data/images/" .. imgName .. ".png")
+  end
+  pics.background1 = R.makePic("data/images/zoo_keeper.png")
   return pics
 end
 
 function Res.loadSounds()
   local sounds = {}
-  for _,name in ipairs(animalsWithSounds) do
-    sounds[name] ={
-      file="data/sounds/fx/"..name..".wav",
-      mode="static",
-      volume=0.5,
+  for _, name in ipairs(animalsWithSounds) do
+    sounds[name] = {
+      file = "data/sounds/fx/" .. name .. ".wav",
+      mode = "static",
+      volume = 0.5,
     }
   end
   sounds["bgmusic"] = {
-    file="data/sounds/music/music.wav",
-    mode="stream",
-    volume=0.5,
+    file = "data/sounds/music/music.wav",
+    mode = "stream",
+    volume = 0.5,
   }
-  for name,cfg in pairs(sounds) do
+  for name, cfg in pairs(sounds) do
     if not cfg.data then
       cfg.data = love.sound.newSoundData(cfg.file)
     end
@@ -89,15 +106,13 @@ function Res.load()
     local r = {}
     r.animalNames = Res.animalNames
 
-    r.pics = loadAnimalPics()
-    r.pics.background1 = R.makePic("data/images/zoo_keeper.png")
+    r.pics = {}
+    tmerge(r.pics, loadAnimalPics())
     tmerge(r.pics, Res.loadButtonPics())
+    tmerge(r.pics, loadGeneralPics())
 
     r.sounds = Res.loadSounds()
-    -- r.physics = {
-    --   newObject=Phys.newObject,   -- func(w, e) -> {body,shapes,fixtures,componentId}
-    --   caches={},                  -- map cid -> {world,objectCache,collisionBuffer}
-    -- }
+
     cached = r
   end
   return cached
