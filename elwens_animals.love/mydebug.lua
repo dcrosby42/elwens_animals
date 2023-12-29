@@ -53,10 +53,10 @@ local function draw()
   local dlines = toLines()
   local y = D.d.bounds.y
 
-  love.graphics.setColor(table.unpack(D.d.bgColor))
+  love.graphics.setColor(unpack(D.d.bgColor))
   love.graphics.rectangle("fill", 0, y, D.d.bounds.width, D.d.bounds.height)
 
-  love.graphics.setColor(table.unpack(D.d.fgColor))
+  love.graphics.setColor(unpack(D.d.fgColor))
   for i, line in ipairs(dlines) do
     love.graphics.print(line, 0, y)
     y = y + D.d.lineHeight
