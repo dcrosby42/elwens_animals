@@ -56,14 +56,17 @@ function M.updateWorld(w, action)
     resetInput(w.input)
   elseif action.type == 'touch' then
     table.insert(w.input.events, shallowclone(action))
-  elseif action.type == 'keyboard' and action.state == "pressed" then
-    local x = love.math.random(0, 1024)
-    local y = love.math.random(0, 500)
-    local kind = pickRandom(w.resources.animalNames)
-    local e = Entities.animal(w.estore, w.resources, kind)
-    e.pos.x = x
-    e.pos.y = y
-    Entities.addSound(e, kind, w.resources)
+
+  -- elseif action.type == 'keyboard' and action.state == "pressed" then
+  --   -- Random animal creation on keypress
+  --   local x = love.math.random(0, 1024)
+  --   local y = love.math.random(0, 500)
+  --   local kind = pickRandom(w.resources.animalNames)
+  --   local e = Entities.animal(w.estore, w.resources, kind)
+  --   e.pos.x = x
+  --   e.pos.y = y
+  --   Entities.addSound(e, kind, w.resources)
+
   elseif action.type == 'mouse' then
     local evt = shallowclone(action)
     evt.type = "touch"
