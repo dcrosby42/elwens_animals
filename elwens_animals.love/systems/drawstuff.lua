@@ -58,6 +58,30 @@ local function drawPic(e, pic, res)
       colorstring(pic.color) })
   end
 end
+    
+local function drawPics(e, res)
+  if e.pics then
+    if tcount(e.pics) == 1 then
+      -- (short circuit: just draw the single pic)
+      drawPic(e, e.pic, res)
+    else
+      -- Draw list of pics obeying draworder:
+      -- (get a sortable list of pics)
+      local pics = {}
+      for _, pic in pairs(e.pics) do
+        table.insert(pics, pic)
+      end
+      -- (sort in place)
+      table.sort(pics, function(a, b)
+        return a.draworder < b.draworder
+      end)
+      -- (draw them)
+      for _, pic in ipairs(pics) do
+        drawPic(e, pic, res)
+      end
+    end
+  end
+end
 
 local function drawSystem(estore,res)
   local drawBounds = false
@@ -103,30 +127,7 @@ local function drawSystem(estore,res)
     --
     -- PIC
     --
-    if e.pics then
-      if tcount(e.pics) == 1 then
-        drawPic(e, e.pic, res)
-      else
-        -- Draw obeying pic.draworder:
-        -- (get a sortable list of pics)
-        local pics = {}
-        for _,pic in pairs(e.pics) do
-          table.insert(pics,pic)
-        end
-        -- (sort in place)
-        table.sort(pics, function(a,b)
-          return a.draworder < b.draworder
-        end)
-        -- (draw)
-        for _, pic in ipairs(pics) do
-          drawPic(e,pic,res)
-        end
-
-      end
-      -- for _, pic in pairs(e.pics) do
-      --   drawPic(e,pic,res)
-      -- end
-    end
+    drawPics(e, res)
 
     --
     -- ANIM

@@ -262,3 +262,20 @@ function findEntities(estore, filter)
   end)
   return ents
 end
+
+
+-- Returns a useful string depicting the entity name.
+-- Begins with the entity ID, then adds tag.name, name.name or pic.id, 
+-- if such components are available on the entity.
+function debugEntityName(e)
+  local name = "" .. e.eid
+  if e.tag then
+    name = name .. "." .. e.tag.name
+  end
+  if e.name then
+    name = name .. "." .. e.name.name
+  elseif e.pic then
+    name = name .. "." .. e.pic.id
+  end
+  return name
+end

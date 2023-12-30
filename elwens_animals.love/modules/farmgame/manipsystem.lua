@@ -92,8 +92,8 @@ return function(estore, input, res)
     -- Touch pressed
     pressed = function(touch)
       if handleAnimal(estore,touch,res) then
-      elseif handleFood(estore, touch, res) then
       elseif handleFoodBox(estore, touch, res) then
+      elseif handleFood(estore, touch, res) then
       elseif handleAir(estore,touch,res) then
       end
     end,

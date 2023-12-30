@@ -57,7 +57,7 @@ function M.updateWorld(w, action)
   elseif action.type == 'touch' then
     table.insert(w.input.events, shallowclone(action))
 
-  -- elseif action.type == 'keyboard' and action.state == "pressed" then
+  elseif action.type == 'keyboard' and action.state == "pressed" then
   --   -- Random animal creation on keypress
   --   local x = love.math.random(0, 1024)
   --   local y = love.math.random(0, 500)

@@ -20,9 +20,15 @@ function Entities.initialEntities(res)
 end
 
 function Entities.zooKeeper(estore, res)
+  local w,h = love.graphics.getDimensions()
+  local bg = "background1"
+  local bgRes = res.pics[bg]
+  local wRatio = w / bgRes.rect.w
+  local hRatio = h / bgRes.rect.h
+  -- print("bg : ".. wRatio .. " x " ..hRatio)
   return estore:newEntity({
     { 'tag',          { name = "zookeeper" } },
-    { 'pic',          { id = 'background1', sx = 1, sy = 1.05 } }, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
+    { 'pic',          { id = bg, sx = wRatio, sy = hRatio } }, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
     { 'pos',          {} },
     { 'debug',        { name = 'nextAnimal', value = 1 } },
     { 'sound',        { sound = 'bgmusic', loop = true, duration = res.sounds.bgmusic.duration } },
@@ -43,13 +49,14 @@ function Entities.animal(estore, res, kind)
 end
 
 function Entities.floor(estore, res)
+  local w,h = love.graphics.getDimensions()
+  local thick = 50
   return estore:newEntity({
     { 'name',           { name = "floor" } },
     { 'tag',            { name = 'floor' } },
-    { 'body',           { debugDraw = false, dynamic = false } },
-    { 'rectangleShape', { w = 1024, h = 50 } },
-    -- { 'pos',            { x = 512, y = 793 } },
-    { 'pos',            { x = 512, y = 780 } },
+    { 'body',           { debugDraw = true, dynamic = false } },
+    { 'rectangleShape', { w = w, h = thick } },
+    { 'pos',            { x = w/2, y = h + (thick/2) } },
   })
 end
 
@@ -67,14 +74,16 @@ function Entities.initial_food_boxes(estore, res)
 end
 
 function Entities.initial_animals(estore, res)
-  e = Entities.animal(estore, res, "hippo")
+  local w, h = love.graphics.getDimensions()
+
+  local e = Entities.animal(estore, res, "hippo")
   -- e.body.debugDraw = true
-  e.pos.x = 850
-  e.pos.y = 700
+  e.pos.x = w - 175
+  e.pos.y = h - 70
   e = Entities.animal(estore, res, "cat")
   -- e.body.debugDraw = true
-  e.pos.x = 950
-  e.pos.y = 700
+  e.pos.x = w - 75
+  e.pos.y = h - 90
 end
 
 function Entities.food_box(estore, res, name, img_name, x, y)
@@ -107,28 +116,31 @@ function Entities.buttons(parent, res)
 end
 
 function Entities.quitButton(estore, res)
+  local w, h = love.graphics.getDimensions()
   return estore:newEntity({
     { 'name',   { name = "power_button" } },
     { 'pic',    { id = 'power-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
-    { 'pos',    { x = 980, y = 50 } },
+    { 'pos',    { x = w - 44, y = 50 } },
     { 'button', { kind = 'hold', eventtype = 'POWER', holdtime = 0.5, radius = 40 } },
   })
 end
 
 function Entities.nextModeButton(estore, res)
+  local w, h = love.graphics.getDimensions()
   return estore:newEntity({
     { 'name',   { name = "skip_button" } },
     { 'pic',    { id = 'skip-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
-    { 'pos',    { x = 900, y = 50 } },
+    { 'pos',    { x = w - 124, y = 50 } },
     { 'button', { kind = 'hold', eventtype = 'SKIP', holdtime = 0.5, radius = 40 } },
   })
 end
 
 function Entities.toggleDebugButton(estore, res)
+  local w, h = love.graphics.getDimensions()
   return estore:newEntity({
     { 'name',   { name = "toggle_debug_button" } },
     -- {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
-    { 'pos',    { x = 500, y = 50 } },
+    { 'pos',    { x = w/2, y = 50 } },
     { 'button', { kind = 'hold', eventtype = 'TOGGLE_DEBUG', holdtime = 0.5, radius = 40 } },
   })
 end

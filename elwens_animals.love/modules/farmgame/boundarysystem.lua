@@ -1,16 +1,31 @@
+-- boundarysystem
+--
+-- Destroys entities that leave the screen (beyond the "grace buffer")
+--
 require 'ecs.ecshelpers'
 require 'mydebug'
 
-local Debug = Debug.sub("BoundarySystem",false,false)
+local doDebug = true
+local Debug = Debug.sub("BoundarySystem", doDebug, doDebug)
 
-local MaxY = 1000
-local MinY = -1000
-local MaxX = 2000
-local MinX = -1000
+local Buffer = 100
 
-return defineUpdateSystem({'pos','vel'}, function(e, estore,input,res)
-  if e.pos.y > MaxY or e.pos.y < MinY or e.pos.x > MaxX or e.pos.x < MinX then
+return defineUpdateSystem({ 'pos', 'vel' }, function(e, estore, input, res)
+  local w, h = love.graphics.getDimensions()
+  local top = -Buffer
+  local bottom = h + Buffer
+  local left = -Buffer
+  local right = w + Buffer
+
+  if e.pos.y > bottom or
+      e.pos.y < top or
+      e.pos.x > right or
+      e.pos.x < left then
+
+    if doDebug then
+      Debug.println("Destroy entity "..debugEntityName(e) .. ", cuz it left the screen.")
+    end
+
     estore:destroyEntity(e)
-    Debug.println(e.eid.." fell off the world.")
   end
 end)
