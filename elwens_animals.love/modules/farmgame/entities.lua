@@ -81,8 +81,8 @@ function Entities.food_box(estore, res, name, img_name, x, y)
   estore:newEntity({
     { 'name', { name = name } },
     { 'tag', { name = "food_box" } },
-    { 'pic',  { id = img_name, sx = 0.4, sy = 0.4, centerx = 0.5, centery = 0.5, name="food"} },
-    { 'pic',  { id = 'wood_box', sx = 0.5, sy = 0.5, centerx = 0.5, centery = 0.5, name="_box"} },
+    { 'pic',  { id = 'wood_box', sx = 0.5, sy = 0.5, centerx = 0.5, centery = 0.5, name="box", draworder=1} },
+    { 'pic',  { id = img_name, sx = 0.4, sy = 0.4, centerx = 0.5, centery = 0.5, name="food", draworder=2} },
     { 'pos',  { x = x, y = y } },
   })
 end

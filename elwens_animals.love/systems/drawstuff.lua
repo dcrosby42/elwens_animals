@@ -104,9 +104,28 @@ local function drawSystem(estore,res)
     -- PIC
     --
     if e.pics then
-      for _, pic in pairs(e.pics) do
-        drawPic(e,pic,res)
+      if tcount(e.pics) == 1 then
+        drawPic(e, e.pic, res)
+      else
+        -- Draw obeying pic.draworder:
+        -- (get a sortable list of pics)
+        local pics = {}
+        for _,pic in pairs(e.pics) do
+          table.insert(pics,pic)
+        end
+        -- (sort in place)
+        table.sort(pics, function(a,b)
+          return a.draworder < b.draworder
+        end)
+        -- (draw)
+        for _, pic in ipairs(pics) do
+          drawPic(e,pic,res)
+        end
+
       end
+      -- for _, pic in pairs(e.pics) do
+      --   drawPic(e,pic,res)
+      -- end
     end
 
     --
