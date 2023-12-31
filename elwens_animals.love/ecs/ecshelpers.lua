@@ -55,8 +55,9 @@ end
 --   Eg, if caller is composing "update" systems, they need to all have the proper f(estore,intput,res) signature,
 --   but if composing "draw" systems, they need to all have f(estore,res) signatures.
 function composeSystems(systems)
+  local resolved = resolveSystems(systems)
   return function(...)
-    for _,system in ipairs(resolveSystems(systems)) do
+    for _,system in ipairs(resolved) do
       system(...)
     end
   end
