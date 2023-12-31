@@ -9,11 +9,12 @@ local UPDATE = composeSystems({
   'systems.physics',
   'systems.sound',
   'systems.touchbutton',
+  'modules.farmgame.devsystem',
   'modules.farmgame.manipsystem',
   'modules.farmgame.boundarysystem',
 })
 
-local DRAW = composeDrawSystems({
+local DRAW = composeSystems({
   DrawSound.new("farmgame"),
   'systems.drawstuff',
   'systems.physicsdraw',

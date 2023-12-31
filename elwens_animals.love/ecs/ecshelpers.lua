@@ -1,20 +1,28 @@
 -- local debug = print
 local debug = function(...) end
 
+-- Require a list of modules, returning their values as a list
+-- TODO: find and remove all usages of this func, then delete the func.
 function requireModules(reqs)
   local modules = {}
-  for i,req in ipairs(reqs) do
+  for i, req in ipairs(reqs) do
     local module = require(req)
-    assert(module, "Cannot require '"..req.."'")
-    table.insert(modules,module)
+    assert(module, "Cannot require '" .. req .. "'")
+    table.insert(modules, module)
   end
-  debug("requireModules returning "..#modules.." modules")
+  debug("requireModules returning " .. #modules .. " modules")
   return modules
 end
 
-function resolveSystem(s,opts)
+-- Returns a System function:
+-- If s is a string, s will be loaded via require.
+-- If s is a function, it will be returned. (Param signature will NOT be checked/validated... we trust the caller here)
+-- If s is a table, the property s.system will be returned, on the assumption that it's an apporpirate system function.
+--   The property name "system" can be controlled via opts.systemKeys (a list of property names, which will be tried in order)
+-- Errors if system cannot be resolved.
+local function resolveSystem(s,opts)
   opts=opts or {}
-  opts.systemKeys = opts.systemKeys or {"system","System"}
+  opts.systemKeys = opts.systemKeys or {"system","System","drawSystem","DrawSystem"}
   if type(s) == "string" then
     s = require(s)
   end
@@ -31,29 +39,31 @@ function resolveSystem(s,opts)
   error("ecshelpers.resolveSystem '"..tostring(s).."' cannot be resolved as a System")
 end
 
-function composeSystems(systems)
+local function resolveSystems(systems)
   local rsystems = {}
-  for i=1,#systems do
+  for i = 1, #systems do
     table.insert(rsystems, resolveSystem(systems[i]))
   end
-  return function(estore,input,res)
-    for _,system in ipairs(rsystems) do
-      system(estore,input,res)
+  return rsystems
+end
+
+-- Return a single System func that invokes all the given Systems in order.
+-- Systems are resolved using resolveSystems()
+--   - "Update" system funcs have signature f(estore, input, res) -> (estore, sidefx)
+--   - "Draw" system funcs have signature f(estore, res) -> void
+-- NB: IT IS THE CALLER'S RESPONSIBILITTY to ensure the list of systems all have proper param sigs.
+--   Eg, if caller is composing "update" systems, they need to all have the proper f(estore,intput,res) signature,
+--   but if composing "draw" systems, they need to all have f(estore,res) signatures.
+function composeSystems(systems)
+  return function(...)
+    for _,system in ipairs(resolveSystems(systems)) do
+      system(...)
     end
   end
 end
 
-function composeDrawSystems(systems)
-  local rsystems = {}
-  for i=1,#systems do
-    table.insert(rsystems, resolveSystem(systems[i],{systemKeys={"drawSystem"}}))
-  end
-  return function(estore,res)
-    for _,system in ipairs(rsystems) do
-      system(estore,res)
-    end
-  end
-end
+-- TODO: find and remove all usages of composeDrawSystems
+composeDrawSystems = composeSystems
 
 -- Create an Entity predicate that matches entities having components for all given comp types.
 -- Eg, hasComps("label","pos","bounds") matches entities that have at least one each of label, pos and bounds components.
