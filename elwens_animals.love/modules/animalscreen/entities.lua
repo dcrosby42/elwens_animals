@@ -20,7 +20,7 @@ function Entities.zooKeeper(estore,res)
     {'tag',{name="zookeeper"}},
     {'pic', {id='background1', sx=1, sy=1.05}}, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
     {'pos', {}},
-    {'debug', {name='nextAnimal',value=1}},
+    -- {'debug', {name='nextAnimal',value=1}},
     {'sound', {sound='bgmusic',loop=true,duration=res.sounds.bgmusic.duration}},
     {'physicsWorld', {gy=9.8*64,allowSleep=false}},
   })

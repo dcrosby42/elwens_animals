@@ -3,7 +3,7 @@ require 'ecs.ecshelpers'
 local Entities = require 'modules.farmgame.entities'
 local Resources = require 'modules.farmgame.resources'
 local SoundManager = require 'soundmanager'
-local Debug = require 'mydebug'
+local Debug = (require('mydebug')).sub("farmgame.init",true,true,true)
 
 local UPDATE = composeSystems(requireModules({
   'systems.timer',
@@ -18,8 +18,6 @@ local DRAW = composeDrawSystems(requireModules({
   'systems.drawstuff',
   'systems.physicsdraw',
 }))
-
-love.physics.setMeter(64) --the height of a meter our worlds will be 64px
 
 local M = {}
 
@@ -58,6 +56,8 @@ function M.updateWorld(w, action)
     table.insert(w.input.events, shallowclone(action))
 
   elseif action.type == 'keyboard' and action.state == "pressed" then
+    Debug.println("keyboard action: "..tdebug(action))
+
   --   -- Random animal creation on keypress
   --   local x = love.math.random(0, 1024)
   --   local y = love.math.random(0, 500)

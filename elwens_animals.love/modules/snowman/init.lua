@@ -8,7 +8,7 @@ local Snow = require 'modules.snowman.snow'
 local DrawStuff = require 'systems.drawstuff'
 local DrawSound = require 'systems.drawsound'
 
-DrawStuff.addPlugin(Snow.drawingPlugin, "drawSnow")
+DrawStuff.addPlugin(Snow.drawingPlugin)
 
 local UPDATE = composeSystems({
   'systems.timer',
