@@ -347,6 +347,7 @@ function Estore:getEntityByName(name)
   return ent
 end
 
+-- DELETEME? unused...
 function Estore:getComponentOfNamedEntity(entName, compName)
   local comp
   self:seekEntity(hasName(entName), function(e)

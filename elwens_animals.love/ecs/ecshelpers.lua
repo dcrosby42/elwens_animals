@@ -176,9 +176,12 @@ function defineDrawSystem(matchSpec,fn)
   end
 end
 
+-- Returns x,y coords of an entity based on its pos component.
+-- ACCOUNTS FOR PARENTAL OFFSET... computed recursively upward.
+-- NB: Entities having body comps (physics) are NOT offset.
 function getPos(e)
   local par = e:getParent()
-  if par and par.pos and not e.body then -- FIXME ZOINKS knowing about 'body' here is bad juju
+  if par and par.pos and not e.body then -- FIXME ZOINKS knowing about 'body' here is bad juju; dirty trick to avoid offsetting physics objects
     local x,y = getPos(par)
     return e.pos.x + x, e.pos.y + y
   else
@@ -186,6 +189,8 @@ function getPos(e)
   end
 end
 
+-- Returns x,y,w,h bounds of an entity based on its bounds and scale components.
+-- If the given entity has no bounds comp, w and h are returned 1.
 function getBoundingRect(e)
   local x, y = getPos(e)
   local bounds = e.bounds
@@ -206,6 +211,7 @@ function getBoundingRect(e)
   return x,y,w,h
 end
 
+-- DELETEME? 2023-12-31
 function resolveEntCompKeyByPath(e, path)
   local key = path[#path]
   local cur = e
