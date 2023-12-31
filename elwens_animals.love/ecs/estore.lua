@@ -1,6 +1,17 @@
+--
+-- Estore
+--
+-- The Entity Store.
+--
 Comp = require 'ecs/component'
 Entity = require 'ecs/entity'
 require 'ecs/debug'
+
+-- Static flag: changes behavior of eid & cid generation to be global.
+-- Causes all entity and components to have unique ids across all entity stores in the program.
+local GLOBAL_IDS = true
+local _eidCounter = 1
+local _cidCounter = 1
 
 local Estore = {
 }
@@ -24,15 +35,27 @@ function Estore:new(o)
 end
 
 function Estore:nextEid()
-  local eid = "e" .. self.eidCounter
-  self.eidCounter = self.eidCounter + 1
-  return eid
+  if GLOBAL_IDS then
+    local eid = "e" .. _eidCounter
+    _eidCounter = _eidCounter + 1
+    return eid
+  else
+    local eid = "e" .. self.eidCounter
+    self.eidCounter = self.eidCounter + 1
+    return eid
+  end
 end
 
 function Estore:nextCid()
-  local cid = "c" .. self.cidCounter
-  self.cidCounter = self.cidCounter + 1
-  return cid
+  if GLOBAL_IDS then
+    local cid = "c" .. _cidCounter
+    _cidCounter = _cidCounter + 1
+    return cid
+  else
+    local cid = "c" .. self.cidCounter
+    self.cidCounter = self.cidCounter + 1
+    return cid
+  end
 end
 
 function Estore:_makeEnt(eid)
