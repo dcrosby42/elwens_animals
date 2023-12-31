@@ -156,7 +156,20 @@ local function applyKeyboardModifiers(action)
 end
 
 local function toKeyboardAction(state,key)
-  local keyboardAction = {type="keyboard", action='', key='', ctrl=false, lctrl=false, lctrl=false, shift=false, lshift=false, lshift=false,  gui=false, lgui=false, lgui=false}
+  local keyboardAction = {
+    type = "keyboard",
+    state = '',
+    key = '',
+    ctrl = false,
+    lctrl = false,
+    rctrl = false,
+    shift = false,
+    lshift = false,
+    rshift = false,
+    gui = false,
+    lgui = false,
+    rgui = false,
+  }
   keyboardAction.state=state
   keyboardAction.key=key
   applyKeyboardModifiers(keyboardAction)
