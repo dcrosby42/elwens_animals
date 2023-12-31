@@ -95,7 +95,6 @@ function Res.loadSounds()
     end
     if not cfg.duration or cfg.duration == '' then
       cfg.duration = cfg.data:getDuration()
-      print("resources: "..name.." sound computed duration "..cfg.duration)
     end
   end
   return sounds

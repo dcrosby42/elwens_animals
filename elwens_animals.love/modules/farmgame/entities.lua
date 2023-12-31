@@ -147,18 +147,30 @@ function Entities.toggleDebugButton(estore, res)
   })
 end
 
-function Entities.addSound(e, name, res)
-  if not name then return end
-  local cfg = res.sounds[name]
+function Entities.addSound(e, sndName, res)
+  if not sndName then return end
+  local cfg = res.sounds[sndName]
   if cfg then
+    local compName = sndName
+
+    if e.sounds and e.sounds[compName] then
+      -- (avoid component name collisions when a sound is repeated in this entity)
+      local i = 1
+      while e.sounds[compName] do
+        compName = sndName .. "" .. i
+        i = i + 1
+      end
+    end
+
     return e:newComp('sound', {
-      sound = name,
+      name = compName,
+      sound = sndName,
       state = 'playing',
       duration = cfg.duration,
       volume = cfg.volume or 1,
     })
   else
-    Debug.println("(No sound for " .. tostring(name) .. ")")
+    Debug.println("(No sound for " .. tostring(sndName) .. ")")
     return nil
   end
 end

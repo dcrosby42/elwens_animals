@@ -6,18 +6,23 @@
 -- cleanup(): call once during each draw phase; removes un-pinged sounds
 -- get(key) -> Source: return a managed Source by its key
 -- remove(key): stop and remove a sound by its key
-
+--
 local Debug = require('mydebug').sub("soundmanager",true,true,true)
 local GC = require('garbagecollect')
 
--- singleton state:
+Debug.println("initialize")
+love.audio.stop()
+
+-- global state:
 local _sources = {} -- map[key -> Source]
 local _pinged = {}  -- map[key -> bool]
 local _paused = false -- track if the global audio has been paused
 local _pausedSources = {} -- track if the global audio has been paused
 
--- public:
-local soundmanager = {}
+-- public singleton (facade for global state):
+if not soundmanager then
+  soundmanager = {}
+end
 
 -- Register an in-use audio Source by unique key.
 -- (Ok to call and re-call with same key-source each update.)
@@ -85,6 +90,15 @@ function soundmanager.unpause()
   end
   _pausedSources = {}
   Debug.println("Unpaused")
+end
+
+function soundmanager.printstate()
+  print("*** soundmanager state ***")
+  print("_paused: " .. tostring(_paused))
+  print("#_pausedSources: " .. #_pausedSources)
+  print("_sources (".. tcount(_sources) .. "):\n" .. tdebug(tkeys(_sources)))
+  print("_pinged (".. tcount(_pinged) .. "):\n" .. tdebug(_pinged))
+  print("**************************")
 end
 
 return soundmanager
