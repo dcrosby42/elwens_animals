@@ -1,5 +1,6 @@
 local Comps = require 'comps'
 local Estore = require 'ecs.estore'
+local Debug = require('mydebug').sub('animalscreen.Entities',true,true)
 
 local Entities={}
 
