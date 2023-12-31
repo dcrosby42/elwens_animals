@@ -1,9 +1,8 @@
 require 'ecs.ecshelpers'
-require 'mydebug'
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.christmas.entities'
 
-local Debug = Debug.sub("XmasSystem",false,false)
+local Debug = require('mydebug').sub("XmasSystem",false,false)
 
 function newOrnament(evt,estore,res)
   local item = pickRandom(res.ornamentNames)

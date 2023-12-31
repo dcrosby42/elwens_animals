@@ -6,7 +6,7 @@ require 'ecs.ecshelpers'
 require 'mydebug'
 
 local doDebug = true
-local Debug = Debug.sub("BoundarySystem", doDebug, doDebug)
+local Debug = require('mydebug').sub("BoundarySystem", doDebug, doDebug)
 
 local Buffer = 100
 

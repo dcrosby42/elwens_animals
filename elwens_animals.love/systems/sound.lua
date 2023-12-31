@@ -1,4 +1,4 @@
-Debug = require 'mydebug'
+local Debug = require('mydebug').sub("Sound",true,true,true)
 
 -- Accumulate's playtime for "playing" sounds.
 -- For non-looping sounds, once playtime exceeds the duration property, the sound component is deleted.
@@ -10,8 +10,8 @@ return defineUpdateSystem({'sound'},
         sound.playtime = sound.playtime + input.dt
         -- check for sound being done:
         if (not sound.loop) and (sound.duration ~= '') and (sound.playtime > sound.duration) then
-          -- Debug.println("Sound over, removing "..tflatten(sound))
           e:removeComp(sound)
+          Debug.println(sound.sound .. " completed. playtime=" .. sound.playtime)
         end
       end
     end

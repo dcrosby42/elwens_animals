@@ -1,7 +1,6 @@
 require 'ecs.ecshelpers'
-require 'mydebug'
 
-local Debug = Debug.sub("BoundarySystem",false,false)
+local Debug = require('mydebug').sub("BoundarySystem",false,false)
 
 local MaxY = 1000
 local MinY = -1000

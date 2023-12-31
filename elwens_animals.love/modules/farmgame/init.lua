@@ -2,7 +2,7 @@ require 'ecs.ecshelpers'
 local EcsAdapter = require 'ecs.moduleadapter'
 local Entities = require 'modules.farmgame.entities'
 local Resources = require 'modules.farmgame.resources'
-local DrawSound = require 'systems.drawsound'
+-- local DrawSound = require 'systems.drawsound'
 
 local UPDATE = composeSystems({
   'systems.timer',
@@ -15,7 +15,7 @@ local UPDATE = composeSystems({
 })
 
 local DRAW = composeSystems({
-  DrawSound.new("farmgame"),
+  'systems.drawsound2',
   'systems.drawstuff',
   'systems.physicsdraw',
 })

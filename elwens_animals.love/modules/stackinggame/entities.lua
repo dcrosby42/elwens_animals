@@ -1,3 +1,4 @@
+local Debug = require('mydebug').sub("stackinggame.Entities", true, true, true)
 local Comps = require 'comps'
 local Estore = require 'ecs.estore'
 

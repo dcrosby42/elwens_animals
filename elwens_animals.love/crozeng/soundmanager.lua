@@ -1,82 +1,90 @@
+-- soundmanager
+--
+-- Singleton wrapper around audio state.
+--
+-- manage(key, source): call for each alive sound each update tick
+-- cleanup(): call once during each draw phase; removes un-pinged sounds
+-- get(key) -> Source: return a managed Source by its key
+-- remove(key): stop and remove a sound by its key
+
 local Debug = require('mydebug').sub("soundmanager",true,true,true)
 local GC = require('garbagecollect')
 
+-- singleton state:
+local _sources = {} -- map[key -> Source]
+local _pinged = {}  -- map[key -> bool]
+local _paused = false -- track if the global audio has been paused
+local _pausedSources = {} -- track if the global audio has been paused
+
+-- public:
 local soundmanager = {}
 
-local Time = 0
-local Regs = {}
-
-local _paused = false
-local _pausedSources = {}
-
-function soundmanager.get(key)
-  local reg = Regs[key]
-  if reg then return reg.source end
-  return nil
-end
-
-function soundmanager.manage(key,source)
-  if _paused then return end
-  -- Debug.println("Time="..math.round(Time,3).." manage("..key..")")
-  local reg = Regs[key]
-  if not reg then
-    Debug.println("Time="..math.round(Time,3).." Start managing "..key)
-    reg = {
-      key=key,
-      source=source,
-      time=Time,
-    }
-    Regs[key] = reg
-  else
-    reg.source = source
-    reg.time =Time 
+-- Register an in-use audio Source by unique key.
+-- (Ok to call and re-call with same key-source each update.)
+-- Marks the sound as "pinged" (ie, "in use") for the current update, preventing
+-- cleanup() from stopping removing the sound.
+function soundmanager.manage(key,audioSrc)
+  if not _sources[key] then
+    Debug.println("managing sound "..key)
   end
+  _sources[key] = audioSrc
+  _pinged[key] = true
+  Debug.note(key, "on")
 end
 
-function soundmanager.update(dt)
-  if _paused then return end
-  for key,reg in pairs(Regs) do
-    if Time > reg.time then
-      -- This source registration has expired, meaning nobody has registered "recent" interest.
-      -- Kick the sound out of the world
-      Debug.println("Time="..math.round(Time,3).." stopping and kicking "..key..", last seen "..math.round(reg.time))
-      love.audio.stop(reg.source)
-      reg.source = nil
-      Regs[key] = nil
-      Debug.note("soundmanager|"..key, nil) -- remove from notes
-      GC.request()
-    else
-      -- This source registration is still good
-      Debug.note("soundmanager|"..key, reg.time)
+-- Remove sounds that haven't been "drawn"
+-- Invoke after each update tick.
+function soundmanager.cleanup()
+  -- Remove any sounds that weren't pinged during the last update.
+  for key, updated in pairs(_pinged) do
+    if not updated then
+      soundmanager.remove(key)
     end
   end
-  Time = Time + dt
+
+  -- Clear the ping state on the sounds that DID get pinged during the last update
+  for key, _ in pairs(_pinged) do
+    _pinged[key] = false
+  end
 end
+
+-- Retrieve a registered audio Source by its key.
+-- Returns nil if not found.
+function soundmanager.get(key)
+  return _sources[key]
+end
+
+-- Stop and remove an audio Source by its key
+function soundmanager.remove(key)
+  local audioSrc = soundmanager.get(key)
+  if audioSrc then
+    love.audio.stop(audioSrc)
+    _sources[key] = nil
+    _pinged[key] = nil
+    GC.request()
+    Debug.note(key, nil) -- remove from notes
+    Debug.println("removed sound " .. key)
+  else
+    Debug.println("remove " .. key .. ": sound not found.")
+  end
+end
+
 
 function soundmanager.pause()
-  if not _paused then
-    -- TODO pause all the sources
-    for key,reg in pairs(Regs) do
-      if not reg.source.pause then
-        error("Source no pause? "..tflatten(reg.source))
-      end
-      reg.source:pause()
-      _pausedSources[key] = reg.source
-    end
-    _paused = true
-  end
+  if _paused then return end
+  _paused = true
+  _pausedSources = love.audio.pause()
+  Debug.println("Paused")
 end
 
 function soundmanager.unpause()
-  if _paused then
-    _paused = false
-    for key,reg in pairs(Regs) do
-      if _pausedSources[key] then
-        reg.source:play()
-        _pausedSources[key] = nil
-      end
-    end
+  if not _paused then return end
+  _paused = false
+  for _, src in ipairs(_pausedSources) do
+    love.audio.play(src)
   end
+  _pausedSources = {}
+  Debug.println("Unpaused")
 end
 
 return soundmanager

@@ -1,9 +1,9 @@
 require 'ecs.ecshelpers'
-require 'mydebug'
+
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.fishbowl.entities'
 
-local Debug = Debug.sub("BubbleSprayer",false,false)
+local Debug = require('mydebug').sub("BubbleSprayer",false,false)
 
 --
 -- Bubble Sprayer System

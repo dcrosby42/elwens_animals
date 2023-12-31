@@ -1,9 +1,9 @@
 require 'ecs.ecshelpers'
-require 'mydebug'
+
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.fishbowl.entities'
 
-local Debug = Debug.sub("FishSpawner",false,false)
+local Debug = require('mydebug').sub("FishSpawner",false,false)
 
 local function spawnFish(e,estore,input,res)
   local f = Entities.fish(estore, res)

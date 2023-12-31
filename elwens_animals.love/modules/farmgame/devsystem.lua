@@ -5,7 +5,7 @@ local EventHelpers = require 'eventhelpers'
 return function(estore, input, res)
   EventHelpers.handle(input.events, 'keyboard', {
     pressed = function(event)
-      Debug.println("Keyboard! "..event.key)
+      -- Debug.println("Keyboard! "..event.key)
     end,
   })
 end

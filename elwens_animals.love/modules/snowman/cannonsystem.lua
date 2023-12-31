@@ -1,10 +1,9 @@
 require 'ecs.ecshelpers'
-require 'mydebug'
 local V = require "vector-light"
 local EventHelpers = require 'eventhelpers'
 local Entities = require 'modules.snowman.entities'
 
-local Debug = Debug.sub("CannonSystem",true,true)
+local Debug = require('mydebug').sub("CannonSystem",true,true)
 
 local Range = 500
 local MinPow = 500

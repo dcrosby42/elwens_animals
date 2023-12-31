@@ -116,7 +116,6 @@ local tickAction = {type="tick", dt=0}
 function love.update(dt)
   tickAction.dt = dt
   updateWorld(tickAction)
-  soundmanager.update(dt)
   tickAction.dt = 0
 end
 
@@ -134,6 +133,7 @@ function love.draw()
     if not ok then
       setErrorMode(err,debug.traceback())
     end
+    soundmanager.cleanup()
   end
 end
 

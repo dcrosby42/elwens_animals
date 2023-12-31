@@ -1,5 +1,6 @@
 local Comps = require 'comps'
 local Estore = require 'ecs.estore'
+local Debug = require('mydebug').sub('farmgame.Entities',true,true)
 
 local Entities = {}
 
@@ -27,16 +28,18 @@ function Entities.zooKeeper(estore, res)
   local hRatio = h / bgRes.rect.h
   -- print("bg : ".. wRatio .. " x " ..hRatio)
   return estore:newEntity({
+    { 'name',         { name = "zookeeper" } },
     { 'tag',          { name = "zookeeper" } },
     { 'pic',          { id = bg, sx = wRatio, sy = hRatio } }, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
     { 'pos',          {} },
-    -- { 'sound',        { sound = 'bgmusic', loop = true, duration = res.sounds.bgmusic.duration } },
+    { 'sound',        { sound = 'bgmusic', loop = true, duration = res.sounds.bgmusic.duration } },
     { 'physicsWorld', { gy = 9.8 * 64, allowSleep = false } },
   })
 end
 
 function Entities.animal(estore, res, kind)
   return estore:newEntity({
+    { 'name',           { name = kind } },
     { 'tag',            { name = "animal" } },
     { 'pic',            { id = kind, sx = 0.5, sy = 0.5, centerx = 0.5, centery = 0.5 } },
     { 'pos',            {} },
