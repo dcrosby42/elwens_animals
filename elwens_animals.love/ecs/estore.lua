@@ -315,6 +315,13 @@ function Estore:walkEntity(e, matchFn, doFn)
   if (not matchFn) or matchFn(e) then -- execute doFn if either a) no matcher, or b) matcher provided and returns true
     if doFn(e) == false then return end
   end
+  self:walkChildren(e, matchFn, doFn)
+  -- for _, ch in ipairs(e._children) do
+  --   self:walkEntity(ch, matchFn, doFn)
+  -- end
+end
+
+function Estore:walkChildren(e, matchFn, doFn)
   for _, ch in ipairs(e._children) do
     self:walkEntity(ch, matchFn, doFn)
   end

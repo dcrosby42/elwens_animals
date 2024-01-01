@@ -69,6 +69,10 @@ function Entity:walkEntities(matchFn, handler)
   self._estore:walkEntity(self,matchFn,handler)
 end
 
+function Entity:walkChildren(matchFn, handler)
+  self._estore:walkChildren(self,matchFn,handler)
+end
+
 
 function Entity:resortChildren(deep)
   if self._children then

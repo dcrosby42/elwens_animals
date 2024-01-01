@@ -7,17 +7,47 @@ local Entities = {}
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
-  Entities.zooKeeper(estore, res)
+  -- In viewport:
+  local targ = Entities.viewportTarget(estore)
+  local viewportE = Entities.viewport(estore, targ.viewportTarget.name)
+  Entities.zooKeeper(viewportE, res)
+  Entities.floor(viewportE, res)
+  Entities.initial_animals(viewportE,res)
 
-  Entities.floor(estore, res)
 
-  Entities.initial_food_boxes(estore, res)
-
-  Entities.initial_animals(estore,res)
-
-  Entities.buttons(estore, res)
+  -- UI
+  local uiE = estore:newEntity({
+    {"name", {name="ui"}}
+  })
+  Entities.initial_food_boxes(uiE, res)
+  Entities.buttons(uiE, res)
 
   return estore
+end
+
+function Entities.viewport(estore,targetName)
+  local w, h = love.graphics.getDimensions()
+  return estore:newEntity({
+    { 'name',     { name = "viewport" } },
+    { 'viewport', { x = 0, y = 0, sx = 1, sy = 1, w = w, h = h, targetName=targetName } },
+  })
+end
+
+function Entities.viewportTarget(parent,res,name)
+  local w, h = love.graphics.getDimensions()
+  local offx = -(w/2)
+  local offy = -(h/2)
+  name = name or "viewport_target"
+  return parent:newEntity({
+    { 'viewportTarget', { name=name, offx = offx, offy = offy} },
+    { 'pos',            { x = 0, y = 0 } },
+    { 'name',           { nname = name } },
+  })
+end
+
+-- Get "the" viewport entity in this world
+function Entities.getViewport(estore)
+  return findEntity(estore, hasComps('viewport'))
 end
 
 function Entities.zooKeeper(estore, res)
@@ -32,7 +62,7 @@ function Entities.zooKeeper(estore, res)
     { 'tag',          { name = "zookeeper" } },
     { 'pic',          { id = bg, sx = wRatio, sy = hRatio } }, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
     { 'pos',          {} },
-    { 'sound',        { sound = 'bgmusic', loop = true, duration = res.sounds.bgmusic.duration } },
+    -- { 'sound',        { sound = 'bgmusic', loop = true, duration = res.sounds.bgmusic.duration } },
     { 'physicsWorld', { gy = 9.8 * 64, allowSleep = false } },
   })
 end
@@ -98,8 +128,8 @@ function Entities.food_box(estore, res, name, img_name, x, y)
   })
 end
 
-function Entities.food(estore, res, kind)
-  return estore:newEntity({
+function Entities.food(parent, res, kind)
+  return parent:newEntity({
     { 'tag',         { name = "food" } },
     { 'pic',         { id = kind, sx = 0.5, sy = 0.5, centerx = 0.5, centery = 0.5 } },
     { 'pos',         {} },

@@ -267,23 +267,49 @@ local function drawBounds(e, res)
   end
 end
 
+local function drawAny(e,estore,res)
+  for i = 1, #Plugins do
+    Plugins[i](e, estore, res)
+  end
+
+  drawButton(e, res)
+
+  drawPics(e, res)
+
+  drawAnims(e, res)
+
+  drawLabels(e, res)
+
+  drawShapes(e, res)
+
+  drawBounds(e, res)
+end
+
+local function traverse(e, estore, res)
+  if e.viewport then
+    love.graphics.push()
+    -- print(e.viewport.x)
+    love.graphics.translate(-e.viewport.x, -e.viewport.y)
+    love.graphics.scale(e.viewport.sx, e.viewport.sy)
+
+    -- print("-")
+    e:walkChildren(nil, function(ch)
+      -- print(ch.eid)
+      traverse(ch, estore, res)
+    end)
+
+    love.graphics.pop()
+
+    return false -- signal the outer walker that we've handled our own subwalk
+  else
+    drawAny(e, estore, res)
+    return true -- signal outer walker to keep walking
+  end
+end
+
 local function drawSystem(estore, res)
-  estore:walkEntities(hasComps('pos'), function(e)
-    for i = 1, #Plugins do
-      Plugins[i](e, estore, res)
-    end
-
-    drawButton(e, res)
-
-    drawPics(e, res)
-
-    drawAnims(e, res)
-
-    drawLabels(e, res)
-
-    drawShapes(e, res)
-
-    drawBounds(e, res)
+  estore:walkEntities(nil, function(e)
+    return traverse(e, estore, res)
   end)
 end
 

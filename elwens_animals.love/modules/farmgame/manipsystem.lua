@@ -50,7 +50,12 @@ end
 local function handleFoodBox(estore,touch,res)
   return touchingTaggedEntity(estore, touch, "food_box", 50, function(e)
     -- Dispense food
-    local foodE = Entities.food(estore, res, e.pics.food.id)
+    local parent = estore
+
+    local viewportE = Entities.getViewport(estore)
+    if viewportE then parent = viewportE end
+
+    local foodE = Entities.food(parent, res, e.pics.food.id)
     foodE.pos.x = e.pos.x
     foodE.pos.y = e.pos.y
     foodE.force.impx = 5

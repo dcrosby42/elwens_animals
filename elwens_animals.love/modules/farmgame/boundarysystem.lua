@@ -5,8 +5,7 @@
 require 'ecs.ecshelpers'
 require 'mydebug'
 
-local doDebug = true
-local Debug = require('mydebug').sub("BoundarySystem", doDebug, doDebug)
+local Debug = require('mydebug').sub("BoundarySystem", false, false, false)
 
 local Buffer = 100
 
@@ -21,11 +20,7 @@ return defineUpdateSystem({ 'pos', 'vel' }, function(e, estore, input, res)
       e.pos.y < top or
       e.pos.x > right or
       e.pos.x < left then
-
-    if doDebug then
-      Debug.println("Destroy entity "..debugEntityName(e) .. ", cuz it left the screen.")
-    end
-
+    Debug.println("Destroy entity "..debugEntityName(e) .. ", cuz it left the screen.")
     estore:destroyEntity(e)
   end
 end)

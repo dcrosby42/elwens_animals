@@ -264,7 +264,7 @@ end
 function findEntity(estore, filter)
   local found
   estore:seekEntity(filter, function(e)
-    found = true
+    found = e
     return true
   end)
   return found

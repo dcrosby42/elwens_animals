@@ -7,7 +7,7 @@
 -- get(key) -> Source: return a managed Source by its key
 -- remove(key): stop and remove a sound by its key
 --
-local Debug = require('mydebug').sub("soundmanager",true,true,true)
+local Debug = require('mydebug').sub("soundmanager",false,false,false)
 local GC = require('garbagecollect')
 
 Debug.println("initialize")

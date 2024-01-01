@@ -6,7 +6,7 @@ local Resources = require 'modules.snowman.resources'
 local Entities = require 'modules.snowman.entities'
 local Snow = require 'modules.snowman.snow'
 local DrawStuff = require 'systems.drawstuff'
-local DrawSound = require 'systems.drawsound'
+-- local DrawSound = require 'systems.drawsound'
 
 DrawStuff.addPlugin(Snow.drawingPlugin)
 
@@ -20,9 +20,14 @@ local UPDATE = composeSystems({
   'modules.snowman.upright',
 })
 
-local DRAW = composeDrawSystems({
-  DrawStuff.drawSystem,
-  DrawSound.new("snowman"),
+-- local DRAW = composeDrawSystems({
+--   DrawStuff.drawSystem,
+--   DrawSound.new("snowman"),
+--   'systems.physicsdraw',
+-- })
+local DRAW = composeSystems({
+  'systems.drawsound2',
+  'systems.drawstuff',
   'systems.physicsdraw',
 })
 
