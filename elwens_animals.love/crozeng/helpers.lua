@@ -299,6 +299,14 @@ function lfindallby(t,key,val)
   return res
 end
 
+function lmap(t,fn)
+  local res = {}
+  for i,val in ipairs(t) do
+    res[i] = fn(t[i])
+  end
+  return res
+end
+
 function iterateFuncs(funcs)
   return function(a,b,c)
     for _,fn in ipairs(funcs) do

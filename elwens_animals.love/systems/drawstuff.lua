@@ -137,7 +137,7 @@ local function drawAnims(e, res)
           r = r + e.anim.r
         end
 
-        local offy = 0
+        local offx = 0
         local offy = 0
         if anim.centerx ~= '' then
           offx = anim.centerx * picRes.rect.w

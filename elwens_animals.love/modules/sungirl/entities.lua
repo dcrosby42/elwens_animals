@@ -6,12 +6,19 @@ local Entities = {}
 function Entities.initialEntities(res)
   local estore = Estore:new()
 
-  -- In viewport:
+  --
+  -- Viewport area
+  --
   local targ = Entities.viewportTarget(estore, res, "FollowMe")
   local viewportE = Entities.viewport(estore, res, targ.viewportTarget.name)
+
   Entities.background(viewportE, res, "background01")
 
-  -- UI
+  Entities.sketch_walker(viewportE, res)
+
+  --
+  -- UI overlay
+  --
   -- local uiE = estore:newEntity({
   --   {"name", {name="ui"}}
   -- })
@@ -52,6 +59,15 @@ function Entities.background(parent, res, picId)
     { 'name', { name = "background" } },
     { 'pic',  { id = picId, sx = vscale, sy = vscale } },
     { 'pos',  { x = 0, y = 0 } },
+  })
+end
+
+function Entities.sketch_walker(estore, res)
+  return estore:newEntity({
+    { 'name',  { name = "sketchwalker" } },
+    { 'pos',   { x = 100, y = 800 } },
+    { 'anim',  { name = "walky", id = "sketch_walk_right", centerx = 0.5, centery = 0.5, drawbounds = false } },
+    { 'timer', { name = "walky", countDown = false } },
   })
 end
 

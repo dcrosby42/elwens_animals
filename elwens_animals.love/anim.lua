@@ -41,6 +41,7 @@ function Anim.makeFrameLookup(anim,opts)
         return anim.pics[i]
       end
     end
+    print("anim? "..tdebug(anim))
   end
 end
 
