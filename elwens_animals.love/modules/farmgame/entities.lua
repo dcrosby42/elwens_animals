@@ -8,8 +8,8 @@ function Entities.initialEntities(res)
   local estore = Estore:new()
 
   -- In viewport:
-  local targ = Entities.viewportTarget(estore)
-  local viewportE = Entities.viewport(estore, targ.viewportTarget.name)
+  local targ = Entities.viewportTarget(estore, res, "FollowMe")
+  local viewportE = Entities.viewport(estore, res, targ.viewportTarget.name)
   Entities.zooKeeper(viewportE, res)
   Entities.floor(viewportE, res)
   Entities.initial_animals(viewportE,res)
@@ -25,7 +25,7 @@ function Entities.initialEntities(res)
   return estore
 end
 
-function Entities.viewport(estore,targetName)
+function Entities.viewport(estore,res,targetName)
   local w, h = love.graphics.getDimensions()
   return estore:newEntity({
     { 'name',     { name = "viewport" } },
@@ -41,7 +41,7 @@ function Entities.viewportTarget(parent,res,name)
   return parent:newEntity({
     { 'viewportTarget', { name=name, offx = offx, offy = offy} },
     { 'pos',            { x = 0, y = 0 } },
-    { 'name',           { nname = name } },
+    { 'name',           { name = name } },
   })
 end
 
@@ -56,11 +56,11 @@ function Entities.zooKeeper(estore, res)
   local bgRes = res.pics[bg]
   local wRatio = w / bgRes.rect.w
   local hRatio = h / bgRes.rect.h
-  -- print("bg : ".. wRatio .. " x " ..hRatio)
+  local biggerR = math.max(wRatio,hRatio)
   return estore:newEntity({
     { 'name',         { name = "zookeeper" } },
     { 'tag',          { name = "zookeeper" } },
-    { 'pic',          { id = bg, sx = wRatio, sy = hRatio } }, -- zoo_keeper.png is 731px tall, we want to stretch it to 768
+    { 'pic',          { id = bg, sx = biggerR, sy = biggerR } }, 
     { 'pos',          {} },
     -- { 'sound',        { sound = 'bgmusic', loop = true, duration = res.sounds.bgmusic.duration } },
     { 'physicsWorld', { gy = 9.8 * 64, allowSleep = false } },

@@ -46,4 +46,10 @@ return function(estore, input, res)
       manuallyMoveViewport(event, estore)
     end,
   })
+
+  EventHelpers.handle(input.events, 'touch', {
+    scrolled = function(maction)
+      print("scrolled "..maction.x..","..maction.y)
+    end
+  })
 end
