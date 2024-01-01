@@ -7,6 +7,7 @@ local Plotter = require 'modules/plotter'
 local Downhill = require 'modules/downhill'
 local StackingGame = require 'modules/stackinggame'
 local FarmGame = require 'modules/farmgame'
+local SunGirl = require 'modules/sungirl'
 local GC = require 'garbagecollect'
 
 local M = {}
@@ -24,11 +25,13 @@ M.newWorld = function()
   w.modes["f5"] = function() return { module=Plotter, state=Plotter.newWorld() } end
   w.modes["f6"] = function() return { module=Downhill, state=Downhill.newWorld() } end
   w.modes["f7"] = function() return { module=FarmGame, state=FarmGame.newWorld() } end
+  w.modes["f8"] = function() return { module=SunGirl, state=SunGirl.newWorld() } end
   -- w.modes["f7"] = function() return { module=AnimalScreen, state=AnimalScreen.newWorld() } end
   -- w.modes["f5"] = function() return { module=SnowScratch, state=SnowScratch.newWorld() } end
   -- w.cycle = {"f1","f2","f3","f4","f6","f7"}
-  w.cycle = {"f1","f2","f3","f4","f6","f7"}
-  w.current = "f7"
+  w.cycle = {"f1","f2","f3","f4","f6","f7","f8"}
+  w.current = "f8"
+
   w.ios = love.system.getOS() == "iOS"
   if w.ios then
     w.showLog = false
