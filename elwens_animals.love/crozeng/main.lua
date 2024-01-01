@@ -194,7 +194,25 @@ function love.keyreleased(key, _scancode, _isrepeat)
   updateWorld(toKeyboardAction("released",key))
 end
 
-local mouseAction = {type="mouse", state=nil, x=0, y=0, dx=0,dy=0,button=0, isTouch=0, ctrl=false, lctrl=false, lctrl=false, shift=false, lshift=false, lshift=false,  gui=false, lgui=false, lgui=false}
+local mouseAction = {
+  type = "mouse",
+  state = nil,
+  x = 0,
+  y = 0,
+  dx = 0,
+  dy = 0,
+  button = 0,
+  isTouch = 0,
+  ctrl = false,
+  lctrl = false,
+  rctrl = false,
+  shift = false,
+  lshift = false,
+  rshift = false,
+  gui = false,
+  lgui = false,
+  rgui = false
+}
 function toMouseAction(s,x,y,b,it,dx,dy)
   mouseAction.state=s
   mouseAction.x=x
@@ -217,6 +235,10 @@ end
 
 function love.mousemoved(x,y, dx,dy, isTouch)
   updateWorld(toMouseAction("moved",x,y,nil,isTouch,dx,dy))
+end
+
+function love.wheelmoved(x,y)
+  updateWorld(toMouseAction("scrolled", x, y, nil, false, 0, 0))
 end
 
 local touchAction = {type="touch", state=nil, id='', x=0, y=0, dx=0, dy=0}
