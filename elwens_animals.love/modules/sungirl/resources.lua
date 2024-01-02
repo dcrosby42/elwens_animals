@@ -64,6 +64,12 @@ function Res.load()
   }
 
   addPic(resources, "background01")
+  addPic(resources, "Sungirl_items-1")
+  addPic(resources, "Sungirl_items-2")
+  addPic(resources, "Sungirl_sun-1")
+  resources.pics["umbrella"] = resources.pics["Sungirl_items-1"]
+  resources.pics["flower1"] = resources.pics["Sungirl_items-2"]
+  resources.pics["big_sun"] = resources.pics["Sungirl_sun-1"]
 
   addSketchWalkAnim(resources)
   addSunGirlAnimations(resources)
