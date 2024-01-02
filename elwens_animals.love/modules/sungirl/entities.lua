@@ -1,5 +1,6 @@
 local Estore = require 'ecs.estore'
 local Debug = require('mydebug').sub('sungirl.Entities', true, true, true)
+local Comp = require 'ecs/component'
 
 local Entities = {}
 
@@ -14,7 +15,8 @@ function Entities.initialEntities(res)
 
   Entities.background(viewportE, res, "background01")
 
-  Entities.sungirl(viewportE, res)
+  local player = Entities.sungirl(viewportE, res)
+  targ:newComp('follow', { targetName = player.name.name })
   -- Entities.sketch_walker(viewportE, res)
 
   --
@@ -28,10 +30,21 @@ function Entities.initialEntities(res)
 end
 
 function Entities.viewport(estore, res, targetName)
+  local mapw = 10000
+  local maph = 1000
+
   local w, h = love.graphics.getDimensions()
+  local aspect = w / h
+
+  local vh = maph
+  local vw = vh * aspect
+
+  local scale = h / vh
+
   return estore:newEntity({
     { 'name',     { name = "viewport" } },
-    { 'viewport', { x = 0, y = 0, sx = 1, sy = 1, w = w, h = h, targetName = targetName } },
+    { 'viewport', { x = 0, y = 0, sx = scale, sy = scale , w = vw, h = vh, targetName = targetName } },
+    { 'bounds', {offx=0,offy=0, w=mapw,h=maph}}
   })
 end
 
@@ -53,30 +66,40 @@ function Entities.getViewport(estore)
 end
 
 function Entities.background(parent, res, picId)
-  local w,h = love.graphics.getDimensions()
-  local picRes = res.pics[picId]
-  local vscale = h / picRes.rect.h
+  -- local w,h = love.graphics.getDimensions()
+  -- local picRes = res.pics[picId]
+  -- local vscale = h / picRes.rect.h
+  local vscale = 1
   return parent:newEntity({
     { 'name', { name = "background" } },
     { 'pic',  { id = picId, sx = vscale, sy = vscale } },
     { 'pos',  { x = 0, y = 0 } },
+    { 'background', { color = { 0.75, 0.85, 1, 1 } } },
   })
 end
+
+Comp.define('player_control', { 'right', false, 'left', false, 'jump', false })
 
 function Entities.sungirl(estore, res)
   return estore:newEntity({
     { 'name',  { name = "sungirl" } },
-    { 'pos',   { x = 100, y = 700 } },
-    { 'timer', { name = "sungirl", countDown = false } },
+    { 'tag',   { name = 'sungirl' } },
+    { 'tag',   { name = 'player' } },
+    { 'player_control', {} },
+    { 'state', { name = "dir", value="right" } },
+    -- { 'state', { name = "animation", value="stand" } },
     { 'anim', {
       name = "sungirl",
       id = "sungirl_stand",
       centerx = 0.5,
       centery = 0.5,
+      sx = 0.5,
+      sy = 0.5,
       drawbounds = false,
-      sx=0.5,
-      sy=0.5,
     } },
+    { 'timer', { name = "sungirl", countDown = false } },
+    { 'pos',   { x = 100, y = 700 } },
+    { 'vel',   { } },
   })
 end
 

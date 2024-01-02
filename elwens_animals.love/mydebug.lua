@@ -82,6 +82,9 @@ end
 
 
 local function makeSub(name, printToScreen, printToConsole, doNotes)
+  if printToScreen == nil then printToScreen = true end
+  if printToConsole == nil then printToConsole = printToScreen end
+  if doNotes == nil then doNotes = printToScreen end
   D.onScreen[name] = printToScreen
   D.onConsole[name] = printToConsole
   D.doNotes[name] = doNotes

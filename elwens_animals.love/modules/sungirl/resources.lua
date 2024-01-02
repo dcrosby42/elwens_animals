@@ -1,5 +1,6 @@
 local R = require 'resourceloader'
 local Anim = require 'anim'
+local Debug = require('mydebug').sub("SunGirl.resources")
 
 local Res = {}
 
@@ -29,7 +30,7 @@ local function addSketchWalkAnim(resources)
 end
 
 local function addSunGirlAnimations(resources)
-  local rate = 1/5
+  local rate = 1/8
 
   local runRight = lmap({
     "Sun_girl_animation-3",
@@ -37,7 +38,7 @@ local function addSunGirlAnimations(resources)
     "Sun_girl_animation-5",
     "Sun_girl_animation-6",
   }, function(name) return makePic(name) end)
-  resources.anims["sungirl_run_right"] = Anim.makeSimpleAnim(runRight, rate)
+  resources.anims["sungirl_run"] = Anim.makeSimpleAnim(runRight, rate)
 
 
   local standPics = {
@@ -46,7 +47,7 @@ local function addSunGirlAnimations(resources)
   }
   standPics[1].duration = 5
   standPics[2].duration = 0.2
-  resources.anims["sungirl_stand"] = Anim.makeSimpleAnim(standPics, 4)
+  resources.anims["sungirl_stand"] = Anim.makeSimpleAnim(standPics)
 
 end
 

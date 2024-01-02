@@ -267,7 +267,16 @@ local function drawBounds(e, res)
   end
 end
 
+
+local function drawBackgroundColor(e, res)
+  if e.background then
+    love.graphics.setBackgroundColor(e.background.color)
+  end
+end
+
 local function drawAny(e,estore,res)
+  drawBackgroundColor(e, res)
+
   for i = 1, #Plugins do
     Plugins[i](e, estore, res)
   end

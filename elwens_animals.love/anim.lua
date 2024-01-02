@@ -51,7 +51,7 @@ function Anim.makeSimpleAnim(pics, frameDur)
   local duration = 0
   for _, pic in ipairs(pics) do
     pic.frameNum = i
-    if not pic.duration then
+    if frameDur then
       pic.duration = frameDur
     end
     duration = duration + pic.duration

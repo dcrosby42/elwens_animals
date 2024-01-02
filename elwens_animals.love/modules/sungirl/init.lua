@@ -10,6 +10,10 @@ local UPDATE = composeSystems({
   -- 'systems.sound',
   -- 'systems.touchbutton',
   'modules.sungirl.devsystem',
+  'modules.sungirl.player_control_system',
+  'modules.sungirl.sungirl_system',
+  'systems.follow',
+  'systems.viewport',
   -- 'modules.farmgame.manipsystem',
   -- 'modules.farmgame.boundarysystem',
 })
