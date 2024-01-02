@@ -14,7 +14,8 @@ function Entities.initialEntities(res)
 
   Entities.background(viewportE, res, "background01")
 
-  Entities.sketch_walker(viewportE, res)
+  Entities.sungirl(viewportE, res)
+  -- Entities.sketch_walker(viewportE, res)
 
   --
   -- UI overlay
@@ -59,6 +60,23 @@ function Entities.background(parent, res, picId)
     { 'name', { name = "background" } },
     { 'pic',  { id = picId, sx = vscale, sy = vscale } },
     { 'pos',  { x = 0, y = 0 } },
+  })
+end
+
+function Entities.sungirl(estore, res)
+  return estore:newEntity({
+    { 'name',  { name = "sungirl" } },
+    { 'pos',   { x = 100, y = 700 } },
+    { 'timer', { name = "sungirl", countDown = false } },
+    { 'anim', {
+      name = "sungirl",
+      id = "sungirl_stand",
+      centerx = 0.5,
+      centery = 0.5,
+      drawbounds = false,
+      sx=0.5,
+      sy=0.5,
+    } },
   })
 end
 

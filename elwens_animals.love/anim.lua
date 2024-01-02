@@ -46,17 +46,22 @@ function Anim.makeFrameLookup(anim,opts)
 end
 
 function Anim.makeSimpleAnim(pics, frameDur)
-  local anim = {
-    pics=shallowclone(pics),
-    duration=(#pics * frameDur),
-  }
-  -- stamp each frame w duration
-  for i=1,#anim.pics do
-    anim.pics[i].frameNum = i
-    anim.pics[i].duration = frameDur
+  pics = shallowclone(pics)
+  
+  local duration = 0
+  for _, pic in ipairs(pics) do
+    pic.frameNum = i
+    if not pic.duration then
+      pic.duration = frameDur
+    end
+    duration = duration + pic.duration
   end
-  -- make a frame getter func for this anim
-  anim.getFrame = Anim.makeFrameLookup(anim) 
+
+  local anim = {
+    pics=pics,
+    duration=duration,
+  }
+  anim.getFrame = Anim.makeFrameLookup(anim)
 
   return anim
 end
