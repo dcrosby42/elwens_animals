@@ -33,6 +33,8 @@ function Entities.initialEntities(res)
   return estore
 end
 
+Comp.define('player_control', { 'right', false, 'left', false, 'jump', false })
+
 function Entities.viewport(estore, res, targetName)
   local mapw = 10000
   local maph = 1000
@@ -79,7 +81,6 @@ function Entities.background(parent, res, picId)
   })
 end
 
-Comp.define('player_control', { 'right', false, 'left', false, 'jump', false })
 
 function Entities.sungirl(estore, res)
   return estore:newEntity({
@@ -117,6 +118,15 @@ function Entities.sun(parent, res, picId)
   return parent:newEntity({
     { 'pic',  { id = "big_sun", sx = scale, sy = scale } },
     { 'pos',  { x = 00, y = 00 } },
+  })
+end
+
+function Entities.waypoint(parent, name,x,y)
+  return parent:newEntity({
+    { 'tag',   { name = 'waypoint' } },
+    { 'name',  { name = name } },
+    { 'pos',  { x = x, y = y } },
+    { 'pic',  { id = "down_arrow", centerx = 0.5, centery = 0.5, drawbounds = false } },
   })
 end
 

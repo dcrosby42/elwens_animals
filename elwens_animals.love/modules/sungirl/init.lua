@@ -11,6 +11,7 @@ local UPDATE = composeSystems({
   -- 'systems.touchbutton',
   'modules.sungirl.devsystem',
   'modules.sungirl.player_control_system',
+  'modules.sungirl.touch_player_control_system',
   'modules.sungirl.sungirl_system',
   'systems.follow',
   'systems.viewport',

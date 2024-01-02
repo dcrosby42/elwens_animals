@@ -39,10 +39,10 @@ return function(estore, input, res)
       end
     end,
 
-    pressed = function(touch)
-      local x = touch.x + viewportE.viewport.x
-      local y = touch.y + viewportE.viewport.y
-      Debug.println("Click: "..touch.x..", "..touch.y.." -- "..x..", "..y)
-    end
+    -- pressed = function(touch)
+    --   local x = touch.x + viewportE.viewport.x
+    --   local y = touch.y + viewportE.viewport.y
+    --   Debug.println("Click: "..touch.x..", "..touch.y.." -- "..x..", "..y)
+    -- end
   })
 end

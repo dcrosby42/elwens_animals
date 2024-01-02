@@ -71,6 +71,9 @@ function Res.load()
   resources.pics["flower1"] = resources.pics["Sungirl_items-2"]
   resources.pics["big_sun"] = resources.pics["Sungirl_sun-1"]
 
+  addPic(resources, "downArrow_lineLight25")
+  resources.pics["down_arrow"] = resources.pics["downArrow_lineLight25"]
+
   addSketchWalkAnim(resources)
   addSunGirlAnimations(resources)
 
