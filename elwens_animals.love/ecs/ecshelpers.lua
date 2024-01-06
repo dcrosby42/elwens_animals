@@ -296,3 +296,19 @@ function debugEntityName(e)
   end
   return name
 end
+
+function screenXYToViewport(viewportE, x, y)
+  local sx = 1
+  local sy = 1
+  local vx = 0
+  local vy = 0
+  if viewportE then
+    sx = viewportE.viewport.sx
+    sy = viewportE.viewport.sy
+    vx = viewportE.viewport.x
+    vy = viewportE.viewport.y
+  end
+  local xx = (x + vx) / sx
+  local yy = (y + vy) / sy
+  return xx, yy
+end

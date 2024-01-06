@@ -4,24 +4,20 @@ local Debug = require('mydebug').sub("PlayerControl")
 return defineUpdateSystem(
   allOf(hasTag('player'), hasComps('player_control')),
   function(e, estore, input, res)
+    local con = e.player_control
     EventHelpers.handle(input.events, 'keyboard', {
-
       pressed = function(event)
-        if event.key == "left" then
-          e.player_control.left = true
-        elseif event.key == "right" then
-          e.player_control.right = true
+        if con[event.key] ~= nil then
+          con[event.key] = true
         end
       end,
 
       released = function(event)
-        if event.key == "left" then
-          e.player_control.left = false
-        elseif event.key == "right" then
-          e.player_control.right = false
+        if con[event.key] ~= nil then
+          con[event.key] = false
         end
       end,
-
     })
+    con.any = con.left or con.right or con.up or con.down or con.jump
   end
 )

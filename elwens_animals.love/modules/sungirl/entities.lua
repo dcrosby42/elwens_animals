@@ -2,7 +2,13 @@ local Estore = require 'ecs.estore'
 local Debug = require('mydebug').sub('sungirl.Entities', true, true, true)
 local Comp = require 'ecs/component'
 
+Comp.define('player_control', { 'any',false,'right', false, 'left', false, 'up', false, 'down', false, 'jump', false, })
+Comp.define('touch_nav', { })
+Comp.define('nav_goal', { 'x', 0, 'y', 0 })
+Comp.define("speed", { 'pps', 0 })
+
 local Entities = {}
+
 
 function Entities.initialEntities(res)
   local estore = Estore:new()
@@ -15,16 +21,22 @@ function Entities.initialEntities(res)
 
   Entities.background(viewportE, res, "background01")
   
+  local sun = Entities.sun(viewportE, res)
+  sun.parent.order = 0
+
   Entities.flower(viewportE, res)
 
-  local shadow = Entities.shadow(viewportE, res)
-  local player = Entities.sungirl(viewportE, res)
+  local puppygirl = Entities.puppygirl(viewportE, res)
+  sun.parent.order = 10 
 
-  targ:newComp('follow', { targetName = player.name.name })
+  local shadow = Entities.shadow(viewportE, res)
+  local catgirl = Entities.catgirl(viewportE, res)
+  catgirl.parent.order = 11 
+
+  targ:newComp('follow', { targetName = catgirl.name.name })
 
   -- Entities.sketch_walker(viewportE, res)
 
-  Entities.sun(viewportE, res)
   -- Entities.sun(estore, res)
 
   --
@@ -37,7 +49,6 @@ function Entities.initialEntities(res)
   return estore
 end
 
-Comp.define('player_control', { 'right', false, 'left', false, 'jump', false })
 
 function Entities.viewport(estore, res, targetName)
   local mapw = 10000
@@ -86,18 +97,19 @@ function Entities.background(parent, res, picId)
 end
 
 
-function Entities.sungirl(parent, res)
-  local sungirl = parent:newEntity({
-    { 'name',  { name = "sungirl" } },
-    { 'tag',   { name = 'sungirl' } },
+function Entities.catgirl(parent, res)
+  local catgirl = parent:newEntity({
+    { 'name',  { name = "catgirl" } },
+    { 'tag',   { name = 'catgirl' } },
     { 'tag',   { name = 'player' } },
     { 'player_control', {} },
     { 'state', { name = "dir", value="right" } },
-    { 'timer', { name = "sungirl", countDown = false } },
+    { 'timer', { name = "catgirl", countDown = false } },
     { 'pos',   { x = 100, y = 700 } },
+    { 'speed',   { pps=600 } },
     { 'vel',   { } },
     { 'anim', {
-      name = "sungirl",
+      name = "catgirl",
       id = "sungirl_stand",
       centerx = 0.5,
       centery = 0.5,
@@ -107,13 +119,13 @@ function Entities.sungirl(parent, res)
     } },
   })
 
-  return sungirl
+  return catgirl
 
 end
 
 function Entities.shadow(parent, res)
   local shadow = parent:newEntity({
-    { 'follow', { targetName = "sungirl", offx=0,offy=250 } },
+    { 'follow', { targetName = "catgirl", offx=0,offy=250 } },
     {'pos',{}},
     { 'pic', {
       id = 'shadow',
@@ -124,6 +136,31 @@ function Entities.shadow(parent, res)
     } },
   })
   return shadow
+end
+
+function Entities.puppygirl(parent, res)
+  local catgirl = parent:newEntity({
+    { 'name',  { name = "puppygirl" } },
+    { 'tag',   { name = 'puppygirl' } },
+    { 'player_control', {} },
+    { 'touch_nav',      {} },
+    { 'state', { name = "dir", value="right" } },
+    { 'pos',   { x = 300, y = 700 } },
+    { 'speed',   { pps=800 } },
+    { 'vel',   { } },
+    { 'pic', {
+      id = "Puppy_Girl-2",
+      centerx = 0.5,
+      centery = 0.5,
+      sx = 1,
+      sy = 1,
+      drawbounds = false,
+      color={1,1,1,0.7}
+    } },
+  })
+
+  return catgirl
+
 end
 
 function Entities.flower(parent, res, picId)

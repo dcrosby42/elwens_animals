@@ -79,6 +79,11 @@ function Res.load()
 
   addPic(resources, "shadow")
 
+  addPic(resources, "Puppy_Girl-1")
+  addPic(resources, "Puppy_Girl-2")
+  addPic(resources, "Puppy_Girl-3")
+  addPic(resources, "Puppy_Girl-4")
+
   addSketchWalkAnim(resources)
   addSunGirlAnimations(resources)
 

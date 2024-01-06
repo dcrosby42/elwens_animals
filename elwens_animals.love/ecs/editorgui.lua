@@ -77,17 +77,18 @@ local function updateCompGui(c)
     local str = "("..round(c.x,3)..", "..round(c.y,3)..") r: "..round(c.r,3)
     suit.Label(str, {align='left'}, suit.layout:col(w,h))
 
-  elseif c.type == "tag" then
+  elseif c.type == "tag" or c.type == "name" then
     name()
     suit.Label(c.name, {align='left'}, suit.layout:col(w,h))
-  elseif c.type == "name" then
+  -- elseif c.type == "name" then
     -- name()
     -- suit.Label(c.name, {align='left'}, suit.layout:col(w,h))
   else
     name()
     local str=""
     for key,val in pairs(c) do
-      if key ~= "name" and key ~= "cid" and key ~= "eid" and key ~= "type" then
+      -- if key ~= "name" and key ~= "cid" and key ~= "eid" and key ~= "type" then
+      if key ~= "cid" and key ~= "eid" and key ~= "type" then
         if type(val) == "number" then
           val = round(val,3)
         end
@@ -166,12 +167,30 @@ local function updateEstoreGui(ui, estore)
 
     -- If Entity is "opened", show the components
     if ui.ents[eid] then
-      local comps = {}
-      for _,comp in pairs(estore.comps) do
-        if eid == comp.eid then
-          table.insert(comps, comp)
+      local comps = tfilter(estore.comps, function(comp) 
+        return eid == comp.eid
+      end)
+
+      -- Manually ordered-by-type comps to be used at the
+      -- front of the list:
+      local topComps = {}
+      local ord = { "name", "tag", "parent" }
+      for i, ctype in ipairs(ord) do
+        for j,comp in ipairs(comps) do
+          if comp.type == ctype then
+            table.insert(topComps, table.remove(comps, j))
+          end
         end
       end
+      -- For the rest, alpha sort on type
+      table.sort(comps, function(c1,c2)
+        return c1.type < c2.type
+      end)
+      -- Render the first comps:
+      for _,comp in ipairs(topComps) do
+        updateCompGui(comp)
+      end
+      -- Render the remaining comps:
       for _,comp in ipairs(comps) do
         updateCompGui(comp)
       end

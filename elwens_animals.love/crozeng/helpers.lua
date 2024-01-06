@@ -8,6 +8,18 @@
 -- numberlua = require 'vendor/numberlua' -- intentionally global
 -- bit32 = numberlua.bit32 -- intentionally global
 
+
+-- Known table funcs:
+-- table.concat(t, [sep, [i, [j]]]) -- "string join"
+-- table.insert(t, [i], val)
+-- table.remove(t, [i])
+-- table.sort(t, [compFn])
+-- table.getn(t)
+-- table.setn(t, len)
+-- table.move(t1, fromIdx, thruIdx, destIdx, [t2])
+-- table.pack(...)
+-- table.unpack(list, [i,[j]])
+
 function flattenTable(t)
   s = ""
   for k,v in pairs(t) do
@@ -83,18 +95,30 @@ function tcopydeep(orig)
   return copy
 end
 
+-- function tkeys(t)
+--   local keyset={}
+--   local n=0
+--   for k,v in pairs(t) do
+--     n=n+1
+--     keyset[n]=k
+--   end
+--   return keyset
+-- end
+
 function tkeys(t)
-  local keyset={}
-  local n=0
-  for k,v in pairs(t) do
-    n=n+1
-    keyset[n]=k
+  local keys = {}
+  for key,_ in pairs(t) do
+    table.insert(keys,key)
   end
-  return keyset
+  return keys
 end
 
-function numkeys(t)
-  return #tkeys(t)
+function tvalues(t)
+  local values = {}
+  for _,val in pairs(t) do
+    table.insert(values,val)
+  end
+  return values
 end
 
 function tsetdeep(t, path, value)
@@ -305,6 +329,28 @@ function lmap(t,fn)
     res[i] = fn(t[i])
   end
   return res
+end
+
+function lfilter(list, fn)
+  if not fn then return list end
+  local values = {}
+  for _i, val in ipairs(list) do
+    if fn(val) then
+      table.insert(values, val)
+    end
+  end
+  return values
+end
+
+function tfilter(t, fn)
+  if not fn then return t end
+  local values = {}
+  for _key, val in pairs(t) do
+    if fn(val) then
+      table.insert(values, val)
+    end
+  end
+  return values
 end
 
 function iterateFuncs(funcs)

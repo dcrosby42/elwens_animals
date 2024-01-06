@@ -1,23 +1,24 @@
 local EventHelpers = require 'eventhelpers'
-local Debug = require('mydebug').sub("SunGirl")
+local Debug = require('mydebug').sub("CatGirl")
 local Entities = require("modules.sungirl.entities")
 
-local HSpeed = 600
-
 local function handleMovement(e, estore, input, res)
+  local speed = 10
+  if e.speed then
+    speed = e.speed.pps
+  end
   e.vel.dx = 0
   e.vel.dy = 0
 
   if e.player_control.right then
-    e.vel.dx = e.vel.dx + HSpeed
-    -- Debug.println("sungirl "..e.pos.x..", "..e.pos.y)
+    e.vel.dx = e.vel.dx + speed
   end
   if e.player_control.left then
-    e.vel.dx = e.vel.dx - HSpeed
+    e.vel.dx = e.vel.dx - speed
   end
 
   -- SELECT ANIM
-  local anim = e.anims.sungirl
+  local anim = e.anims.catgirl
   if e.vel.dx == 0 then
     anim.id = "sungirl_stand"
   else
@@ -94,7 +95,7 @@ local function handleNavigation(e,estore,input,res)
   end
 end
 
-return defineUpdateSystem(hasTag('sungirl'),
+return defineUpdateSystem(hasTag('catgirl'),
   function(e, estore, input,res)
 
     handleMovement(e,estore,input,res)
