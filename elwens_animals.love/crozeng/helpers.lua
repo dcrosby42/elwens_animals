@@ -50,23 +50,18 @@ function tcountby(t,key)
 end
 
 function tcopy(orig, defaults)
+  if type(orig) ~= 'table' then return orig end
   if orig == nil then orig = {} end
-  local orig_type = type(orig)
-  local copy
-  if orig_type == 'table' then
-    copy = {}
-    for orig_key, orig_value in pairs(orig) do
-      copy[orig_key] = orig_value
-    end
-    if defaults then
-      for def_key, def_value in pairs(defaults) do
-        if copy[def_key] == nil then
-          copy[def_key] = def_value
-        end
+  local copy = {}
+  for orig_key, orig_value in pairs(orig) do
+    copy[orig_key] = orig_value
+  end
+  if defaults then
+    for def_key, def_value in pairs(defaults) do
+      if copy[def_key] == nil then
+        copy[def_key] = def_value
       end
     end
-  else -- number, string, boolean, etc
-    copy = orig
   end
   return copy
 end
@@ -79,6 +74,7 @@ function shallowclone(src)
   end
   return dest
 end
+shallowcopy = shallowclone
 
 function tcopydeep(orig)
   local orig_type = type(orig)
@@ -104,6 +100,19 @@ end
 --   end
 --   return keyset
 -- end
+
+function pluck(src,keys,dest)
+  if keys == nil then
+    keys = tkeys(src)
+  end
+  if dest == nil then
+    dest = {}
+  end
+  for _,key in ipairs(keys) do
+    dest[key] = src[key]
+  end
+  return dest
+end
 
 function tkeys(t)
   local keys = {}
@@ -329,6 +338,20 @@ function lmap(t,fn)
     res[i] = fn(t[i])
   end
   return res
+end
+
+-- Sorts list in-place and returns it
+-- (added this as a convenience; table.sort returns nil so it's no good for inlining)
+function lsort(list,fn)
+  table.sort(list,fn)
+  return list
+end
+
+-- Returns a sorted clone of the given list
+function lsorted(list,fn)
+  local list2 = shallowclone(list)
+  table.sort(list2,fn)
+  return list2
 end
 
 function lfilter(list, fn)
