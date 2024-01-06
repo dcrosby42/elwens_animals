@@ -143,7 +143,12 @@ local function updateEstoreGui(ui, estore)
     local eid = e.eid
 		-- Entity name button
     local name = eid
-    if e.name then name = name.."."..e.name.name end
+    if e.name then 
+      name = name.."."..e.name.name 
+    elseif e.tags then
+      name = name .. "." .. table.concat(tkeys(e.tags),".")
+      -- name = name.."."..tag.name
+    end
     if #name > 17 then name = name:sub(1,17)..">" end
     if suit.Button(name, {id=eid, align='left'}, suit.layout:row(130,h)).hit then
       if ui.ents[eid] then
