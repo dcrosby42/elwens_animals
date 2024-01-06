@@ -16,12 +16,16 @@ function Entities.initialEntities(res)
   Entities.background(viewportE, res, "background01")
   
   Entities.flower(viewportE, res)
-  Entities.sun(viewportE, res)
 
+  local shadow = Entities.shadow(viewportE, res)
   local player = Entities.sungirl(viewportE, res)
+
   targ:newComp('follow', { targetName = player.name.name })
+
   -- Entities.sketch_walker(viewportE, res)
 
+  Entities.sun(viewportE, res)
+  -- Entities.sun(estore, res)
 
   --
   -- UI overlay
@@ -82,14 +86,16 @@ function Entities.background(parent, res, picId)
 end
 
 
-function Entities.sungirl(estore, res)
-  return estore:newEntity({
+function Entities.sungirl(parent, res)
+  local sungirl = parent:newEntity({
     { 'name',  { name = "sungirl" } },
     { 'tag',   { name = 'sungirl' } },
     { 'tag',   { name = 'player' } },
     { 'player_control', {} },
     { 'state', { name = "dir", value="right" } },
-    -- { 'state', { name = "animation", value="stand" } },
+    { 'timer', { name = "sungirl", countDown = false } },
+    { 'pos',   { x = 100, y = 700 } },
+    { 'vel',   { } },
     { 'anim', {
       name = "sungirl",
       id = "sungirl_stand",
@@ -99,10 +105,25 @@ function Entities.sungirl(estore, res)
       sy = 0.5,
       drawbounds = false,
     } },
-    { 'timer', { name = "sungirl", countDown = false } },
-    { 'pos',   { x = 100, y = 700 } },
-    { 'vel',   { } },
   })
+
+  return sungirl
+
+end
+
+function Entities.shadow(parent, res)
+  local shadow = parent:newEntity({
+    { 'follow', { targetName = "sungirl", offx=0,offy=250 } },
+    {'pos',{}},
+    { 'pic', {
+      id = 'shadow',
+      centerx = 0.5,
+      centery = 0.5,
+      sx=1, sy=1,
+      color={1,1,1,0.4}
+    } },
+  })
+  return shadow
 end
 
 function Entities.flower(parent, res, picId)

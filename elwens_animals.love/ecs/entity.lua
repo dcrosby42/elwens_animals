@@ -33,7 +33,7 @@ function Entity:getChildren()
 end
 
 function Entity:newChild(compInfos, subs)
-  parentInfo = {'parent', {parentEid=self.eid}}
+  local parentInfo = {'parent', {parentEid=self.eid}}
   if compInfos then
     local parentInfoFound = false
     for i,info in ipairs(compInfos) do
@@ -71,6 +71,10 @@ end
 
 function Entity:walkChildren(matchFn, handler)
   self._estore:walkChildren(self,matchFn,handler)
+end
+
+function Entity:seekEntity(matchFn, doFn)
+  self._estore:_seekEntity(self,matchFn,doFn)
 end
 
 
