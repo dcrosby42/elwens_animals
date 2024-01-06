@@ -1,6 +1,7 @@
 local Debug = require('mydebug').sub("DevSystem",true,true,true)
 local Entities = require 'modules.sungirl.entities'
 local EventHelpers = require 'eventhelpers'
+local C = require('modules.sungirl.common')
 
 local function zoomViewport(viewportE, event, estore)
   local zstep = 0.2
@@ -16,54 +17,54 @@ local function zoomViewport(viewportE, event, estore)
   end
 end
 
-local function removePlayerTag(e)
-  if e.tags.player then
-    e:removeComp(e.tags.player)
-  end
-end
+-- local function removePlayerTag(e)
+--   if e.tags.player then
+--     e:removeComp(e.tags.player)
+--   end
+-- end
 
-local function addPlayerTag(e)
-  if not e.tags.player then
-    e:newComp('tag', {name='player'})
-  end
-end
+-- local function addPlayerTag(e)
+--   if not e.tags.player then
+--     e:newComp('tag', {name='player'})
+--   end
+-- end
 
-local function resetControls(e)
-  for _,attr in ipairs({'left','right','up','down','jump'}) do
-    e.player_control[attr] = false
-  end
-end
-local function swapOrder(e1,e2)
-  local o1 = e1.parent.order
-  local o2 = e2.parent.order
-  e1.parent.order = o2
-  e2.parent.order = o1
-end
+-- local function resetControls(e)
+--   for _,attr in ipairs({'left','right','up','down','jump'}) do
+--     e.player_control[attr] = false
+--   end
+-- end
+-- local function swapOrder(e1,e2)
+--   local o1 = e1.parent.order
+--   local o2 = e2.parent.order
+--   e1.parent.order = o2
+--   e2.parent.order = o1
+-- end
 
-local function swapPlayers(event, estore)
-  if event.key == "space" then
-    local puppygirl = findEntity(estore, hasTag("puppygirl"))
-    local catgirl = findEntity(estore, hasTag("catgirl"))
+-- local function swapPlayers(event, estore)
+--   if event.key == "space" then
+--     local puppygirl = findEntity(estore, hasTag("puppygirl"))
+--     local catgirl = findEntity(estore, hasTag("catgirl"))
 
-    resetControls(puppygirl)
-    resetControls(catgirl)
+--     resetControls(puppygirl)
+--     resetControls(catgirl)
 
-    if puppygirl.tags.player then
-      removePlayerTag(puppygirl)
-      addPlayerTag(catgirl)
-      swapOrder(catgirl, puppygirl)
-      Debug.println('controlling catgirl')
-    elseif catgirl.tags.player then
-      removePlayerTag(catgirl)
-      addPlayerTag(puppygirl)
-      swapOrder(catgirl, puppygirl)
-      Debug.println('controlling puppygirl')
-    end
+--     if puppygirl.tags.player then
+--       removePlayerTag(puppygirl)
+--       addPlayerTag(catgirl)
+--       swapOrder(catgirl, puppygirl)
+--       Debug.println('controlling catgirl')
+--     elseif catgirl.tags.player then
+--       removePlayerTag(catgirl)
+--       addPlayerTag(puppygirl)
+--       swapOrder(catgirl, puppygirl)
+--       Debug.println('controlling puppygirl')
+--     end
 
-    local parentE = estore:getEntity(catgirl.parent.parentEid)
-    parentE:resortChildren()
-  end
-end
+--     local parentE = estore:getEntity(catgirl.parent.parentEid)
+--     parentE:resortChildren()
+--   end
+-- end
 
 return function(estore, input, res)
   local viewportE = Entities.getViewport(estore)
@@ -71,7 +72,10 @@ return function(estore, input, res)
   EventHelpers.handle(input.events, 'keyboard', {
     pressed = function(event)
       zoomViewport(viewportE, event, estore)
-      swapPlayers(event, estore)
+
+      if event.key == "space" then
+        C.swapPlayers(estore)
+      end
       -- movePlayer(event,estore,input,res)
     end,
   })

@@ -328,7 +328,7 @@ function Estore:walkChildren(e, matchFn, doFn)
 end
 
 -- Similar to walkEntities, but with the purpose of finding a particular result then exiting the search immediately.
--- If the doFn() is applied to an Entity and returns explicitly true, the traversal exits and returns true.
+-- If the doFn(e) is applied to an Entity and returns explicitly true, the traversal exits and returns true.
 function Estore:seekEntity(matchFn, doFn)
   for _, e in ipairs(self._root._children) do
     if self:_seekEntity(e, matchFn, doFn) == true then return true end

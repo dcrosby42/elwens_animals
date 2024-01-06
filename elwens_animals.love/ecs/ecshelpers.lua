@@ -297,17 +297,14 @@ function debugEntityName(e)
   return name
 end
 
+-- Convert screen coords to viewport-relative coords.
+-- (viewport entity is optional; if nil, x,y returned as-is)
 function screenXYToViewport(viewportE, x, y)
-  local sx = 1
-  local sy = 1
-  local vx = 0
-  local vy = 0
-  if viewportE then
-    sx = viewportE.viewport.sx
-    sy = viewportE.viewport.sy
-    vx = viewportE.viewport.x
-    vy = viewportE.viewport.y
-  end
+  if not viewportE then return x,y end
+  local sx = viewportE.viewport.sx
+  local sy = viewportE.viewport.sy
+  local vx = viewportE.viewport.x
+  local vy = viewportE.viewport.y
   local xx = (x + vx) / sx
   local yy = (y + vy) / sy
   return xx, yy

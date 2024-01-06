@@ -1,5 +1,5 @@
 local EventHelpers = require 'eventhelpers'
-local Debug = require('mydebug').sub("TouchNavPlayerControl")
+local Debug = require('mydebug').sub("TouchNavPlayerControl",false)
 local Entities = require("modules.sungirl.entities")
 
 local function setNavGoal(touch,e,estore)

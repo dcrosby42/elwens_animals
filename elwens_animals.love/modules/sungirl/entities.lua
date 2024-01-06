@@ -1,6 +1,7 @@
 local Estore = require 'ecs.estore'
 local Debug = require('mydebug').sub('sungirl.Entities', true, true, true)
 local Comp = require 'ecs/component'
+local C = require 'modules.sungirl.common'
 
 Comp.define('player_control', { 'any',false,'right', false, 'left', false, 'up', false, 'down', false, 'jump', false, })
 Comp.define('touch_nav', { })
@@ -16,8 +17,12 @@ function Entities.initialEntities(res)
   --
   -- Viewport area
   --
-  local targ = Entities.viewportTarget(estore, res, "FollowMe")
-  local viewportE = Entities.viewport(estore, res, targ.viewportTarget.name)
+
+  -- Create the viewport (which acts like a container).
+  local viewportE = Entities.viewport(estore, res, "ViewFollow")
+  -- Viewport tracks to the position of a viewportTarget 
+  -- (this viewportTarget will be configured to follow catgirl below)
+  local viewportTargetE = Entities.viewportTarget(estore, res, "ViewFollow")
 
   Entities.background(viewportE, res, "background01")
   
@@ -33,7 +38,10 @@ function Entities.initialEntities(res)
   local catgirl = Entities.catgirl(viewportE, res)
   catgirl.parent.order = 11 
 
-  targ:newComp('follow', { targetName = catgirl.name.name })
+  viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
+
+  C.swapPlayers(estore)
+
 
   -- Entities.sketch_walker(viewportE, res)
 
@@ -103,6 +111,7 @@ function Entities.catgirl(parent, res)
     { 'tag',   { name = 'catgirl' } },
     { 'tag',   { name = 'player' } },
     { 'player_control', {} },
+    { 'touch_nav',      {} },
     { 'state', { name = "dir", value="right" } },
     { 'timer', { name = "catgirl", countDown = false } },
     { 'pos',   { x = 100, y = 700 } },
@@ -125,6 +134,7 @@ end
 
 function Entities.shadow(parent, res)
   local shadow = parent:newEntity({
+    { 'name',  { name = "catgirl_shadow" } },
     { 'follow', { targetName = "catgirl", offx=0,offy=250 } },
     {'pos',{}},
     { 'pic', {
@@ -140,14 +150,14 @@ end
 
 function Entities.puppygirl(parent, res)
   local catgirl = parent:newEntity({
-    { 'name',  { name = "puppygirl" } },
-    { 'tag',   { name = 'puppygirl' } },
+    { 'name',           { name = "puppygirl" } },
+    { 'tag',            { name = 'puppygirl' } },
     { 'player_control', {} },
-    { 'touch_nav',      {} },
-    { 'state', { name = "dir", value="right" } },
-    { 'pos',   { x = 300, y = 700 } },
-    { 'speed',   { pps=800 } },
-    { 'vel',   { } },
+    { 'touchable',      { radius = 50 } },
+    { 'state',          { name = "dir", value = "right" } },
+    { 'pos',            { x = 300, y = 700 } },
+    { 'speed',          { pps = 800 } },
+    { 'vel',            {} },
     { 'pic', {
       id = "Puppy_Girl-2",
       centerx = 0.5,
@@ -155,7 +165,7 @@ function Entities.puppygirl(parent, res)
       sx = 1,
       sy = 1,
       drawbounds = false,
-      color={1,1,1,0.7}
+      color = { 1, 1, 1, 0.7 }
     } },
   })
 
@@ -166,6 +176,7 @@ end
 function Entities.flower(parent, res, picId)
   local scale = 0.5
   return parent:newEntity({
+    { 'tag',   { name = 'flower' } },
     { 'pic',  { id = "flower1", sx = scale, sy = scale } },
     { 'pos',  { x = 2500, y = 775 } },
   })
@@ -174,6 +185,7 @@ end
 function Entities.sun(parent, res, picId)
   local scale = 0.5
   return parent:newEntity({
+    { 'name',  { name = "sun" } },
     { 'pic',  { id = "big_sun", sx = scale, sy = scale } },
     { 'pos',  { x = 00, y = 00 } },
   })

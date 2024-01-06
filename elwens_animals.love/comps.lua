@@ -45,7 +45,8 @@ Comp.define("sound", {'sound','','loop',false,'state','playing','volume',1,'pitc
 
 Comp.define("button", {'kind','tap', 'touchid','','holdtime',1,'eventtype','','shape','circle','radius',40,'w',80,'h',80})
 
-Comp.define("touch", {'touchid','','startx',0,'starty',0,'lastx',0,'lasty',0})
+Comp.define('touchable', { 'radius', 20, 'enabled', true })
+Comp.define("touch", {'touchid','','state','','startx',0,'starty',0,'lastx',0,'lasty',0, 'lastdx',0, 'lastdy',0})
 
 Comp.define("fishspawner", {})
 Comp.define("fish", {'kind','black','state','idle','targetspeed',0})

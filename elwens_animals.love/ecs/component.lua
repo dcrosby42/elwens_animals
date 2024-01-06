@@ -58,7 +58,7 @@ local function mkComp(typeName, fieldNames, proto, poolOpts)
       if o then
         for k,v in pairs(o) do
           if c[k] == nil then
-            print("!! Component<"..typeName..">.cleanCopy() INVALID KEY "..tostring(k).." however we're copying it anyway. Plz fix.")
+            print("!! Component<"..typeName..">.cleanCopy() INVALID KEY "..tostring(k).." however we're copying it anyway. Plz fix.\n\tAllowed keys: "..table.concat(lsort(tkeys(c)),", "))
           end
           c[k] = v
         end

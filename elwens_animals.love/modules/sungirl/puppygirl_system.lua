@@ -3,16 +3,24 @@ local Debug = require('mydebug').sub("PuppyGirl")
 local Entities = require("modules.sungirl.entities")
 local Vec = require 'vector-light'
 
+-- TODO: dedup w catgirl
 local function applyNavControl(e, estore, input, res)
   local bufferZone = 20
+
+  local speed = 10
+  if e.speed then
+    speed = e.speed.pps
+  end
+
   local gx = e.nav_goal.x
   local gy = e.nav_goal.y
   -- vector from player to goal
   local dx, dy = Vec.sub(gx, gy, e.pos.x, e.pos.y)
   if Vec.len(dx,dy) > bufferZone then
     -- compute motion vector based on player speed
-    e.vel.dx, e.vel.dy = Vec.mul(e.speed.pps, Vec.normalize(dx, dy))
+    e.vel.dx, e.vel.dy = Vec.mul(speed, Vec.normalize(dx, dy))
   else
+    -- halt
     e.vel.dx, e.vel.dy = 0,0
   end
 end
@@ -23,8 +31,6 @@ local function applyPlayerControl(e, estore, input, res)
     speed = e.speed.pps
   end
   -- CONTROLS -> VELOCITY
-  -- e.vel.dx = 0
-  -- e.vel.dy = 0
   if e.player_control.right then
     e.vel.dx = speed
   end
@@ -39,12 +45,14 @@ local function applyPlayerControl(e, estore, input, res)
   end
 end
 
+-- TODO: dedup w catgirl
 local function applyMotion(e, estore, input, res)
   -- VELOCITY -> POSITION
   e.pos.x = e.pos.x + (input.dt * e.vel.dx)
   e.pos.y = e.pos.y + (input.dt * e.vel.dy)
 end
 
+-- TODO: dedup w catgirl
 local function updateDir(e)
   -- Update facing left/right:
   if e.vel.dx < 0 then
