@@ -59,7 +59,7 @@ local function drawPic(e, pic, res)
         x = x,
         y = y,
         r = r,
-        sx = picsx,
+        sx = pic.sx,
         sy = pic.sy,
         offx = offx,
         offy = offy,

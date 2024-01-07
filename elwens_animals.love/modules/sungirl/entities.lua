@@ -152,18 +152,22 @@ function Entities.shadow(parent, res)
   return shadow
 end
 
+function Entities.getCatgirl(estore)
+  return findEntity(estore, hasName('catgirl'))
+end
+
 function Entities.puppygirl(parent, res)
   local catgirl = parent:newEntity({
     { 'name',           { name = "puppygirl" } },
     { 'tag',            { name = 'puppygirl' } },
     { 'player_control', {} },
     { 'touchable',      { radius = 70 } },
-    { 'state',          { name = "dir", value = "right" } },
+    { 'state',          { name = "dir", value = "left" } },
     { 'pos',            { x = 300, y = 700 } },
     { 'speed',          { pps = 800 } },
     { 'vel',            {} },
     { 'pic', {
-      id = "Puppy_Girl-2",
+      id = "puppygirl-idle-left",
       centerx = 0.5,
       centery = 0.5,
       sx = 1,

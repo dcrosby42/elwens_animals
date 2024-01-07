@@ -3,12 +3,13 @@ local Debug = require('mydebug').sub("PuppyGirl")
 local Entities = require("modules.sungirl.entities")
 local Vec = require 'vector-light'
 
-local SHOW_TOUCH = true
+local SHOW_TOUCH = false
 
 -- TODO: dedup w catgirl
 -- 
-local function applyNavControl(e, estore, input, res)
-  local bufferZone = 10
+local function moveTowardNavGoal(e, estore, input, res)
+  local startThreshold = 50
+  local stopThreshold = 10
 
   local speed = 10
   if e.speed then
@@ -19,16 +20,24 @@ local function applyNavControl(e, estore, input, res)
   local gy = e.nav_goal.y
   -- vector from player to goal
   local dx, dy = Vec.sub(gx, gy, e.pos.x, e.pos.y)
-  if Vec.len(dx,dy) > bufferZone then
-    -- compute motion vector based on player speed
-    e.vel.dx, e.vel.dy = Vec.mul(speed, Vec.normalize(dx, dy))
+  local dist = Vec.len(dx,dy)
+
+  if e.vel.dx == 0 and e.vel.dy == 0 then
+    if dist > startThreshold then
+      -- compute motion vector based on player speed
+      e.vel.dx, e.vel.dy = Vec.mul(speed, Vec.normalize(dx, dy))
+    end
   else
-    -- halt
-    e.vel.dx, e.vel.dy = 0,0
+    if dist < stopThreshold then
+      -- halt
+      e.vel.dx, e.vel.dy = 0,0
+    else
+      e.vel.dx, e.vel.dy = Vec.mul(speed, Vec.normalize(dx, dy))
+    end
   end
 end
 
-local function applyPlayerControl(e, estore, input, res)
+local function applyPlayerControls(e, estore, input, res)
   local speed = 10
   if e.speed then
     speed = e.speed.pps
@@ -58,71 +67,61 @@ local function applyMotion(e,  input)
 end
 
 -- TODO: dedup w catgirl
-local function updateDir(e)
-  -- Update facing left/right:
-  if e.vel.dx < 0 then
-    e.states.dir.value = "left"
-  elseif e.vel.dx > 0 then
-    e.states.dir.value = "right"
-  end
-end
-
-local function updateAnim(e)
-  -- SELECT ANIM
-  local anim = e.anims.sungirl
-  if e.vel.dx == 0 then
-    anim.id = "sungirl_stand"
-  else
-    anim.id = "sungirl_run"
-  end
-
-  -- Flip left/right?
-  if e.states.dir.value == "left" then
-    if anim.sx > 0 then
-      anim.sx = -1 * anim.sx
+local function updateDir(e, estore)
+  if e.vel.dx == 0 and e.vel.dy == 0 then
+    local catgirl = Entities.getCatgirl(estore)
+    if e.pos.x < catgirl.pos.x then
+      e.states.dir.value = "right"
+    else
+      e.states.dir.value = "left"
     end
   else
-    if anim.sx < 0 then
-      anim.sx = -1 * anim.sx
+    -- Update facing left/right:
+    if e.vel.dx < 0 then
+      e.states.dir.value = "left"
+    elseif e.vel.dx > 0 then
+      e.states.dir.value = "right"
     end
   end
 end
 
-  -- SELECT ANIM
-  -- local anim = e.anims.sungirl
-  -- if e.vel.dx == 0 then
-  --   anim.id = "sungirl_stand"
-  -- else
-  --   anim.id = "sungirl_run"
-  -- end
-  -- if e.vel.dx < 0 then
-  --   e.states.dir.value = "left"
-  -- else
-  --   e.states.dir.value = "right"
-  -- end
+local function updateVisuals(e)
+  -- determine pic:
+  local hflip = 1
+  if e.vel.dx == 0 and e.vel.dy == 0 then
+    e.pic.id = "puppygirl-idle-left"
+    hflip = -1
+  else
+    if math.abs(e.vel.dx) > math.abs(e.vel.dy) then
+      -- horizontal
+      e.pic.id = "puppygirl-fly-left"
+      hflip = -1 -- (the dir handler below assumes pics face right)
+    else
+      -- vertical
+      if e.vel.dy < 0 then
+        -- up
+        -- e.pic.id = "puppygirl-rise-right"
+        e.pic.id = "puppygirl-idle-left"
+        hflip = -1
+      else
+        -- down
+        -- e.pic.id = "puppygirl-descend-left"
+        -- hflip = -1 -- (the dir handler below assumes pics face right)
+        e.pic.id = "puppygirl-idle-left"
+        hflip = -1
+      end
+    end
+  end
 
-  -- ORIENT
-  -- if e.states.dir.value == "left" then
-  --   if anim.sx > 0 then
-  --     anim.sx = -1 * anim.sx
-  --   end
-  -- else
-  --   if anim.sx < 0 then
-  --     anim.sx = -1 * anim.sx
-  --   end
-  -- end
+  -- apply left/right dir:
+  if e.states.dir.value == "right" then
+    e.pic.sx = math.abs(e.pic.sx) * hflip
+  else
+    e.pic.sx = -1 * math.abs(e.pic.sx) * hflip
+  end
+end
 
--- local function setNavGoal(e,estore,x,y)
---   local x, y = screenXYToViewport(Entities.getViewport(estore), x, y)
---   if not e.nav_goal then
---     e:newComp('nav_goal', { x = x, y = y })
---   else
---     e.nav_goal.x = x
---     e.nav_goal.y = y
---   end
--- end
-
-local function applyTouchNav(e,estore,input,res)
+local function handleTouch(e,estore,input,res)
   if e.touch then
     if e.touch.state == "pressed" then
       local t = e.touch
@@ -161,35 +160,27 @@ end
 
 return defineUpdateSystem(hasTag('puppygirl'),
   function(e, estore, input,res)
-    if #input.events > 1 then
-      if lcontains(input.events, function(evt) return evt.type == "touch" and evt.state=="pressed" end) then
-        msg = table.concat(lmap(input.events, function(evt) return evt.type .."."..evt.state end), ", ")
-        Debug.println("Multi event ("..#input.events.."): "..msg)
-        -- for _,evt in ipairs(input.events) do
-        --   Debug.println(tdebug1(evt))
-        -- end
-        -- Debug.println("---")
-      end
-    end
 
-    applyTouchNav(e,estore,input,res)
+    -- (maybe) add/move nav_goal
+    handleTouch(e,estore,input,res)
 
     if e.nav_goal then
-      applyNavControl(e,estore,input,res)
+      moveTowardNavGoal(e,estore,input,res)
+
     elseif e.player_control and e.player_control.any then
-      applyPlayerControl(e,estore,input,res)
-    -- elseif e.touch then
-      -- applyDpadControl(e,estore,input,res)
+      -- devel/debug manual keybd controls:
+      applyPlayerControls(e,estore,input,res)
+      
     else
+      -- halt:
       e.vel.dx = 0
       e.vel.dy = 0
-    
     end
 
 
-    updateDir(e)
+    updateDir(e, estore)
     applyMotion(e, input)
-    -- updateAnim(e)
+    updateVisuals(e)
 
     -- manageWaypoint(e,estore,input,res)
 

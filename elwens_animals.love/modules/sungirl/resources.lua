@@ -4,29 +4,41 @@ local Debug = require('mydebug').sub("SunGirl.resources")
 
 local Res = {}
 
-local PicPrefix = "data/images/sungirl"
--- local SoundPrefix = "data/sounds/sungirl"
+local ImgPath = "data/images/"
+local SungirlImgPath = "data/images/sungirl/"
 
-local function makePic(name, path)
-  if not path then
-    path = PicPrefix .. "/" .. name .. ".png"
+local function makePic(opts)
+  local path
+  if opts.path then
+    path = opts.path
+  elseif opts.img then
+    path = ImgPath .. opts.img .. ".png"
+  elseif opts.sungirl_img then
+    path = SungirlImgPath .. opts.sungirl_img .. ".png"
+  else
+    error("modules.sungirl.resources: mapPics requires a table with one of: path, img or sungirl_img")
   end
   return R.makePic(path)
 end
 
-local function addPic(res, name, path)
-  res.pics[name] = makePic(name, path)
-end
-
-local function addSketchWalkAnim(resources)
-  -- 160x275  
-  local pics = lmap({
-    "sketch_walk_01",
-    "sketch_walk_02",
-    "sketch_walk_03",
-    "sketch_walk_04",
-  }, function(name) return makePic(name) end)
-  resources.anims["sketch_walk_right"] = Anim.makeSimpleAnim(pics, 1/5)
+local function addPic(res, name_or_opts)
+  local opts
+  local name
+  if type(name_or_opts) == "string" then
+    name = name_or_opts
+    opts = {sungirl_img=name_or_opts}
+  elseif type(name_or_opts) == "table" then
+    opts = name_or_opts
+    name = opts.name
+    if not name then name = opts.sungirl_img end
+    if not name then name = opts.img end
+  end
+  if not name then
+    error("modules.sungirl.resources: addPic needs name or sungirl_img or img option")
+  end
+  local pic = makePic(opts)
+  res.pics[name] = pic
+  return pic
 end
 
 local function addSunGirlAnimations(resources)
@@ -37,13 +49,13 @@ local function addSunGirlAnimations(resources)
     "Sun_girl_animation-4",
     "Sun_girl_animation-5",
     "Sun_girl_animation-6",
-  }, function(name) return makePic(name) end)
+  }, function(name) return makePic({sungirl_img=name}) end)
   resources.anims["sungirl_run"] = Anim.makeSimpleAnim(runRight, rate)
 
 
   local standPics = {
-    makePic("Sun_girl_animation-2"), -- eyes closed
-    makePic("Sun_girl_animation-1"),
+    makePic({sungirl_img="Sun_girl_animation-2"}), -- eyes closed
+    makePic({sungirl_img="Sun_girl_animation-1"}),
   }
   standPics[1].duration = 5
   standPics[2].duration = 0.2
@@ -65,30 +77,22 @@ function Res.load()
 
   addPic(resources, "background01")
 
-  addPic(resources, "Sungirl_items-1")
-  resources.pics["umbrella"] = resources.pics["Sungirl_items-1"]
+  addPic(resources, {name="umbrella", sungirl_img="Sungirl_items-1"})
+  addPic(resources, {name="flower1", sungirl_img="Sungirl_items-2"})
+  addPic(resources, {name="big_sun", sungirl_img="Sungirl_sun-1"})
 
-  addPic(resources, "Sungirl_items-2")
-  resources.pics["flower1"] = resources.pics["Sungirl_items-2"]
-
-  addPic(resources, "Sungirl_sun-1")
-  resources.pics["big_sun"] = resources.pics["Sungirl_sun-1"]
-
-  addPic(resources, "downArrow_lineLight25")
-  resources.pics["down_arrow"] = resources.pics["downArrow_lineLight25"]
+  addPic(resources, {name="down_arrow", sungirl_img="downArrow_lineLight25"})
 
   addPic(resources, "shadow")
 
-  addPic(resources, "Puppy_Girl-1")
-  addPic(resources, "Puppy_Girl-2")
-  addPic(resources, "Puppy_Girl-3")
-  addPic(resources, "Puppy_Girl-4")
+  addPic(resources, { name = "puppygirl-descend-left", sungirl_img = "Puppy_Girl-1" })
+  addPic(resources, { name = "puppygirl-idle-left", sungirl_img = "Puppy_Girl-2" })
+  addPic(resources, { name = "puppygirl-rise-right", sungirl_img = "Puppy_Girl-3" })
+  addPic(resources, { name = "puppygirl-fly-left", sungirl_img = "Puppy_Girl-4" })
 
-  addSketchWalkAnim(resources)
   addSunGirlAnimations(resources)
 
-
-  resources.pics["power-button-outline"] = R.makePic("data/images/power-button-outline.png")
+  addPic(resources, { name = "power-button-outline", img = "power-button-outline" })
 
   return resources
 end
