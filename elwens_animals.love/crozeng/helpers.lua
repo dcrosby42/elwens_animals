@@ -189,13 +189,6 @@ function tappend(t,x)
   t[#t+1] = x
 end
 
-function tindexOf(t,v)
-  for i,x in ipairs(t) do
-    if x == v then return i end
-  end
-  return nil
-end
-
 function tconcat(t1,t2)
   if not t2 then return t1 end
   for i=1,#t2 do
@@ -243,19 +236,19 @@ end
 
 function keyvalsearch(t,matchFn,callbackFn)
   for _,v in pairs(t) do
-    if fn(k,v) then callbackFn(k,v) end
+    if matchFn(k,v) then callbackFn(k,v) end
   end
 end
 
 function valsearch(t,matchFn,callbackFn)
   for _,v in pairs(t) do
-    if fn(v) then callbackFn(v) end
+    if matchFn(v) then callbackFn(v) end
   end
 end
 
 function valsearchfirst(t,matchFn,callbackFn)
   for _,v in pairs(t) do
-    if fn(v) then return callbackFn(v) end
+    if matchFn(v) then return callbackFn(v) end
   end
 end
 
@@ -293,38 +286,46 @@ function tfindallby(t,key,val)
   return res
 end
 
-function lcontains(list, item)
-  for i=1,#list do
-    if list[i] == item then return true end
-  end
-  return false
-end
-function lfind(list, fn)
-  for i=1,#list do
-    if fn(list[i],i) == true then
-      return v
+function indexof(t, item_or_fn)
+  if type(item_or_fn) == "function" then
+    for i = 1, #t do
+      if item_or_fn(t[i]) then return i end
     end
   end
-end
-function lfindby(list,key,val)
-  for i=1,#list do
-    if list[i][key] == val then
-      return list[i]
-    end
+  for i = 1, #t do
+    if t[i] == item_or_fn then return i end
   end
+  return nil
 end
-function lfindall(list,fn)
+
+function lcontains(list, item_or_fn)
+  return not not indexof(list, item_or_fn)
+end
+
+function lfind(list, item_or_fn)
+  local i = indexof(list, item_or_fn)
+  if i then return list[i] end
+  return nil
+end
+
+function lfindby(list, key, val)
+  return lfind(list, function(x) return x[key] == val end)
+end
+
+function lfindall(list, fn)
+  if list == nil or #list == 0 then return {} end
   local res = {}
   for i=1,#list do
-    if fn(list[i],i) == true then
+    if fn(list[i], i) == true then
       table.insert(res, list[i])
     end
   end
   return res
 end
-function lfindallby(t,key,val)
+
+function lfindallby(list, key, val)
   local res = {}
-  for i=1,#list do
+  for i = 1, #list do
     if list[i][key] == val then
       table.insert(res, list[i])
     end
@@ -332,10 +333,20 @@ function lfindallby(t,key,val)
   return res
 end
 
-function lmap(t,fn)
+-- Map over a list and return a list of transformed items
+function lmap(list,fn)
   local res = {}
-  for i,val in ipairs(t) do
-    res[i] = fn(t[i])
+  for i = 1, #list do
+    res[i] = fn(list[i])
+  end
+  return res
+end
+
+-- Map over the k,v in a map and return a map with the same keyset
+function tmap(t,fn)
+  local res = {}
+  for key,val in pairs(t) do
+    res[key] = fn(key,val)
   end
   return res
 end
