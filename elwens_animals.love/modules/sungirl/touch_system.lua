@@ -1,14 +1,14 @@
 local EventHelpers = require 'eventhelpers'
-local Debug = require('mydebug').sub("Touch")
+local Debug = require('mydebug').sub("Touch",false)
 local Entities = require("modules.sungirl.entities")
 local Vec = require 'vector-light'
 
-local function getXY(touch,estore)
-  return screenXYToViewport(Entities.getViewport(estore), touch.x, touch.y)
+local function toVPCoords(x,y,estore)
+  return screenXYToViewport(Entities.getViewport(estore), x, y)
 end
 
 local function findTouchable(estore,touchEvt)
-  local x,y = getXY(touchEvt,estore)
+  local x, y = toVPCoords(touchEvt.x, touchEvt.y, estore)
   return findEntity(estore, function(e)
     return e.touchable and e.pos 
       and e.touchable.enabled 
@@ -29,11 +29,13 @@ local function findTouch(estore,tid)
 end
 
 local function updateTouchComp(touchComp, touchEvt, estore)
-  local x,y = getXY(touchEvt,estore)
+  local x, y = toVPCoords(touchEvt.x, touchEvt.y, estore)
   touchComp.touchid = touchEvt.id
   touchComp.state = touchEvt.state
   touchComp.lastx = x
   touchComp.lasty = y
+  touchComp.lastscreenx = touchEvt.x
+  touchComp.lastscreeny = touchEvt.y
   touchComp.lastdx = touchEvt.dy
   touchComp.lastdy = touchEvt.dy
   return touchComp
@@ -47,6 +49,11 @@ return function(estore, input, res)
       if touchComp.state == 'released' then
         Debug.println("removing "..tdebug(touchComp))
         e:removeComp(touchComp)
+      else
+        -- Touch components are "idle" between actual touch events
+        touchComp.state = 'idle'
+        -- Gotta update viewport-relative coords each times, because the viewport moves around
+        touchComp.lastx, touchComp.lasty = toVPCoords(touchComp.lastscreenx,touchComp.lastscreeny,estore)
       end
     end
   end)
@@ -59,6 +66,8 @@ return function(estore, input, res)
         updateTouchComp(touchComp, touch, estore)
         touchComp.startx = touchComp.lastx
         touchComp.starty = touchComp.lasty
+        touchComp.startscreenx = touch.x
+        touchComp.startscreeny = touch.y
         Debug.println("pressed: new touch comp: "..tdebug(touchComp))
       end
     end,
