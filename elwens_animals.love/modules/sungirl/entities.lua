@@ -3,10 +3,12 @@ local Debug = require('mydebug').sub('sungirl.Entities', true, true, true)
 local Comp = require 'ecs/component'
 local C = require 'modules.sungirl.common'
 
-Comp.define('player_control', { 'any',false,'right', false, 'left', false, 'up', false, 'down', false, 'jump', false, })
+Comp.define('player_control', { 'any',false,'right', false, 'left', false, 'up', false, 'down', false, 'jump', false, 'stickx',0,'sticky',0})
 Comp.define('touch_nav', { })
 Comp.define('nav_goal', { 'x', 0, 'y', 0 })
 Comp.define("speed", { 'pps', 0 })
+Comp.define('touch_dpad', {'x',0,'y',0,'inner_radius',10,'radius',50})
+Comp.define('drag_nav', {})
 
 local Entities = {}
 
@@ -39,8 +41,9 @@ function Entities.initialEntities(res)
   catgirl.parent.order = 11 
 
   viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
+  -- viewportTargetE:newComp('follow', { targetName = puppygirl.name.name })
 
-  C.swapPlayers(estore)
+  -- C.swapPlayers(estore)
 
 
   -- Entities.sketch_walker(viewportE, res)
@@ -50,9 +53,10 @@ function Entities.initialEntities(res)
   --
   -- UI overlay
   --
-  -- local uiE = estore:newEntity({
-  --   {"name", {name="ui"}}
-  -- })
+  local ui = estore:newEntity({
+    {"name", {name="ui"}}
+  })
+  Entities.buttons(ui, res)
 
   return estore
 end
@@ -153,7 +157,7 @@ function Entities.puppygirl(parent, res)
     { 'name',           { name = "puppygirl" } },
     { 'tag',            { name = 'puppygirl' } },
     { 'player_control', {} },
-    { 'touchable',      { radius = 50 } },
+    { 'touchable',      { radius = 70 } },
     { 'state',          { name = "dir", value = "right" } },
     { 'pos',            { x = 300, y = 700 } },
     { 'speed',          { pps = 800 } },
@@ -200,12 +204,39 @@ function Entities.waypoint(parent, name,x,y)
   })
 end
 
--- function Entities.sketch_walker(estore, res)
+function Entities.buttons(parent, res)
+  -- Entities.nextModeButton(parent, res)
+  Entities.quitButton(parent, res)
+  -- Entities.toggleDebugButton(parent, res)
+end
+
+function Entities.quitButton(estore, res)
+  local w, h = love.graphics.getDimensions()
+  return estore:newEntity({
+    { 'name',   { name = "power_button" } },
+    { 'pic',    { id = 'power-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
+    { 'pos',    { x = w - 44, y = 50 } },
+    { 'button', { kind = 'hold', eventtype = 'POWER', holdtime = 0.3, radius = 40 } },
+  })
+end
+
+-- function Entities.nextModeButton(estore, res)
+--   local w, h = love.graphics.getDimensions()
 --   return estore:newEntity({
---     { 'name',  { name = "sketchwalker" } },
---     { 'pos',   { x = 100, y = 800 } },
---     { 'anim',  { name = "walky", id = "sketch_walk_right", centerx = 0.5, centery = 0.5, drawbounds = false } },
---     { 'timer', { name = "walky", countDown = false } },
+--     { 'name',   { name = "skip_button" } },
+--     { 'pic',    { id = 'skip-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
+--     { 'pos',    { x = w - 124, y = 50 } },
+--     { 'button', { kind = 'hold', eventtype = 'SKIP', holdtime = 0.5, radius = 40 } },
+--   })
+-- end
+
+-- function Entities.toggleDebugButton(estore, res)
+--   local w, h = love.graphics.getDimensions()
+--   return estore:newEntity({
+--     { 'name',   { name = "toggle_debug_button" } },
+--     -- {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+--     { 'pos',    { x = w/2, y = 50 } },
+--     { 'button', { kind = 'hold', eventtype = 'TOGGLE_DEBUG', holdtime = 0.5, radius = 40 } },
 --   })
 -- end
 

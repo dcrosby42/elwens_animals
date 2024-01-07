@@ -4,6 +4,8 @@ local M = {}
 -- Handlers is a table whose string keys point to functions.
 -- When an event matches, event.state is used to select the proper func from handlers.
 function M.handle(events, eventType, handlers)
+  if #events == 0 then return end
+
   local rem = {} -- indexes of events to remove
   for i,evt in ipairs(events) do
     if evt.type == eventType then

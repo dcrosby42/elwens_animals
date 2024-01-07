@@ -87,6 +87,9 @@ function Res.load()
   addSketchWalkAnim(resources)
   addSunGirlAnimations(resources)
 
+
+  resources.pics["power-button-outline"] = R.makePic("data/images/power-button-outline.png")
+
   return resources
 end
 

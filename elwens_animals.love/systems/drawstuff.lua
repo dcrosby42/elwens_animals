@@ -20,7 +20,7 @@ local function drawPic(e, pic, res)
     error("No pic resource '" .. pic.id .. "'")
   end
 
-  local offy = 0
+  local offx = 0
   local offy = 0
   if pic.centerx ~= '' then
     -- offx = pic.centerx * picRes:getWidth() * pic.sx
