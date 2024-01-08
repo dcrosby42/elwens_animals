@@ -8,7 +8,7 @@ local UPDATE = composeSystems({
   'systems.timer',
   -- 'systems.physics',
   -- 'systems.sound',
-  -- 'systems.touchbutton',
+  'systems.touchbutton',
   'modules.sungirl.devsystem',
   'modules.sungirl.touch_system',
   'modules.sungirl.player_control_system',

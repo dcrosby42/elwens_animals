@@ -54,6 +54,9 @@ end
 
 return defineUpdateSystem(hasTag('puppygirl'),
   function(e, estore, input,res)
+    if e.touch and e.touch.state == "pressed" then
+      C.assignAsPlayer(e, estore)
+    end
 
     -- (maybe) add/move nav_goal
     C.applyTouchNav(e)

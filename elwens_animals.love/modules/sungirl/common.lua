@@ -54,6 +54,24 @@ function C.swapPlayers(estore)
   parentE:resortChildren()
 end
 
+function C.assignAsPlayer(e, estore)
+  if e.tags and e.tags.player then return end
+
+  local currentPlayer = findEntity(estore, hasTag("player"))
+  if currentPlayer then
+    C.removePlayerTag(currentPlayer)
+    -- swap z order
+    C.swapOrder(e,currentPlayer)
+    local parentE = estore:getEntity(e.parent.parentEid)
+    if parentE then
+      parentE:resortChildren()
+    end
+  end
+
+  C.addPlayerTag(e)
+end
+
+
 function C.applyMotion(e, input, opts)
   if not opts then opts = {} end
   if opts.horizontal == nil then opts.horizontal = true end
@@ -81,7 +99,11 @@ function C.accelTowardNavGoal(e)
   local gx = e.nav_goal.x
   local gy = e.nav_goal.y
   -- vector from player to goal
-  local dx, dy = Vec.sub(gx, gy, e.pos.x, e.pos.y)
+  local offx, offy = 0, 0
+  if e.touchable then
+    offx, offy = e.touchable.offx, e.touchable.offy
+  end
+  local dx, dy = Vec.sub(gx, gy, e.pos.x+offx, e.pos.y+offy)
   local dist = Vec.len(dx,dy)
 
   if e.vel.dx == 0 and e.vel.dy == 0 then
@@ -162,7 +184,7 @@ function C.applyTouchNav(e)
   if e.touch then
     if e.touch.state == "pressed" then
       local t = e.touch
-      e:newComp('nav_goal', {x=t.lastx, y=t.lasty})
+      e:newComp('nav_goal', { x = t.lastx, y = t.lasty })
 
       if SHOW_TOUCH_NAV then
         local offx, offy = (t.lastx - e.pos.x), (t.lasty - e.pos.y)

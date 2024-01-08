@@ -113,6 +113,7 @@ function Entities.catgirl(parent, res)
   local catgirl = parent:newEntity({
     { 'name',           { name = "catgirl" } },
     { 'tag',            { name = 'catgirl' } },
+    { 'tag',            { name = 'player' } },
     { 'player_control', {} },
     { 'touchable',      { radius = 70, offy=70 } },
     { 'speed',          { pps = 600 } },
@@ -215,17 +216,17 @@ end
 
 function Entities.buttons(parent, res)
   -- Entities.nextModeButton(parent, res)
-  Entities.quitButton(parent, res)
+  Entities.powerButton(parent, res)
   -- Entities.toggleDebugButton(parent, res)
 end
 
-function Entities.quitButton(estore, res)
+function Entities.powerButton(estore, res)
   local w, h = love.graphics.getDimensions()
   return estore:newEntity({
     { 'name',   { name = "power_button" } },
     { 'pic',    { id = 'power-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
     { 'pos',    { x = w - 44, y = 50 } },
-    { 'button', { kind = 'hold', eventtype = 'POWER', holdtime = 0.3, radius = 40 } },
+    { 'button', { kind = 'hold', eventtype = 'POWER', holdtime = 0.5, radius = 40 } },
   })
 end
 
