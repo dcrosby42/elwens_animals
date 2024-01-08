@@ -24,11 +24,11 @@ function C.resetPLayerControls(e)
 end
 
 function C.swapOrder(e1, e2)
-  -- Debug.println("swapOrder\n" .. tdebug(e1.parent) .. "\n" .. tdebug(e2.parent))
-  local o1 = e1.parent.order
-  local o2 = e2.parent.order
-  e1.parent.order = o2
-  e2.parent.order = o1
+  local p1 = e1.parent
+  local p2 = e2.parent
+  local oo1, oo2 = p1.order, p2.order
+  p1.order, p2.order = p2.order, p1.order
+  Debug.println("swapOrder "..e1.eid.."("..oo1.." -> "..p1.order..") & "..e2.eid.."("..oo2.." -> "..p2.order.. ")")
 end
 
 function C.swapPlayers(estore)
@@ -59,6 +59,7 @@ function C.assignAsPlayer(e, estore)
 
   local currentPlayer = findEntity(estore, hasTag("player"))
   if currentPlayer then
+    if currentPlayer.eid == e.eid then return end
     C.removePlayerTag(currentPlayer)
     -- swap z order
     C.swapOrder(e,currentPlayer)
@@ -180,11 +181,20 @@ end
 
 local SHOW_TOUCH_NAV = false
 
+function C.getNavGoal(e)
+  if e and e.nav_goals and e.nav_goals.touchnav then
+    return e.nav_goals.touchnav
+  end
+  return nil
+end
+
 function C.applyTouchNav(e)
   if e.touch then
     if e.touch.state == "pressed" then
       local t = e.touch
-      e:newComp('nav_goal', { x = t.lastx, y = t.lasty })
+      if not C.getNavGoal(e) then
+        e:newComp('nav_goal', { name="touchnav", x = t.lastx, y = t.lasty })
+      end
 
       if SHOW_TOUCH_NAV then
         local offx, offy = (t.lastx - e.pos.x), (t.lasty - e.pos.y)
@@ -199,16 +209,18 @@ function C.applyTouchNav(e)
       end
 
     elseif e.touch.state == "released" then
-      if e.nav_goal then 
-        e:removeComp(e.nav_goal)
+      local nav_goal = C.getNavGoal(e)
+      if nav_goal then
+        e:removeComp(nav_goal)
       end
       if SHOW_TOUCH_NAV and e.circle then 
         e:removeComp(e.circle)
       end
     else
       local t = e.touch
-      if e.nav_goal then
-        e.nav_goal.x, e.nav_goal.y = t.lastx, t.lasty
+      local nav_goal = C.getNavGoal(e)
+      if nav_goal then
+        nav_goal.x, nav_goal.y = t.lastx, t.lasty
       end
       if SHOW_TOUCH_NAV and e.circle then
         e.circle.offx, e.circle.offy = (t.lastx - e.pos.x), (t.lasty - e.pos.y)

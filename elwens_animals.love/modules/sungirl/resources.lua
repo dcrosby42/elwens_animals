@@ -92,7 +92,8 @@ function Res.load()
 
   addSunGirlAnimations(resources)
 
-  addPic(resources, { name = "power-button-outline", img = "power-button-outline" })
+  addPic(resources, { img = "power-button-outline" })
+  addPic(resources, { img = "skip-button-outline" })
 
   return resources
 end

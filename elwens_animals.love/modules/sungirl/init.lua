@@ -13,7 +13,7 @@ local UPDATE = composeSystems({
   'modules.sungirl.touch_system',
   'modules.sungirl.player_control_system',
   -- 'modules.sungirl.touch_player_control_system',
-  'modules.sungirl.touch_nav_player_control_system',
+  -- 'modules.sungirl.touch_nav_player_control_system',
   'modules.sungirl.catgirl_system',
   'modules.sungirl.puppygirl_system',
   'systems.follow',

@@ -1,5 +1,5 @@
 local EventHelpers = require 'eventhelpers'
-local Debug = require('mydebug').sub("Touch",true)
+local Debug = require('mydebug').sub("Touch",false)
 local Entities = require("modules.sungirl.entities")
 local Vec = require 'vector-light'
 
@@ -31,6 +31,16 @@ local function findTouch(estore,tid)
   end
 end
 
+local function propstr(t,keys)
+  return table.concat(lmap(keys, function(key)
+    return key..": "..tostring(t[key])
+  end), ", ")
+end
+
+local function touchdebug(comp)
+  return propstr(comp,{"touchid","state","lastx","lasty","lastscreenx","lastscreeny","startx","starty","startscreenx","startscreeny"})
+end
+
 local function updateTouchComp(touchComp, touchEvt, estore)
   local x, y = toVPCoords(touchEvt.x, touchEvt.y, estore)
   touchComp.touchid = touchEvt.id
@@ -50,7 +60,7 @@ return function(estore, input, res)
   estore:walkEntities(hasComps('touch'), function(e)
     for _,touchComp in pairs(e.touchs) do
       if touchComp.state == 'released' then
-        Debug.println("removing "..tdebug(touchComp))
+        Debug.println("cleanup "..touchdebug(touchComp))
         e:removeComp(touchComp)
       else
         -- Touch components are "idle" between actual touch events
@@ -71,7 +81,7 @@ return function(estore, input, res)
         touchComp.starty = touchComp.lasty
         touchComp.startscreenx = touch.x
         touchComp.startscreeny = touch.y
-        Debug.println("pressed: new touch comp: "..tdebug(touchComp))
+        Debug.println("pressed: "..touchdebug(touchComp))
       end
     end,
 
@@ -80,7 +90,7 @@ return function(estore, input, res)
       if e and touchComp and touchComp.state ~= "released" then
         -- (ignore moved events if released has already been processed)
         updateTouchComp(touchComp, touch, estore)
-        Debug.println("moved: updated touch comp: "..tdebug(touchComp))
+        Debug.println("moved: "..touchdebug(touchComp))
       end
     end,
 
@@ -88,7 +98,7 @@ return function(estore, input, res)
       local e,touchComp = findTouch(estore,touch.id)
       if e then
         updateTouchComp(touchComp, touch, estore)
-        Debug.println("released: updated touch comp: "..tdebug(touchComp))
+        Debug.println("released: "..touchdebug(touchComp))
       end
       -- NB: state will be set to 'released'; during the next update, the top of this func will remove the component
     end,

@@ -29,12 +29,12 @@ function Entities.initialEntities(res)
   Entities.background(viewportE, res, "background01")
   
   local sun = Entities.sun(viewportE, res)
-  sun.parent.order = 0
+  sun.parent.order = 2
 
   Entities.flower(viewportE, res)
 
   local puppygirl = Entities.puppygirl(viewportE, res)
-  sun.parent.order = 10 
+  puppygirl.parent.order = 10 
 
   local shadow = Entities.shadow(viewportE, res)
   local catgirl = Entities.catgirl(viewportE, res)
@@ -215,9 +215,9 @@ function Entities.waypoint(parent, name,x,y)
 end
 
 function Entities.buttons(parent, res)
-  -- Entities.nextModeButton(parent, res)
+  Entities.nextModeButton(parent, res)
   Entities.powerButton(parent, res)
-  -- Entities.toggleDebugButton(parent, res)
+  Entities.toggleDebugButton(parent, res)
 end
 
 function Entities.powerButton(estore, res)
@@ -230,24 +230,25 @@ function Entities.powerButton(estore, res)
   })
 end
 
--- function Entities.nextModeButton(estore, res)
---   local w, h = love.graphics.getDimensions()
---   return estore:newEntity({
---     { 'name',   { name = "skip_button" } },
---     { 'pic',    { id = 'skip-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
---     { 'pos',    { x = w - 124, y = 50 } },
---     { 'button', { kind = 'hold', eventtype = 'SKIP', holdtime = 0.5, radius = 40 } },
---   })
--- end
+function Entities.nextModeButton(estore, res)
+  local w, h = love.graphics.getDimensions()
+  return estore:newEntity({
+    { 'name',   { name = "skip_button" } },
+    { 'pic',    { id = 'skip-button-outline', sx = 0.25, sy = 0.25, centerx = 0.5, centery = 0.5, color = { 1, 1, 1, 0.25 } } },
+    { 'pos',    { x = w - 124, y = 50 } },
+    { 'button', { kind = 'hold', eventtype = 'SKIP', holdtime = 0.5, radius = 40 } },
+  })
+end
 
--- function Entities.toggleDebugButton(estore, res)
---   local w, h = love.graphics.getDimensions()
---   return estore:newEntity({
---     { 'name',   { name = "toggle_debug_button" } },
---     -- {'pic', {id='skip-button-outline', sx=0.25,sy=0.25,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
---     { 'pos',    { x = w/2, y = 50 } },
---     { 'button', { kind = 'hold', eventtype = 'TOGGLE_DEBUG', holdtime = 0.5, radius = 40 } },
---   })
--- end
+function Entities.toggleDebugButton(estore, res)
+  local w, h = love.graphics.getDimensions()
+  return estore:newEntity({
+    { 'name',   { name = "toggle_debug_button" } },
+    {'pic', {id='down_arrow', sx=0.7,sy=0.7,centerx=0.5, centery=0.5, color={1,1,1,0.25}}},
+    -- { 'pos',    { x = w/2, y = 50 } },
+    { 'pos',    { x = w-35, y = h-35 } },
+    { 'button', { kind = 'hold', eventtype = 'TOGGLE_DEBUG', holdtime = 0.4, radius = 40 } },
+  })
+end
 
 return Entities
