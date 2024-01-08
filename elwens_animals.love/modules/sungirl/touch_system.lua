@@ -1,5 +1,5 @@
 local EventHelpers = require 'eventhelpers'
-local Debug = require('mydebug').sub("Touch",false)
+local Debug = require('mydebug').sub("Touch",true)
 local Entities = require("modules.sungirl.entities")
 local Vec = require 'vector-light'
 
@@ -10,9 +10,12 @@ end
 local function findTouchable(estore,touchEvt)
   local x, y = toVPCoords(touchEvt.x, touchEvt.y, estore)
   return findEntity(estore, function(e)
-    return e.touchable and e.pos 
-      and e.touchable.enabled 
-      and Vec.dist(x,y,e.pos.x,e.pos.y) <= e.touchable.radius
+    if e.touchable and e.touchable.enabled and e.pos then
+      local ex = e.pos.x + e.touchable.offx
+      local ey = e.pos.y + e.touchable.offy
+      return Vec.dist(x, y, ex, ey) <= e.touchable.radius
+    end
+    return false
   end)
 end
 

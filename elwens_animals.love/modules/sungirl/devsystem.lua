@@ -81,17 +81,17 @@ return function(estore, input, res)
   })
 
   EventHelpers.handle(input.events, 'touch', {
-    scrolled = function(touchAction)
-      -- 
-      -- Scrolling view left/right:
-      --
-      local x = touchAction.x
-      if x ~= 0 then
-        local scrollStep = 10
-        if touchAction.shift then scrollStep = 50 end
-        viewportE.viewport.x = viewportE.viewport.x + (x * scrollStep)
-      end
-    end,
+    -- scrolled = function(touchAction)
+    --   -- 
+    --   -- Scrolling view left/right:
+    --   --
+    --   local x = touchAction.x
+    --   if x ~= 0 then
+    --     local scrollStep = 10
+    --     if touchAction.shift then scrollStep = 50 end
+    --     viewportE.viewport.x = viewportE.viewport.x + (x * scrollStep)
+    --   end
+    -- end,
 
     -- pressed = function(touch)
     --   local x = touch.x + viewportE.viewport.x

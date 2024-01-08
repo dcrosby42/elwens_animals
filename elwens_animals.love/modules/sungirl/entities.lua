@@ -111,16 +111,14 @@ end
 
 function Entities.catgirl(parent, res)
   local catgirl = parent:newEntity({
-    { 'name',  { name = "catgirl" } },
-    { 'tag',   { name = 'catgirl' } },
-    { 'tag',   { name = 'player' } },
+    { 'name',           { name = "catgirl" } },
+    { 'tag',            { name = 'catgirl' } },
     { 'player_control', {} },
-    { 'touch_nav',      {} },
-    { 'state', { name = "dir", value="right" } },
-    { 'timer', { name = "catgirl", countDown = false } },
-    { 'pos',   { x = 100, y = 700 } },
-    { 'speed',   { pps=600 } },
-    { 'vel',   { } },
+    { 'touchable',      { radius = 70, offy=70 } },
+    { 'speed',          { pps = 600 } },
+    { 'pos',            { x = 100, y = 700 } },
+    { 'vel',            {} },
+    { 'state',          { name = "dir", value = "right" } },
     { 'anim', {
       name = "catgirl",
       id = "sungirl_stand",
@@ -130,6 +128,13 @@ function Entities.catgirl(parent, res)
       sy = 0.5,
       drawbounds = false,
     } },
+    { 'timer', { name = "catgirl", countDown = false } },
+    -- { 'circle', {
+    --   radius = 70,
+    --   fill = false,
+    --   offy = 70,
+    --   color = { 1, 1, 1, 0.5 }
+    -- } },
   })
 
   return catgirl

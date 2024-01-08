@@ -45,7 +45,7 @@ Comp.define("sound", {'sound','','loop',false,'state','playing','volume',1,'pitc
 
 Comp.define("button", {'kind','tap', 'touchid','','holdtime',1,'eventtype','','shape','circle','radius',40,'w',80,'h',80})
 
-Comp.define('touchable', { 'radius', 20, 'enabled', true })
+Comp.define('touchable', { 'radius', 20, 'offx', 0, 'offy', 0, 'enabled', true })
 Comp.define("touch", { 'touchid', '', 'state', '',
     'startscreenx', 0, 'startscreeny', 0,
     'lastscreenx', 0, 'lastscreeny', 0,
