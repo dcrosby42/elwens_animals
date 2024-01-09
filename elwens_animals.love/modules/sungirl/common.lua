@@ -8,12 +8,14 @@ local C = {}
 function C.removePlayerTag(e)
   if e.tags.player then
     e:removeComp(e.tags.player)
+    Debug.println("remove player tag from "..e.name.name)
   end
 end
 
 function C.addPlayerTag(e)
   if not e.tags.player then
     e:newComp('tag', { name = 'player' })
+    Debug.println("add player tag to "..e.name.name)
   end
 end
 
@@ -73,6 +75,8 @@ function C.assignAsPlayer(e, estore)
 end
 
 
+-- Update pos based on velocity and dt.
+-- vel, pos, input.dt, opts.{horizontal,vertical}
 function C.applyMotion(e, input, opts)
   if not opts then opts = {} end
   if opts.horizontal == nil then opts.horizontal = true end
@@ -88,6 +92,7 @@ function C.applyMotion(e, input, opts)
 end
 
 
+-- nav_goal, vel, pos, speed, touchable
 function C.accelTowardNavGoal(e)
   local startThreshold = 50
   local stopThreshold = 10
@@ -150,6 +155,9 @@ function C.updateLRDirFromVel(e)
   end
 end
 
+-- Update velocity based on player_control {up,down,left,right}
+-- Comps: player_control, velocity, speed 
+-- (actual motion provided by )
 function C.applyPlayerControls(e, opts)
   if not opts then opts = {} end
   if opts.horizontal == nil then opts.horizontal = true end
@@ -229,5 +237,20 @@ function C.applyTouchNav(e)
   end
 end
 
+function C.addSoundComp(e, sndName, res)
+  if not sndName then return end
+  local soundCfg = res.sounds[sndName]
+  if soundCfg then
+    return e:newComp('sound', {
+      sound = sndName,
+      state = 'playing',
+      duration = soundCfg.duration,
+      volume = soundCfg.volume or 1,
+    })
+  else
+    Debug.println("(No sound for " .. tostring(sndName) .. ")")
+    return nil
+  end
+end
 
 return C

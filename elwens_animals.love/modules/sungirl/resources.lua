@@ -63,18 +63,7 @@ local function addSunGirlAnimations(resources)
 
 end
 
--- cached resources object, populated after Res.load()
-local resources
-
-function Res.load()
-  if resources then return resources end
-
-  resources = {
-    pics={},
-    anims={},
-    sounds={},
-  }
-
+local function addPicsAndAnims(resources)
   addPic(resources, "background01")
 
   addPic(resources, {name="umbrella", sungirl_img="Sungirl_items-1"})
@@ -94,6 +83,46 @@ function Res.load()
 
   addPic(resources, { img = "power-button-outline" })
   addPic(resources, { img = "skip-button-outline" })
+end
+
+local function addSounds(resources)
+  resources.sounds["pickup_item"] = {
+    file = "data/sounds/sungirl/pickup_item.wav",
+    mode = "static",
+    volume = 1.0,
+  }
+
+  resources.sounds["welcome-to-city"] = {
+    file = "data/sounds/sungirl/welcome-to-city.mp3",
+    mode = "stream",
+    volume = 1.0,
+  }
+
+  -- Ensure all our sound configs have data and duration:
+  for _, soundCfg in pairs(resources.sounds) do
+    if not soundCfg.data then
+      soundCfg.data = love.sound.newSoundData(soundCfg.file)
+    end
+    if not soundCfg.duration or soundCfg.duration == '' then
+      soundCfg.duration = soundCfg.data:getDuration()
+    end
+  end
+end
+
+-- cached resources object, populated after Res.load()
+local resources
+
+function Res.load()
+  if resources then return resources end
+
+  resources = {
+    pics={},
+    anims={},
+    sounds={},
+  }
+
+  addPicsAndAnims(resources)
+  addSounds(resources)
 
   return resources
 end

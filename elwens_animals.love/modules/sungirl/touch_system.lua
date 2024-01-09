@@ -31,14 +31,8 @@ local function findTouch(estore,tid)
   end
 end
 
-local function propstr(t,keys)
-  return table.concat(lmap(keys, function(key)
-    return key..": "..tostring(t[key])
-  end), ", ")
-end
-
 local function touchdebug(comp)
-  return propstr(comp,{"touchid","state","lastx","lasty","lastscreenx","lastscreeny","startx","starty","startscreenx","startscreeny"})
+  return attrstring(comp,{"touchid","state","lastx","lasty","lastscreenx","lastscreeny","startx","starty","startscreenx","startscreeny"})
 end
 
 local function updateTouchComp(touchComp, touchEvt, estore)

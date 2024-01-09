@@ -9,6 +9,7 @@ Comp.define('nav_goal', { 'x', 0, 'y', 0 })
 Comp.define("speed", { 'pps', 0 })
 Comp.define('touch_dpad', {'x',0,'y',0,'inner_radius',10,'radius',50})
 Comp.define('drag_nav', {})
+Comp.define('item', {'kind',''})
 
 local Entities = {}
 
@@ -31,7 +32,8 @@ function Entities.initialEntities(res)
   local sun = Entities.sun(viewportE, res)
   sun.parent.order = 2
 
-  Entities.flower(viewportE, res)
+  Entities.flower(viewportE, 2500)
+  Entities.flower(viewportE, 800)
 
   local puppygirl = Entities.puppygirl(viewportE, res)
   puppygirl.parent.order = 10 
@@ -105,11 +107,17 @@ function Entities.background(parent, res, picId)
     { 'pic',  { id = picId, sx = scale, sy = scale } },
     { 'pos',  { x = 0, y = 0 } },
     { 'background', { color = { 0.75, 0.85, 1, 1 } } },
+    { 'sound',      { sound = 'welcome-to-city', loop = true, duration = res.sounds["welcome-to-city"].duration } },
   })
 end
 
 
 function Entities.catgirl(parent, res)
+  -- anim: (620 x 1000)*0.5 -> 310,500
+  -- bounds: 
+  local bbox_w, bbox_h = 120,390
+  local bbox_offx, bbox_offy = bbox_w/2, 140
+
   local catgirl = parent:newEntity({
     { 'name',           { name = "catgirl" } },
     { 'tag',            { name = 'catgirl' } },
@@ -120,9 +128,10 @@ function Entities.catgirl(parent, res)
     { 'pos',            { x = 100, y = 700 } },
     { 'vel',            {} },
     { 'state',          { name = "dir", value = "right" } },
+    { 'bounds',         { offx = bbox_offx, offy = bbox_offy, w = bbox_w, h = bbox_h, drawbounds=false } },
     { 'anim', {
       name = "catgirl",
-      id = "sungirl_stand",
+      id = "sungirl_stand", -- 620x1000
       centerx = 0.5,
       centery = 0.5,
       sx = 0.5,
@@ -187,12 +196,20 @@ function Entities.puppygirl(parent, res)
 
 end
 
-function Entities.flower(parent, res, picId)
+function Entities.flower(parent,x,y)
   local scale = 0.5
+  if not y then y = 775 end
+
+  local bbox_w, bbox_h = 45,100
+  local bbox_offx, bbox_offy = 0,0--bbox_w/2, bbox_h/2
+
   return parent:newEntity({
-    { 'tag',   { name = 'flower' } },
-    { 'pic',  { id = "flower1", sx = scale, sy = scale } },
-    { 'pos',  { x = 2500, y = 775 } },
+    { 'tag',    { name = 'flower' } },
+    { 'tag',    { name = 'pickup' } },
+    { 'item',   { kind = 'flower' } },
+    { 'pic',    { id = "flower1", sx = scale, sy = scale, drawbounds = false } },
+    { 'pos',    { x = x, y = y } },
+    { 'bounds', { offx = bbox_offx, offy = bbox_offy, w = bbox_w, h = bbox_h, drawbounds = false } },
   })
 end
 

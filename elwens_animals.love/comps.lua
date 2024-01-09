@@ -1,6 +1,6 @@
 local Comp = require 'ecs/component'
 
-Comp.define("bounds", {'offx',0,'offy',0,'w',0,'h',0})
+Comp.define("bounds", {'offx',0,'offy',0,'w',0,'h',0,'drawbounds',false})
 Comp.define("pos", {'x',0,'y',0,'r',0})
 Comp.define("vel", {'dx',0,'dy',0,'angularvelocity',0,'lineardamping',0,'angulardamping',0})
 

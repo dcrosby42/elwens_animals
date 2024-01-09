@@ -20,6 +20,7 @@
 -- table.pack(...)
 -- table.unpack(list, [i,[j]])
 
+
 function flattenTable(t)
   s = ""
   for k,v in pairs(t) do
@@ -234,6 +235,15 @@ function tdebug1(t,ind)
   end
 end
 
+function attrstring(t,keys)
+  if not keys then
+    keys = tkeys(t)
+  end
+  return table.concat(lmap(keys, function(key)
+    return key..": "..tostring(t[key])
+  end), ", ")
+end
+
 function keyvalsearch(t,matchFn,callbackFn)
   for _,v in pairs(t) do
     if matchFn(k,v) then callbackFn(k,v) end
@@ -410,6 +420,14 @@ function math.pointinbounds(x1,y1, b)
   return x1 >= b.x and x1 < b.x+b.w and y1 >= b.y and y1 < b.y + b.h
 end
 
+-- Returns true if two rectangles overlap, false if they don't.
+function math.rectanglesintersect(x1,y1,w1,h1, x2,y2,w2,h2)
+  return x1 < x2+w2 and
+         x2 < x1+w1 and
+         y1 < y2+h2 and
+         y2 < y1+h1
+end
+
 function math.clamp(val, min, max)
   if val < min then
     return min, true
@@ -510,6 +528,8 @@ function split(str,char)
   end
   return res
 end
+
+join = table.concat
 
 function floatstr(x, places)
   places = places or 3

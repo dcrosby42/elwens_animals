@@ -253,7 +253,7 @@ local function drawShapes(e, res)
 end
 
 local function drawBounds(e, res)
-  if DRAW_BOUNDS then
+  if DRAW_BOUNDS or (e.bounds and e.bounds.drawbounds) then
     if e.pos then
       local x, y = getPos(e)
       love.graphics.setColor(1, 1, 1, 1)

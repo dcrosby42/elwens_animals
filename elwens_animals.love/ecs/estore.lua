@@ -202,14 +202,20 @@ function Estore:addComp(e, comp)
     end
   end
 
+  -- Add convenience component accessor props (singular and plural)
+  local subkey = comp.cid
+  if comp.name and string.len(comp.name) > 0 then
+    -- only utilize the name when present and non-empty
+    subkey = comp.name
+  end
   if not e[key] then
     -- First component of this type
     e[key] = comp
     e[keyp] = {}
-    e[keyp][comp.name or comp.cid] = comp
+    e[keyp][subkey] = comp
   else
     -- This entity already has some of this comp type
-    e[keyp][comp.name or comp.cid] = comp
+    e[keyp][subkey] = comp
   end
 
   return comp
