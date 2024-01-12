@@ -18,6 +18,7 @@ local UPDATE = composeSystems({
   'modules.sungirl.puppygirl_system',
   'systems.follow',
   'systems.viewport',
+  'modules.sungirl.sun_system',
   -- 'modules.farmgame.manipsystem',
   -- 'modules.farmgame.boundarysystem',
 })

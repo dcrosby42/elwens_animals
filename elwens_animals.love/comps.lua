@@ -15,7 +15,7 @@ Comp.define("viewportTarget", {'offx',0,'offy',0})
 
 Comp.define("follow", { 'targetName', '', 'offx', 0, 'offy', 0 })
 
-Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false,'draworder',0})
+Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false,'draworder',0,'srcWidth',0,'srcHeight',0})
 Comp.define("anim", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 
 Comp.define("state",  {'value',''})

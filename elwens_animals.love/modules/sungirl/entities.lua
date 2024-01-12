@@ -220,11 +220,23 @@ function Entities.flower(parent,x,y)
 end
 
 function Entities.sun(parent, res, picId)
-  local scale = 0.5
+  local scale = 0.3
+  local imgW = res.pics.big_sun.rect.w
+  local imgH = res.pics.big_sun.rect.h
   return parent:newEntity({
     { 'name',  { name = "sun" } },
-    { 'pic',  { id = "big_sun", sx = scale, sy = scale } },
-    { 'pos',  { x = 00, y = 00 } },
+    { 'state',  { name="mood", value="calm"} },
+    { 'pos',  { } },
+    { 'pic', {
+      id = "big_sun",
+      sx = scale,
+      sy = scale,
+      centerx=0.5,
+      centery=0.5,
+      srcWidth = imgW,
+      srcHeight = imgH,
+      drawbounds = false,
+    } },
   })
 end
 

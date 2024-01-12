@@ -253,4 +253,13 @@ function C.addSoundComp(e, sndName, res)
   end
 end
 
+-- use bounds and pos to detect overlap of entities
+function C.entitiesIntersect(e1,e2)
+  if e1.bounds and e2.bounds and e1.pos and e2.pos then
+    return math.rectanglesintersect(
+      e1.pos.x - e1.bounds.offx, e1.pos.y - e1.bounds.offy, e1.bounds.w, e1.bounds.h,
+      e2.pos.x - e2.bounds.offx, e2.pos.y - e2.bounds.offy, e2.bounds.w, e2.bounds.h)
+  end
+end
+
 return C
