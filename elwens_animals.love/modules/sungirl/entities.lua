@@ -107,7 +107,13 @@ function Entities.background(parent, res, picId)
     { 'pic',  { id = picId, sx = scale, sy = scale } },
     { 'pos',  { x = 0, y = 0 } },
     { 'background', { color = { 0.75, 0.85, 1, 1 } } },
-    { 'sound',      { sound = 'welcome-to-city', loop = true, duration = res.sounds["welcome-to-city"].duration } },
+    { 'sound',
+      {
+        sound = 'welcome-to-city',
+        loop = true,
+        state = "other",
+        duration = res.sounds["welcome-to-city"].duration
+      } },
   })
 end
 

@@ -14,6 +14,11 @@ local function drawSound(sndCmp, e, estore, res)
   local audioSrc = soundmanager.get(key)
   if audioSrc then
     -- Source already existing.
+    if sndCmp.state == "playing" and not audioSrc:isPlaying() then
+      audioSrc:play()
+    elseif sndCmp.state ~= "playing" and audioSrc:isPlaying() then
+      audioSrc:pause()
+    end
     -- (TODO Update audioSrc from sound component state)
     -- Poke the soundmanager to let 'im know we still care about this sound:
     soundmanager.manage(key, audioSrc)
@@ -54,6 +59,8 @@ local function drawSound(sndCmp, e, estore, res)
       else
         Debug.println("!! update() unknown sound in " .. tflatten(sndCmp))
       end -- end if soundCfg
+    else
+      -- Debug.println("Not playing")
     end   -- end if playing
   end     -- end if src
 end

@@ -7,7 +7,7 @@ local Resources = require 'modules.sungirl.resources'
 local UPDATE = composeSystems({
   'systems.timer',
   -- 'systems.physics',
-  -- 'systems.sound',
+  'systems.sound',
   'systems.touchbutton',
   'modules.sungirl.devsystem',
   'modules.sungirl.touch_system',
