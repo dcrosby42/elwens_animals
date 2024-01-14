@@ -32,8 +32,9 @@ function Entities.initialEntities(res)
   local sun = Entities.sun(viewportE, res)
   sun.parent.order = 2
 
-  Entities.flower(viewportE, 2500)
-  Entities.flower(viewportE, 800)
+  Entities.flower(viewportE, 800, 775)
+  Entities.flower(viewportE, 1100, 775)
+  Entities.flower(viewportE, 2500, 775)
 
   local puppygirl = Entities.puppygirl(viewportE, res)
   puppygirl.parent.order = 10 
@@ -42,15 +43,12 @@ function Entities.initialEntities(res)
   local catgirl = Entities.catgirl(viewportE, res)
   catgirl.parent.order = 11 
 
+  -- catgirl.pos.x = 2300
+
   viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
   -- viewportTargetE:newComp('follow', { targetName = puppygirl.name.name })
 
   -- C.swapPlayers(estore)
-
-
-  -- Entities.sketch_walker(viewportE, res)
-
-  -- Entities.sun(estore, res)
 
   --
   -- UI overlay
@@ -59,6 +57,10 @@ function Entities.initialEntities(res)
     {"name", {name="ui"}}
   })
   Entities.buttons(ui, res)
+
+
+  
+  Entities.mouseDebug(estore)
 
   return estore
 end
@@ -85,6 +87,7 @@ end
 
 function Entities.viewportTarget(parent, res, name)
   local w, h = love.graphics.getDimensions()
+  Debug.println("w="..tostring(w))
   local offx = -(w / 2)
   local offy = -(h / 2)
   name = name or "viewport_target"
@@ -204,7 +207,6 @@ end
 
 function Entities.flower(parent,x,y)
   local scale = 0.5
-  if not y then y = 775 end
 
   local bbox_w, bbox_h = 45,100
   local bbox_offx, bbox_offy = 0,0--bbox_w/2, bbox_h/2
@@ -283,6 +285,15 @@ function Entities.toggleDebugButton(estore, res)
     -- { 'pos',    { x = w/2, y = 50 } },
     { 'pos',    { x = w-35, y = h-35 } },
     { 'button', { kind = 'hold', eventtype = 'TOGGLE_DEBUG', holdtime = 0.4, radius = 40 } },
+  })
+end
+
+function Entities.mouseDebug(estore)
+  return estore:newEntity({
+    {"name", {name="mouse_debug"}},
+    {"state", { name="on", value=false}},
+    {"label", {color={1,1,1,1}}},
+    {"pos", {}},
   })
 end
 

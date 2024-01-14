@@ -28,6 +28,24 @@ local function toggleBackgroundMusic(estore)
   end
 end
 
+local function toggleMouseDebug(estore)
+  local mouseDebug = findEntity(estore, hasName("mouse_debug"))
+  if mouseDebug then
+    mouseDebug.states.on.value = not mouseDebug.states.on.value
+    mouseDebug.label.text = ""
+  end
+end
+
+local function updateMouseDebug(touch, estore)
+  local mouseDebug = findEntity(estore, hasName("mouse_debug"))
+  if mouseDebug and mouseDebug.states.on.value == true then
+    local worldx, worldy = screenXYToViewport(Entities.getViewport(estore), touch.x, touch.y)
+    local text = joinstrings({"screen: ", touch.x, ", ", touch.y, "\n", "world: ", math.round(worldx), ", ", math.round(worldy)})
+    mouseDebug.pos.x, mouseDebug.pos.y = touch.x + 13, touch.y
+    mouseDebug.label.text = text
+  end
+end
+
 return function(estore, input, res)
   local viewportE = Entities.getViewport(estore)
 
@@ -39,14 +57,24 @@ return function(estore, input, res)
         C.swapPlayers(estore)
       end
 
-      if event.key == "m" then
+      if event.key == "b" then
         toggleBackgroundMusic(estore)
       end
+
+      -- Toggle mouse debug coords
+      if event.key == "m" then
+        toggleMouseDebug(estore)
+      end
+
 
     end,
   })
 
   EventHelpers.handle(input.events, 'touch', {
+    moved = function(touch)
+      updateMouseDebug(touch, estore)
+    end,
+
     -- scrolled = function(touchAction)
     --   -- 
     --   -- Scrolling view left/right:

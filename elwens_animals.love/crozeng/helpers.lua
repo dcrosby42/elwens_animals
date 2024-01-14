@@ -531,6 +531,16 @@ end
 
 join = table.concat
 
+function tostrings(items)
+  return lmap(items,tostring)
+end
+
+-- Convert everything in items via tostring then join.
+function joinstrings(items,sep)
+  return join(tostrings(items), sep)
+end
+
+
 function floatstr(x, places)
   places = places or 3
   return ""..math.round(x,places)
@@ -578,6 +588,12 @@ end
 function colorstring(c)
   return "Color("..c[1]..","..c[2]..","..c[3]..","..tostring(c[4])..")"
 end
+
+-- Convert all args via tostring and concat into a string
+function strcat(...)
+  return table.concat(lmap({...}, function(x) return tostring(x) end))
+end
+
 
 -- split a string
 -- function string:split(delimiter)
