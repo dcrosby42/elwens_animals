@@ -61,6 +61,11 @@ local function addSunGirlAnimations(resources)
   standPics[2].duration = 0.2
   resources.anims["sungirl_stand"] = Anim.makeSimpleAnim(standPics)
 
+  local sunnyPics = {
+    makePic({sungirl_img="Sun_girl_animation-sad1"}), -- too bright
+  }
+  sunnyPics[1].duration = 5
+  resources.anims["sungirl_stand_too_hot"] = Anim.makeSimpleAnim(sunnyPics)
 end
 
 local function addPicsAndAnims(resources)
@@ -83,6 +88,26 @@ local function addPicsAndAnims(resources)
 
   addPic(resources, { img = "power-button-outline" })
   addPic(resources, { img = "skip-button-outline" })
+end
+
+local function addFonts(resources)
+  resources.fonts.default = love.graphics.getFont(14)
+
+  -- Some different sizes of the builtin font
+  for _, size in ipairs({ 14, 24, 32 }) do
+    local font = love.graphics.newFont(size)
+    local name = "default_" .. tostring(size)
+    resources.fonts[name] = font
+  end
+
+  -- Downloaded font
+  local file = "data/fonts/goingtodogreatthings.ttf"
+  local prefix = "greatthings"
+  for _, size in ipairs({ 10, 30, 40, 75 }) do
+    local font = love.graphics.newFont(file, size)
+    local name = prefix .. "_" .. tostring(size)
+    resources.fonts[name] = font
+  end
 end
 
 local function addSounds(resources)
@@ -119,10 +144,12 @@ function Res.load()
     pics={},
     anims={},
     sounds={},
+    fonts={},
   }
 
   addPicsAndAnims(resources)
   addSounds(resources)
+  addFonts(resources)
 
   return resources
 end
