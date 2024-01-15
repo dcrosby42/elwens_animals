@@ -5,6 +5,13 @@ local TwoPi = 2 * math.pi
 
 local Plugins = {}
 
+-- (function()
+--   local defaultFont = love.graphics.getFont()
+--   -- local w= defaultFont:getWidth()
+--   local h =defaultFont:getHeight()
+--   print("DEFAULT FONT h="..tostring(h))
+-- end)()
+
 local function drawPic(e, pic, res)
   -- local pic = e.pic
   local x, y = getPos(e)
@@ -198,6 +205,9 @@ local function drawLabels(e, res)
     else
       love.graphics.print(label.text, x, y)
     end
+    if res.fonts and res.fonts.default then
+      love.graphics.setFont(res.fonts.default)
+    end
   end
 end
 
@@ -275,6 +285,8 @@ local function drawBackgroundColor(e, res)
 end
 
 local function drawAny(e,estore,res)
+  if e.hidden then return end
+
   drawBackgroundColor(e, res)
 
   for i = 1, #Plugins do
