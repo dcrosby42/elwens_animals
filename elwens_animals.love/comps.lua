@@ -15,13 +15,15 @@ Comp.define("viewportTarget", {'offx',0,'offy',0})
 
 Comp.define("follow", { 'targetName', '', 'offx', 0, 'offy', 0 })
 
+Comp.define("hidden", {})
+
 Comp.define("pic",  {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false,'draworder',0,'srcWidth',0,'srcHeight',0})
 Comp.define("anim", {'id','','centerx','','centery','','offx',0,'offy',0,'sx',1,'sy',1,'r',0,'color',{1,1,1,1},'drawbounds',false})
 
 Comp.define("state",  {'value',''})
 
 Comp.define("background", {'color',{0,0,0,1}})
-Comp.define("label", {'text','Label', 'color', {0,0,0},'font',nil, 'width', nil, 'align',nil, 'height',nil,'valign',nil})
+Comp.define("label", { 'text', '', 'color', { 0, 0, 0 }, 'font', '', 'width', nil, 'align', nil, 'height', nil, 'valign', nil })
 
 Comp.define("circle", {'offx',0,'offy',0,'radius',0, 'fill',true, 'color',{0,0,0}})
 Comp.define("rect", {'offx',0,'offy',0,'w',0, 'h',0, 'color',{0,0,0}, 'style','fill','draw',true})

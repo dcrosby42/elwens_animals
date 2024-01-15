@@ -11,6 +11,9 @@ Comp.define('touch_dpad', {'x',0,'y',0,'inner_radius',10,'radius',50})
 Comp.define('drag_nav', {})
 Comp.define('item', {'kind',''})
 
+-- Comp.define('tween', { 'subject', '', 'propname', '', 'from', 0, 'to', 1, 'duration', 1, 'funcname', 'linear', 'timername', '' })
+Comp.define('tween', { 'subject', '', 'target', {}, 'timer', '' })
+
 local Entities = {}
 
 
@@ -25,27 +28,34 @@ function Entities.initialEntities(res)
   local viewportE = Entities.viewport(estore, res, "ViewFollow")
   -- Viewport tracks to the position of a viewportTarget 
   -- (this viewportTarget will be configured to follow catgirl below)
-  local viewportTargetE = Entities.viewportTarget(estore, res, "ViewFollow")
+  local viewportTargetE = Entities.viewportTarget(viewportE, estore, res, "ViewFollow")
 
   Entities.background(viewportE, res, "background01")
   
   local sun = Entities.sun(viewportE, res)
   sun.parent.order = 2
 
-  Entities.flower(viewportE, 800, 775)
-  Entities.flower(viewportE, 1100, 775)
-  Entities.flower(viewportE, 2500, 775)
+  
+  -- Place semi-random flowers:
+  for i=0,6 do
+    local starting = 500 -- 1000
+    local spacing = 300 -- 800
+    local rx = math.random(-200, 200)
+    local ry = math.random(-20, 20)
+    Entities.flower(viewportE, starting + (i * spacing) + rx, 785 + ry)
+  end
 
-  local puppygirl = Entities.puppygirl(viewportE, res)
-  puppygirl.parent.order = 10 
+  local puppygirl = Entities.puppygirl(viewportE)
+  -- puppygirl.parent.order = 100 
 
   local shadow = Entities.shadow(viewportE, res)
   local catgirl = Entities.catgirl(viewportE, res)
-  catgirl.parent.order = 11 
+  -- catgirl.parent.order = 101 
 
   -- catgirl.pos.x = 2300
 
-  viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
+  -- viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
+  viewportTargetE.follow.targetName = catgirl.name.name
   -- viewportTargetE:newComp('follow', { targetName = puppygirl.name.name })
 
   -- C.swapPlayers(estore)
@@ -57,6 +67,8 @@ function Entities.initialEntities(res)
     {"name", {name="ui"}}
   })
   Entities.buttons(ui, res)
+
+  Entities.itemCounters(ui,res)
 
 
   
@@ -85,16 +97,21 @@ function Entities.viewport(estore, res, targetName)
   })
 end
 
-function Entities.viewportTarget(parent, res, name)
+function Entities.viewportTarget(viewportE, parent, res, name)
   local w, h = love.graphics.getDimensions()
-  Debug.println("w="..tostring(w))
-  local offx = -(w / 2)
-  local offy = -(h / 2)
+  
   name = name or "viewport_target"
+
+  -- get the viewport scale:
+  local vsx, vsy = viewportE.viewport.sx, viewportE.viewport.sy
+  local offx = -(w / 2) / vsx -- the vp target offset needs to be translated into viewport scale
+  local offy = -(h / 2) / vsy
+
   return parent:newEntity({
     { 'viewportTarget', { name = name, offx = offx, offy = offy } },
     { 'pos',            { x = 0, y = 0 } },
     { 'name',           { name = name } },
+    { 'follow',         { targetName = '' } },
   })
 end
 
@@ -131,6 +148,7 @@ function Entities.catgirl(parent, res)
     { 'name',           { name = "catgirl" } },
     { 'tag',            { name = 'catgirl' } },
     { 'tag',            { name = 'player' } },
+    { "state",          { name = "mode", value = "normal" } },
     { 'player_control', {} },
     { 'touchable',      { radius = 70, offy=70 } },
     { 'speed',          { pps = 600 } },
@@ -156,6 +174,9 @@ function Entities.catgirl(parent, res)
     -- } },
   })
 
+  catgirl.parent.order = 101
+
+
   return catgirl
 
 end
@@ -180,12 +201,14 @@ function Entities.getCatgirl(estore)
   return findEntity(estore, hasName('catgirl'))
 end
 
-function Entities.puppygirl(parent, res)
-  local catgirl = parent:newEntity({
+function Entities.puppygirl(parent)
+  local puppygirl = parent:newEntity({
     { 'name',           { name = "puppygirl" } },
     { 'tag',            { name = 'puppygirl' } },
+    { 'hidden',         {} },
     { 'player_control', {} },
     { 'touchable',      { radius = 70 } },
+    { 'state',          { name = "mode", value = "hidden" } }, -- hidden|visibile|revealing
     { 'state',          { name = "dir", value = "left" } },
     { 'pos',            { x = 300, y = 700 } },
     { 'speed',          { pps = 800 } },
@@ -200,8 +223,9 @@ function Entities.puppygirl(parent, res)
       color = { 1, 1, 1, 0.7 }
     } },
   })
+  puppygirl.parent.order = 100
 
-  return catgirl
+  return puppygirl
 
 end
 
@@ -227,7 +251,7 @@ function Entities.sun(parent, res, picId)
   local imgH = res.pics.big_sun.rect.h
   return parent:newEntity({
     { 'name',  { name = "sun" } },
-    { 'state',  { name="mood", value="calm"} },
+    { 'state',  { name="mood", value="passive"} },
     { 'pos',  { } },
     { 'pic', {
       id = "big_sun",
@@ -285,6 +309,32 @@ function Entities.toggleDebugButton(estore, res)
     -- { 'pos',    { x = w/2, y = 50 } },
     { 'pos',    { x = w-35, y = h-35 } },
     { 'button', { kind = 'hold', eventtype = 'TOGGLE_DEBUG', holdtime = 0.4, radius = 40 } },
+  })
+end
+
+function Entities.itemCounters(parent, res)
+  local circ = parent:newEntity({
+    { "pos",   { x = 90, y = 35 } },
+    {"circle", {radius=30, fill=true, color={1,1,1,0.5}}},
+  })
+  local imgScale = 0.25
+  local img = circ:newEntity({
+    { "pic",
+      {
+        id = "flower1",
+        sx = imgScale,
+        sy = imgScale,
+        drawbounds = false,
+        centerx = 0.1,
+        centery = 0.25
+      } },
+    {"pos", {}},
+  })
+  local lab = circ:newEntity({
+    {"name", {name="flower_counter"}},
+    -- {"label", {text="0", font="greatthings_30"}},
+    {"label", {text="0", font="default_24"}},
+    {"pos", {x=10,y=5}},
   })
 end
 

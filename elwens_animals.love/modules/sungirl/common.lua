@@ -19,7 +19,7 @@ function C.addPlayerTag(e)
   end
 end
 
-function C.resetPLayerControls(e)
+function C.resetPlayerControls(e)
   for _, attr in ipairs({ 'left', 'right', 'up', 'down', 'jump' }) do
     e.player_control[attr] = false
   end
@@ -37,8 +37,8 @@ function C.swapPlayers(estore)
   local puppygirl = findEntity(estore, hasTag("puppygirl"))
   local catgirl = findEntity(estore, hasTag("catgirl"))
 
-  C.resetPLayerControls(puppygirl)
-  C.resetPLayerControls(catgirl)
+  C.resetPlayerControls(puppygirl)
+  C.resetPlayerControls(catgirl)
 
   if puppygirl.tags.player then
     C.removePlayerTag(puppygirl)
@@ -72,6 +72,15 @@ function C.assignAsPlayer(e, estore)
   end
 
   C.addPlayerTag(e)
+end
+
+function C.viewportFollow(e, estore)
+  if e.name then
+    local viewportTargetE = findEntity(estore, hasName("ViewFollow"))
+    if viewportTargetE then
+      viewportTargetE.follow.targetName = e.name.name
+    end
+  end
 end
 
 
