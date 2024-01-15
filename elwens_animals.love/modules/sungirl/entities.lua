@@ -38,8 +38,10 @@ function Entities.initialEntities(res)
   
   -- Place semi-random flowers:
   for i=0,6 do
-    local starting = 500 -- 1000
-    local spacing = 300 -- 800
+    -- local starting = 500
+    -- local spacing = 300
+    local starting = 1000
+    local spacing = 800
     local rx = math.random(-200, 200)
     local ry = math.random(-20, 20)
     Entities.flower(viewportE, starting + (i * spacing) + rx, 785 + ry)
