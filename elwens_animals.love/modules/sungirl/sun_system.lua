@@ -69,8 +69,6 @@ local function updateAngrySun(e, catgirl)
   e.pic.sx, e.pic.sy = s, s
   e.pos.x = catgirl.pos.x + offx
   e.pos.y = catgirl.pos.y + offy
-
-  catgirl.states.mode.value = "too_hot"
 end
 
 return defineUpdateSystem(hasName('sun'),
@@ -84,7 +82,7 @@ return defineUpdateSystem(hasName('sun'),
     end
 
     -- compute percentage of items collected 
-    local totalItems = 6 -- FIXME hardcoded
+    local totalItems = 3 -- FIXME hardcoded
     local perc = math.round((numItems / totalItems) * 100)
 
     -- Use item percentage to calc the sun's mood:

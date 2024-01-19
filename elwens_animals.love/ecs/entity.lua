@@ -74,7 +74,7 @@ function Entity:walkChildren(matchFn, handler)
 end
 
 function Entity:seekEntity(matchFn, doFn)
-  self._estore:_eeekEntity(self,matchFn,doFn)
+  self._estore:_seekEntity(self,matchFn,doFn)
 end
 
 

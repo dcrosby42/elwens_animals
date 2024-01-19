@@ -261,9 +261,9 @@ end
 
 -- Return the first Entity matching the given entity predicate.
 -- Return nil if not found
-function findEntity(estore, filter)
+function findEntity(estoreOrEnt, filter)
   local found
-  estore:seekEntity(filter, function(e)
+  estoreOrEnt:seekEntity(filter, function(e)
     found = e
     return true
   end)

@@ -265,18 +265,22 @@ end
 
 function tfind(t, fn)
   for k,v in pairs(t) do
-    if fn(v,k) == true then
+    if fn(k,v) == true then
       return v
     end
   end
+  return nil
 end
+
 function tfindby(t,key,val)
   for _,v in pairs(t) do
     if v[key] == val then
       return v
     end
   end
+  return nil
 end
+
 function tfindall(t,fn)
   local res = {}
   for k,v in pairs(t) do

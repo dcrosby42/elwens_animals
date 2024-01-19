@@ -73,6 +73,7 @@ local function addPicsAndAnims(resources)
 
   addPic(resources, {name="umbrella", sungirl_img="Sungirl_items-1"})
   addPic(resources, {name="flower1", sungirl_img="Sungirl_items-2"})
+
   addPic(resources, {name="big_sun", sungirl_img="Sungirl_sun-1"})
 
   addPic(resources, {name="down_arrow", sungirl_img="downArrow_lineLight25"})

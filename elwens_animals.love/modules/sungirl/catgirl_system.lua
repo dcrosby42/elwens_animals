@@ -11,9 +11,10 @@ local visMap = {
   },
   too_hot={
     idle="sungirl_stand_too_hot",
-    move="sungirl_run",
+    move="sungirl_run", -- TODO: new slow anims!
   },
 }
+visMap["cooling_down"] = visMap["too_hot"]
 
 local function updateVisuals(e, estore, input, res)
   local mode = "normal"
@@ -49,39 +50,33 @@ end
 
 
 
+-- update player's item counter ui element
+local function updateFlowerCounter(estore, count)
+  local flowerCounter = findEntity(estore, hasName("flower_counter"))
+  if flowerCounter then
+    flowerCounter.label.text = tostring(count)
+  end
+end
+
 local function doPickups(myEnt, estore, res)
-  local hits = findEntities(estore, function(e)
-    return e.item and e.eid ~= myEnt.eid and C.entitiesIntersect(myEnt,e)
-  end)
+  local hits = C.detectPickups(myEnt,estore)
+
+  if #hits == 0 then return end
+
+  -- take the item components:
   for _, e in ipairs(hits) do
     Debug.println("pickup: "..e.item.kind)
     estore:transferComp(e, myEnt, e.item)
     estore:destroyEntity(e)
   end
-  if #hits > 0 then
-    C.addSoundComp(myEnt, "pickup_item", res)
 
-    -- print("I've got "..tcount(myEnt.items).." items")
-    local count = tcount(myEnt.items)
-    local fcounter = findEntity(estore, hasName("flower_counter"))
-    if fcounter then
-      fcounter.label.text = tostring(count)
-    end
-  end
-end
+  -- play sound
+  C.addSoundComp(myEnt, "pickup_item", res)
 
--- Add a "hidden" component to the entity, if not already present
-local function hideEntity(e)
-  if not e.hidden then 
-    e:newComp("hidden",{}) 
-  end
-end
+  -- TODO: differentiate item kind. (Ie umbrella)
+  local itemCount = tcount(myEnt.items)
+  updateFlowerCounter(estore, itemCount)
 
--- Remove the "hidden" component from an entity
-local function unhideEntity(e)
-  if e.hidden then
-    e:removeComp(e.hidden)
-  end
 end
 
 
@@ -90,27 +85,60 @@ local function updateShadow(catgirl,estore)
   local sun = findEntity(estore, hasName('sun'))
 
   if sun and shadow then
-    local mood = sun.states.mood.value
-    if mood == "passive" then
-      unhideEntity(shadow)
+    local sunMood = sun.states.mood.value
+    if sunMood == "passive" then
+      C.unhideEntity(shadow)
       shadow.pic.color[4] = 0.4
       shadow.pic.offx=0
       shadow.pic.offy=0
-    elseif mood == "active" then
-      unhideEntity(shadow)
+    elseif sunMood == "active" then
+      C.unhideEntity(shadow)
       shadow.pic.color[4] = 0.6
       shadow.pic.sx = 1.2
       shadow.pic.sy = 1.2
-    elseif mood == "angry" then
-      local puppygirl = findEntity(estore, hasName("puppygirl"))
-      if puppygirl and puppygirl.hidden then
-        hideEntity(shadow)
-        puppygirl.states.mode.value = "reveal" -- see puppygirl_system for handling
-        C.resetPlayerControls(catgirl)
+    elseif sunMood == "angry" then
+      local umbrella = tfindby(catgirl.items, "kind", "umbrella")
+      if catgirl.states.mode.value == "normal" then
+        if not umbrella then
+          catgirl.states.mode.value = "heating_up"
+        end
+      elseif catgirl.states.mode.value == "too_hot" then
+        if umbrella then
+          catgirl.states.mode.value = "cooling_down"
+        end
       end
     end
   end
-  
+
+  if catgirl.states.mode.value == "heating_up" then
+    local puppygirl = findEntity(estore, hasName("puppygirl"))
+    if puppygirl.states.mode.value == "hidden" then
+      -- begin the transition to puppygirl
+      C.resetPlayerControls(catgirl)
+      C.hideEntity(shadow)
+      -- signal puppygirl to begin appearingL:
+      puppygirl.states.mode.value = "reveal"
+      -- signal catgirl she's too hot
+      catgirl.states.mode.value = "too_hot"
+
+    -- elseif puppygirl.states.mode.value == "visible" then
+    --   ...
+    end
+
+  elseif catgirl.states.mode.value == "cooling_down" then
+    local puppygirl = findEntity(estore, hasName("puppygirl"))
+    if puppygirl.states.mode.value == "visible" then
+      -- signal puppygirl to disappear:
+      puppygirl.states.mode.value = "hide"
+    elseif puppygirl.states.mode.value == "hidden" then
+      -- puppygirl has disappeared, resume control of catgirl
+      catgirl.states.mode.value = "normal"
+      C.resetPlayerControls(puppygirl)
+      C.unhideEntity(shadow)
+      C.assignAsPlayer(catgirl, estore)
+      C.viewportFollow(catgirl, estore)
+    end
+  end
 end
 
 return defineUpdateSystem(hasTag('catgirl'),

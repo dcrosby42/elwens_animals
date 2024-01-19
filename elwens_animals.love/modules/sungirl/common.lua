@@ -271,4 +271,35 @@ function C.entitiesIntersect(e1,e2)
   end
 end
 
+function C.findCollidingEntities(myEnt, estore, extraFilterFunc)
+  if extraFilterFunc == nil then
+    -- no extra filtering:
+    extraFilterFunc = function(e) return true end
+  end
+  return findEntities(estore, function(e)
+    return e.eid ~= myEnt.eid and extraFilterFunc(e) and C.entitiesIntersect(myEnt,e)
+  end)
+end
+
+-- Collision detection w pickup items:
+function C.detectPickups(myEnt, estore)
+  return C.findCollidingEntities(myEnt, estore, function(e)
+    return e.tags and e.tags.pickup and e.item
+  end)
+end
+
+-- Add a "hidden" component to the entity, if not already present
+function C.hideEntity(e)
+  if not e.hidden then 
+    e:newComp("hidden",{}) 
+  end
+end
+
+-- Remove the "hidden" component from an entity
+function C.unhideEntity(e)
+  if e.hidden then
+    e:removeComp(e.hidden)
+  end
+end
+
 return C

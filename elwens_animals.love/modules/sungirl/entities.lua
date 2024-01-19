@@ -47,6 +47,9 @@ function Entities.initialEntities(res)
     Entities.flower(viewportE, starting + (i * spacing) + rx, 785 + ry)
   end
 
+  local umbrella = Entities.umbrella(viewportE,4000,900)
+  -- Entities.umbrella(viewportE,7250,850)
+
   local puppygirl = Entities.puppygirl(viewportE)
   -- puppygirl.parent.order = 100 
 
@@ -55,6 +58,14 @@ function Entities.initialEntities(res)
   -- catgirl.parent.order = 101 
 
   -- catgirl.pos.x = 2300
+ 
+  -- umbrella:removeComp(umbrella.tags.pickup)
+  -- umbrella.pos.x, umbrella.pos.y = -80, 30
+  -- -- umbrella.pos.r = math.pi/-9
+  -- umbrella.pic.sx = -1
+  -- catgirl:addChild(umbrella)
+
+  
 
   -- viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
   viewportTargetE.follow.targetName = catgirl.name.name
@@ -204,6 +215,9 @@ function Entities.getCatgirl(estore)
 end
 
 function Entities.puppygirl(parent)
+  local bbox_w, bbox_h = 120,300
+  local bbox_offx, bbox_offy = bbox_w/2 + 10, 140
+
   local puppygirl = parent:newEntity({
     { 'name',           { name = "puppygirl" } },
     { 'tag',            { name = 'puppygirl' } },
@@ -215,6 +229,13 @@ function Entities.puppygirl(parent)
     { 'pos',            { x = 300, y = 700 } },
     { 'speed',          { pps = 800 } },
     { 'vel',            {} },
+    { 'bounds', {
+      offx = bbox_offx,
+      offy = bbox_offy,
+      w = bbox_w,
+      h = bbox_h,
+      drawbounds = false
+    } },
     { 'pic', {
       id = "puppygirl-idle-left",
       centerx = 0.5,
@@ -226,6 +247,7 @@ function Entities.puppygirl(parent)
     } },
   })
   puppygirl.parent.order = 100
+
 
   return puppygirl
 
@@ -244,6 +266,39 @@ function Entities.flower(parent,x,y)
     { 'pic',    { id = "flower1", sx = scale, sy = scale, drawbounds = false } },
     { 'pos',    { x = x, y = y } },
     { 'bounds', { offx = bbox_offx, offy = bbox_offy, w = bbox_w, h = bbox_h, drawbounds = false } },
+  })
+end
+
+function Entities.umbrella(parent,x,y)
+  local scale = 0.8
+  -- local rot = 1.1 -- lying down
+  local rot = 0
+
+  local bbox_w, bbox_h = 210,240
+  local bbox_offx, bbox_offy = 80,bbox_h
+
+  return parent:newEntity({
+    { 'tag',    { name = 'umbrella' } },
+    { 'tag',  { name = 'pickup' } },
+    { 'item', { kind = 'umbrella' } },
+    { 'pos', { r = r, x = x, y = y } },
+    { 'pic',
+      {
+        id = "umbrella",
+        sx = scale,
+        sy = scale,
+        centerx = 0.25,
+        centery = 0.75,
+        drawbounds = false
+      } },
+    { 'bounds',
+      {
+        offx = bbox_offx,
+        offy = bbox_offy,
+        w = bbox_w,
+        h = bbox_h,
+        drawbounds = false
+      } },
   })
 end
 
