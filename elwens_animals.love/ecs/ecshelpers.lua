@@ -105,6 +105,16 @@ function hasTag(tagname)
     return e.tags and e.tags[tagname]
   end
 end
+function hasTags(...)
+  local tags = {...}
+  return function(e)
+    if not e.tags then return false end
+    for i=1,#tags do
+      if not e.tags[tag] then return false end
+    end
+    return true
+  end
+end
 
 -- Create an Entity predicate that matches on name component
 function hasName(name)
