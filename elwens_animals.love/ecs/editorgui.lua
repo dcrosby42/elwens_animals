@@ -92,7 +92,7 @@ local function updateCompGui(c)
         if type(val) == "number" then
           val = round(val,3)
         end
-        str = str .. key .. ": " .. tostring(val) .. " "
+        str = str .. key .. ": " .. tostring(val) .. " " -- TODO: Use inspect() instead of tostring() http://github.com/kikito/inspect.lua 
       end
     end
     suit.Label(str, {align='left'}, suit.layout:col(w,h))
