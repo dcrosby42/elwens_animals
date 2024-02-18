@@ -53,9 +53,9 @@ return function(estore, input, res)
     pressed = function(event)
       zoomViewport(viewportE, event, estore)
 
-      if event.key == "space" then
-        C.swapPlayers(estore)
-      end
+      -- if event.key == "space" then
+      --   C.swapPlayers(estore)
+      -- end
 
       if event.key == "b" then
         toggleBackgroundMusic(estore)

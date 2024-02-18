@@ -184,7 +184,7 @@ return defineUpdateSystem(hasTag('puppygirl'),
         C.accelTowardNavGoal(e)
       elseif e.player_control and e.player_control.any then
         -- devel/debug manual keybd controls:
-        C.applyPlayerControls(e)
+        C.controlPlayerVelocity(e)
       else
         -- halt:
         C.stopMoving(e)
@@ -192,7 +192,7 @@ return defineUpdateSystem(hasTag('puppygirl'),
 
       updateDir(e, estore)
 
-      C.applyMotion(e, input)
+      C.applyMotion(e, input.dt)
 
       doPickups(e, estore, res)
 

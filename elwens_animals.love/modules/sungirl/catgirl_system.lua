@@ -141,11 +141,24 @@ local function updateShadow(catgirl,estore)
   end
 end
 
+local function actionIsTriggered(e)
+  return (e.touch and e.touch.state == "released") or
+         (e.player_control and e.player_control.just_released['action'])
+end
+
 return defineUpdateSystem(hasTag('catgirl'),
   function(e, estore, input,res)
 
     if e.touch and e.touch.state == "pressed" then
+      -- testing: click/touch catgirl or puppygirl to take control
       C.assignAsPlayer(e, estore)
+    end
+
+    if actionIsTriggered(e) then
+      local exit = C.firstCollidingEntity(e, estore, hasTag("exit"))
+      if exit then
+        print("TODO: End level!")
+      end
     end
 
     C.applyTouchNav(e)
@@ -155,14 +168,14 @@ return defineUpdateSystem(hasTag('catgirl'),
       C.accelTowardNavGoal(e)
 
     elseif e.player_control and e.player_control.any then
-      C.applyPlayerControls(e, {vertical=false})
+      C.controlPlayerVelocity(e, {vertical=false})
     else
       C.stopMoving(e)
     end
 
     C.updateLRDirFromVel(e)
 
-    C.applyMotion(e,input, {vertical=false})
+    C.applyMotion(e, input.dt, {vertical=false})
 
     doPickups(e, estore, res)
 

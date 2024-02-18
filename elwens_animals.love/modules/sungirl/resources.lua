@@ -89,6 +89,8 @@ local function addPicsAndAnims(resources)
 
   addPic(resources, { img = "power-button-outline" })
   addPic(resources, { img = "skip-button-outline" })
+
+  addPic(resources, { name = "house", sungirl_img = "House" })
 end
 
 local function addFonts(resources)

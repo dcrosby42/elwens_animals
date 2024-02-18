@@ -86,17 +86,18 @@ end
 
 -- Update pos based on velocity and dt.
 -- vel, pos, input.dt, opts.{horizontal,vertical}
-function C.applyMotion(e, input, opts)
+-- Movement can be constrained by setting horizontal or vertical to false.
+function C.applyMotion(e, dt, opts)
   if not opts then opts = {} end
   if opts.horizontal == nil then opts.horizontal = true end
   if opts.vertical == nil then opts.vertical = true end
 
   -- VELOCITY -> POSITION
   if opts.horizontal then
-    e.pos.x = e.pos.x + (input.dt * e.vel.dx)
+    e.pos.x = e.pos.x + (dt * e.vel.dx)
   end
   if opts.vertical then
-    e.pos.y = e.pos.y + (input.dt * e.vel.dy)
+    e.pos.y = e.pos.y + (dt * e.vel.dy)
   end
 end
 
@@ -167,7 +168,7 @@ end
 -- Update velocity based on player_control {up,down,left,right}
 -- Comps: player_control, velocity, speed 
 -- (actual motion provided by )
-function C.applyPlayerControls(e, opts)
+function C.controlPlayerVelocity(e, opts)
   if not opts then opts = {} end
   if opts.horizontal == nil then opts.horizontal = true end
   if opts.vertical == nil then opts.vertical = true end
@@ -265,18 +266,30 @@ end
 -- use bounds and pos to detect overlap of entities
 function C.entitiesIntersect(e1,e2)
   if e1.bounds and e2.bounds and e1.pos and e2.pos then
+    -- (use getPos() to properly account for parented entities)
+    local x1,y1 = getPos(e1)
+    local x2,y2 = getPos(e2)
     return math.rectanglesintersect(
-      e1.pos.x - e1.bounds.offx, e1.pos.y - e1.bounds.offy, e1.bounds.w, e1.bounds.h,
-      e2.pos.x - e2.bounds.offx, e2.pos.y - e2.bounds.offy, e2.bounds.w, e2.bounds.h)
+      x1 - e1.bounds.offx, y1 - e1.bounds.offy, e1.bounds.w, e1.bounds.h,
+      x2 - e2.bounds.offx, y2 - e2.bounds.offy, e2.bounds.w, e2.bounds.h)
   end
 end
 
 function C.findCollidingEntities(myEnt, estore, extraFilterFunc)
   if extraFilterFunc == nil then
     -- no extra filtering:
-    extraFilterFunc = function(e) return true end
+    return findEntities(estore, function(e)
+      return e.eid ~= myEnt.eid and C.entitiesIntersect(myEnt,e)
+    end)
+  else
+    return findEntities(estore, function(e)
+      return e.eid ~= myEnt.eid and extraFilterFunc(e) and C.entitiesIntersect(myEnt,e)
+    end)
   end
-  return findEntities(estore, function(e)
+end
+
+function C.firstCollidingEntity(myEnt, estore, extraFilterFunc)
+  return findEntity(estore, function(e)
     return e.eid ~= myEnt.eid and extraFilterFunc(e) and C.entitiesIntersect(myEnt,e)
   end)
 end

@@ -2,8 +2,9 @@ local Estore = require 'ecs.estore'
 local Debug = require('mydebug').sub('sungirl.Entities', true, true, true)
 local Comp = require 'ecs/component'
 local C = require 'modules.sungirl.common'
+local Vec = require "vector-light"
 
-Comp.define('player_control', { 'any',false,'right', false, 'left', false, 'up', false, 'down', false, 'jump', false, 'stickx',0,'sticky',0})
+Comp.define('player_control', { 'any',false,'right', false, 'left', false, 'up', false, 'down', false, 'jump', false, 'action', false, 'stickx',0,'sticky',0,'just_pressed',{},'just_released',{}})
 Comp.define('touch_nav', { })
 Comp.define('nav_goal', { 'x', 0, 'y', 0 })
 Comp.define("speed", { 'pps', 0 })
@@ -47,31 +48,29 @@ function Entities.initialEntities(res)
     Entities.flower(viewportE, starting + (i * spacing) + rx, 785 + ry)
   end
 
-  local umbrella = Entities.umbrella(viewportE,4000,900)
-  -- Entities.umbrella(viewportE,7250,850)
+
+  -- local umbrella = Entities.umbrella(viewportE,4000,900)
+  local umbrella = Entities.umbrella(viewportE,7250,850)
+
 
   local puppygirl = Entities.puppygirl(viewportE)
   -- puppygirl.parent.order = 100 
 
   local shadow = Entities.shadow(viewportE, res)
-  local catgirl = Entities.catgirl(viewportE, res)
-  -- catgirl.parent.order = 101 
 
-  -- catgirl.pos.x = 2300
- 
-  -- umbrella:removeComp(umbrella.tags.pickup)
-  -- umbrella.pos.x, umbrella.pos.y = -80, 30
-  -- -- umbrella.pos.r = math.pi/-9
-  -- umbrella.pic.sx = -1
-  -- catgirl:addChild(umbrella)
+  local catgirl = Entities.catgirl(viewportE, res, 100, 700)
+  -- local catgirl = Entities.catgirl(viewportE, res, 8740, 700)
 
-  
+  -- local house = Entities.house(viewportE,res,10,200)
+  local house = Entities.house(viewportE,res,9300,200)
 
   -- viewportTargetE:newComp('follow', { targetName = catgirl.name.name })
   viewportTargetE.follow.targetName = catgirl.name.name
   -- viewportTargetE:newComp('follow', { targetName = puppygirl.name.name })
 
   -- C.swapPlayers(estore)
+
+  viewportE:resortChildren()
 
   --
   -- UI overlay
@@ -151,7 +150,7 @@ function Entities.background(parent, res, picId)
 end
 
 
-function Entities.catgirl(parent, res)
+function Entities.catgirl(parent, res, x, y)
   -- anim: (620 x 1000)*0.5 -> 310,500
   -- bounds: 
   local bbox_w, bbox_h = 120,390
@@ -165,7 +164,7 @@ function Entities.catgirl(parent, res)
     { 'player_control', {} },
     { 'touchable',      { radius = 70, offy=70 } },
     { 'speed',          { pps = 600 } },
-    { 'pos',            { x = 100, y = 700 } },
+    { 'pos',            { x = x, y = y } },
     { 'vel',            {} },
     { 'state',          { name = "dir", value = "right" } },
     { 'bounds',         { offx = bbox_offx, offy = bbox_offy, w = bbox_w, h = bbox_h, drawbounds=false } },
@@ -214,7 +213,7 @@ function Entities.getCatgirl(estore)
   return findEntity(estore, hasName('catgirl'))
 end
 
-function Entities.puppygirl(parent)
+function Entities.puppygirl(parent,x,y)
   local bbox_w, bbox_h = 120,300
   local bbox_offx, bbox_offy = bbox_w/2 + 10, 140
 
@@ -251,6 +250,42 @@ function Entities.puppygirl(parent)
 
   return puppygirl
 
+end
+
+-- Return w,h of pic resource image 
+local function getPicSize(res, picId)
+  return res.pics[picId].rect.w, res.pics[picId].rect.h
+end
+
+function Entities.house(parent,res,x,y)
+  local pic = "house"
+
+  local scale = 1.7
+  local bbox_offx, bbox_offy = 0,0--bbox_w/2, bbox_h/2
+  local bbox_w, bbox_h = getPicSize(res,pic)
+  bbox_w = bbox_w * scale
+  bbox_h = bbox_h * scale
+  -- local bbox_w, bbox_h = getPicSize(res,pic)
+  local house = parent:newEntity({
+    {'name',{name="house"}},
+    -- { 'tag',    { name = 'house' } },
+    { 'pic',    { id = pic, sx = scale, sy = scale, drawbounds = false } },
+    { 'pos',    { x = x, y = y } },
+    { 'bounds', { offx = bbox_offx, offy = bbox_offy, w = bbox_w, h = bbox_h, drawbounds = false } },
+  })
+
+  -- Add a door hit zone:
+  local door_x, door_y = Vec.mul(scale, 225,180)
+  local door_w, door_h = Vec.mul(scale, 105,220)
+  local door = house:newEntity({
+    { 'tag',    { name = "door" } },
+    { 'tag',    { name = 'exit' } },
+    { 'pos',    { x = door_x, y = door_y } },
+    { 'bounds', { w = door_w, h = door_h, drawbounds=false } },
+  })
+
+  house.parent.order = 10
+  return house
 end
 
 function Entities.flower(parent,x,y)
