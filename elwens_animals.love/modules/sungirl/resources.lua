@@ -54,8 +54,8 @@ local function addSunGirlAnimations(resources)
 
 
   local standPics = {
-    makePic({sungirl_img="Sun_girl_animation-2"}), -- eyes closed
-    makePic({sungirl_img="Sun_girl_animation-1"}),
+    makePic({sungirl_img="Sun_girl_animation-2"}),
+    makePic({sungirl_img="Sun_girl_animation-1"}), -- eyes closed
   }
   standPics[1].duration = 5
   standPics[2].duration = 0.2

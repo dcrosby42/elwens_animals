@@ -1,7 +1,6 @@
 local Debug = require 'mydebug'
 Debug = Debug.sub("TouchButton",false,false,false)
 local EventHelpers = require 'eventhelpers'
-local Entities = require 'modules.animalscreen.entities'
 
 return function(estore, input, res)
   -- 1. Look for hold-me buttons that have been held long enough to trigger:
